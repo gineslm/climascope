@@ -15,7 +15,7 @@ sources:
     retrieval_status: source_verified
     validation_status: pending_data_acquisition
     limitations: API key required; station coverage must be checked per variable and period
-    notes: Existing AEMET pipeline already targets stations 8416, 7012D and 3195. Missing precipitation must not be interpreted as zero.
+    notes: Missing precipitation must not be interpreted as zero.
 
   - id: snczi_flood
     provider: MITECO
@@ -123,4 +123,4 @@ sources:
     retrieval_status: not_yet_automated
     validation_status: pending_benchmark_audit
     limitations: system boundaries and public data availability differ by territory
-    notes: Benchmark research priority: Valencia, Cartagena and Madrid. No dependency penalty is calculated at this stage.
+    notes: "Benchmark research priority: Valencia, Cartagena and Madrid. No dependency penalty is calculated at this stage."
