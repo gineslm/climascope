@@ -4,7 +4,7 @@ sources:
     dataset: Valores climatológicos diarios por estación
     category: climate
     variable: precipitation
-    url_or_endpoint: https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos
+    url_or_endpoint: "https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos"
     access_method: REST API
     format: JSON
     geographic_coverage: station
@@ -22,7 +22,7 @@ sources:
     dataset: Sistema Nacional de Cartografía de Zonas Inundables
     category: hazard
     variable: flood_exposure
-    url_or_endpoint: https://www.miteco.gob.es/es/agua/temas/gestion-de-los-riesgos-de-inundacion/snczi.html
+    url_or_endpoint: "https://www.miteco.gob.es/es/agua/temas/gestion-de-los-riesgos-de-inundacion/snczi.html"
     access_method: web viewer plus official downloads/WMS
     format: GIS services and downloadable geospatial data
     geographic_coverage: national, with mapped coverage varying by layer
@@ -40,7 +40,7 @@ sources:
     dataset: Masas de agua superficial PHC 2022-2027
     category: resource
     variable: surface_water
-    url_or_endpoint: https://www.miteco.gob.es/es/cartografia-y-sig/ide/descargas/agua/masas-de-agua-phc-2022-2027.html
+    url_or_endpoint: "https://www.miteco.gob.es/es/cartografia-y-sig/ide/descargas/agua/masas-de-agua-phc-2022-2027.html"
     access_method: official GIS downloads/WMS
     format: Shapefile, KMZ, GML and WMS
     geographic_coverage: national
@@ -58,7 +58,7 @@ sources:
     dataset: Masas de agua subterránea PHC 2022-2027
     category: resource
     variable: groundwater
-    url_or_endpoint: https://www.miteco.gob.es/es/cartografia-y-sig/ide/descargas/agua/masas-de-agua-phc-2022-2027.html
+    url_or_endpoint: "https://www.miteco.gob.es/es/cartografia-y-sig/ide/descargas/agua/masas-de-agua-phc-2022-2027.html"
     access_method: official GIS downloads/WMS
     format: Shapefile, KMZ, GML and WMS
     geographic_coverage: national
@@ -76,7 +76,7 @@ sources:
     dataset: drought and scarcity indicators
     category: hazard
     variable: drought_scarcity
-    url_or_endpoint: https://www.miteco.gob.es/es/agua/temas/observatorio-nacional-de-la-sequia.html
+    url_or_endpoint: "https://www.miteco.gob.es/es/agua/temas/observatorio-nacional-de-la-sequia.html"
     access_method: official drought/planning information; organism-of-basin services to be mapped
     format: depends on source
     geographic_coverage: basin/demarcation dependent
@@ -94,7 +94,7 @@ sources:
     dataset: reservoirs and dams inventory
     category: regulation
     variable: reservoir_storage
-    url_or_endpoint: https://www.miteco.gob.es/es/cartografia-y-sig/ide/directorio_datos_servicios/agua.html
+    url_or_endpoint: "https://www.miteco.gob.es/es/cartografia-y-sig/ide/directorio_datos_servicios/agua.html"
     access_method: official GIS services plus basin-specific operational data where verified
     format: WMS/GIS and basin-dependent operational datasets
     geographic_coverage: national inventory; operational series basin dependent
