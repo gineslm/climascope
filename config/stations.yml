@@ -1,0 +1,11 @@
+stations:
+  - id: "8416"
+    name: "Valencia"
+  - id: "7012D"
+    name: "Cartagena"
+  - id: "3195"
+    name: "Madrid-Retiro"
+
+period:
+  start: "2011-01-01"
+  end: "2025-12-31"

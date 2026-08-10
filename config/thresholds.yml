@@ -1,0 +1,6 @@
+thresholds:
+  hot_day_c: 30
+  extreme_heat_c: 35
+  warm_night_c: 22
+  very_warm_night_c: 24
+  warm_months: [5, 6, 7, 8, 9, 10]
