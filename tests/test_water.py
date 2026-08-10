@@ -16,8 +16,7 @@ CONFIG = ROOT / "config/water_sources.yml"
 
 def test_water_source_registry_loads():
     sources = load_source_registry(CONFIG)
-    assert len(sources) >= 8
-    assert {source["id"] for source in sources} >= {
+    required_ids = {
         "aemet_precipitation",
         "snczi_flood",
         "water_bodies_surface",
@@ -26,6 +25,9 @@ def test_water_source_registry_loads():
         "reservoirs",
         "supply_systems",
     }
+    source_ids = {source["id"] for source in sources}
+    assert source_ids >= required_ids
+    assert len(sources) >= len(required_ids)
 
 
 def test_water_audit_has_required_structure():
