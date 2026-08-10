@@ -1,0 +1,4 @@
+station_id,station_name,start,end,records,expected_records,missing_calendar_days,missing_tmax,missing_tmin,missing_tmed,missing_prcp,years,thermal_coverage_pct,precipitation_coverage_pct
+8416,Valencia,2011-01-01,2025-12-31,5479,5479,0,0,0,0,5479,15,100.0,0.0
+7012D,Cartagena,2016-02-22,2025-12-31,3572,3601,29,25,31,36,3572,10,98.99,0.0
+3195,Madrid-Retiro,2011-01-01,2025-12-31,5478,5479,1,109,109,109,5478,15,98.01,0.0
