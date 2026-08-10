@@ -1,0 +1,126 @@
+sources:
+  - id: aemet_precipitation
+    provider: AEMET
+    dataset: Valores climatológicos diarios por estación
+    category: climate
+    variable: precipitation
+    url_or_endpoint: https://opendata.aemet.es/opendata/api/valores/climatologicos/diarios/datos
+    access_method: REST API
+    format: JSON
+    geographic_coverage: station
+    spatial_resolution: station
+    temporal_coverage: configurable by query; benchmark target 2011-01-01 to 2025-12-31
+    temporal_resolution: daily
+    unit: mm
+    retrieval_status: source_verified
+    validation_status: pending_data_acquisition
+    limitations: API key required; station coverage must be checked per variable and period
+    notes: Existing AEMET pipeline already targets stations 8416, 7012D and 3195. Missing precipitation must not be interpreted as zero.
+
+  - id: snczi_flood
+    provider: MITECO
+    dataset: Sistema Nacional de Cartografía de Zonas Inundables
+    category: hazard
+    variable: flood_exposure
+    url_or_endpoint: https://www.miteco.gob.es/es/agua/temas/gestion-de-los-riesgos-de-inundacion/snczi.html
+    access_method: web viewer plus official downloads/WMS
+    format: GIS services and downloadable geospatial data
+    geographic_coverage: national, with mapped coverage varying by layer
+    spatial_resolution: layer-dependent
+    temporal_coverage: layer-dependent
+    temporal_resolution: layer/version dependent
+    unit: not_applicable
+    retrieval_status: source_verified
+    validation_status: pending_reproducible_download_test
+    limitations: MITECO states that not all flood-prone areas in Spain are currently mapped; coverage must be recorded by layer.
+    notes: Official downloads include T=10, 50, 100 and 500 year flood zones and ARPSIs.
+
+  - id: water_bodies_surface
+    provider: MITECO
+    dataset: Masas de agua superficial PHC 2022-2027
+    category: resource
+    variable: surface_water
+    url_or_endpoint: https://www.miteco.gob.es/es/cartografia-y-sig/ide/descargas/agua/masas-de-agua-phc-2022-2027.html
+    access_method: official GIS downloads/WMS
+    format: Shapefile, KMZ, GML and WMS
+    geographic_coverage: national
+    spatial_resolution: scale 1:25,000 for listed cartography
+    temporal_coverage: third hydrological planning cycle 2022-2027
+    temporal_resolution: planning-cycle snapshot
+    unit: not_applicable
+    retrieval_status: source_verified
+    validation_status: pending_reproducible_download_test
+    limitations: spatial inventory does not by itself represent water-security or supply availability
+    notes: Includes surface-water lines and polygons and the hydrographic network.
+
+  - id: water_bodies_groundwater
+    provider: MITECO
+    dataset: Masas de agua subterránea PHC 2022-2027
+    category: resource
+    variable: groundwater
+    url_or_endpoint: https://www.miteco.gob.es/es/cartografia-y-sig/ide/descargas/agua/masas-de-agua-phc-2022-2027.html
+    access_method: official GIS downloads/WMS
+    format: Shapefile, KMZ, GML and WMS
+    geographic_coverage: national
+    spatial_resolution: scale 1:25,000 for listed cartography
+    temporal_coverage: third hydrological planning cycle 2022-2027
+    temporal_resolution: planning-cycle snapshot
+    unit: not_applicable
+    retrieval_status: source_verified
+    validation_status: pending_reproducible_download_test
+    limitations: inventory presence does not imply exploitable or secure supply
+    notes: State layers include quantitative and chemical status.
+
+  - id: drought
+    provider: MITECO / organismos de cuenca
+    dataset: drought and scarcity indicators
+    category: hazard
+    variable: drought_scarcity
+    url_or_endpoint: https://www.miteco.gob.es/es/agua/temas/gestion-de-sequias.html
+    access_method: official drought/planning information; organism-of-basin services to be mapped
+    format: depends on source
+    geographic_coverage: basin/demarcation dependent
+    spatial_resolution: basin/system dependent
+    temporal_coverage: indicator dependent
+    temporal_resolution: indicator dependent
+    unit: indicator dependent
+    retrieval_status: source_family_verified
+    validation_status: pending_indicator_definition_audit
+    limitations: meteorological drought, hydrological drought and scarcity are distinct concepts and must not be merged without methodological approval
+    notes: The first implementation records the source family; no drought score is calculated.
+
+  - id: reservoirs
+    provider: MITECO / organismos de cuenca
+    dataset: reservoirs and dams inventory
+    category: regulation
+    variable: reservoir_storage
+    url_or_endpoint: https://www.miteco.gob.es/es/cartografia-y-sig/ide/directorio_datos_servicios/agua.html
+    access_method: official GIS services plus basin-specific operational data where verified
+    format: WMS/GIS and basin-dependent operational datasets
+    geographic_coverage: national inventory; operational series basin dependent
+    spatial_resolution: facility / basin dependent
+    temporal_coverage: inventory or operational series dependent
+    temporal_resolution: static inventory or time series dependent
+    unit: hm3 or source-defined
+    retrieval_status: source_verified
+    validation_status: pending_series_audit
+    limitations: inventory existence is not equivalent to available storage or supply security
+    notes: No conversion from reservoir count to CRS points is permitted.
+
+  - id: supply_systems
+    provider: gestores_abastecimiento / organismos competentes
+    dataset: water supply systems and sources
+    category: security
+    variable: supply_system
+    url_or_endpoint: null
+    access_method: case-by-case official provider documentation
+    format: case-dependent
+    geographic_coverage: municipal/system dependent
+    spatial_resolution: supply-system dependent
+    temporal_coverage: case-dependent
+    temporal_resolution: case-dependent
+    unit: case-dependent
+    retrieval_status: not_yet_automated
+    validation_status: pending_benchmark_audit
+    limitations: system boundaries and public data availability differ by territory
+    notes: Benchmark research priority: Valencia, Cartagena and Madrid. No dependency penalty is calculated at this stage.
