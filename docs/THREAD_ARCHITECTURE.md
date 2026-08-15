@@ -1,7 +1,7 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.1.0  
-**Estado:** Propuesta operativa inicial  
+**Versión:** 0.2.0  
+**Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`
 
@@ -9,22 +9,27 @@
 
 Este documento formaliza el modelo operativo de los hilos de trabajo de ClimaScope. Complementa `docs/PROJECT_WORKING_RULES.md` y `docs/CHATGPT_PROJECT_CONTEXT.md`; no los sustituye ni duplica sus reglas generales.
 
-Su objetivo es que una conversación pueda incorporarse, continuar o cerrar una línea de trabajo sin depender del historial completo del chat.
+Su objetivo es que una conversación pueda **crear, incorporar, continuar o cerrar una línea de trabajo** sin depender del historial completo del chat.
 
-La unidad persistente de trabajo es el **hilo de proyecto**, no la conversación de ChatGPT. GitHub es la fuente duradera de verdad.
+La unidad persistente de trabajo es el **THREAD de proyecto**, no la conversación de ChatGPT. GitHub es la fuente duradera de verdad.
+
+Una conversación es una **instancia operativa de IA** que se conecta a un THREAD. Puede haber distintas instancias de conversación trabajando sobre el mismo THREAD a lo largo de su ciclo de vida, siempre respetando el manifest y el estado vigente.
 
 ## 2. Principios
 
-1. Una conversación debe tener una responsabilidad delimitada.
-2. Una conversación no es por sí misma una fuente autoritativa del proyecto.
-3. El conocimiento duradero debe sincronizarse con el repositorio.
-4. Cada responsabilidad debe tener un propietario o línea de trabajo identificable.
-5. Un hilo no absorbe silenciosamente trabajo perteneciente a otra línea.
-6. Las dependencias documentales deben poder identificarse y, cuando sea relevante, fijarse a una versión.
-7. Un HANDOFF representa una transferencia de responsabilidad, no una simple lista de tareas.
-8. Los conflictos entre conversación y repositorio se hacen explícitos; no se resuelven silenciosamente.
-9. El cierre de un hilo termina un ciclo de trabajo, no elimina su conocimiento.
-10. Las vistas o índices derivados no sustituyen a las fuentes autoritativas.
+1. Un THREAD es una entidad persistente de trabajo; no es un chat.
+2. Una conversación es una instancia operativa que puede conectarse a un THREAD.
+3. Toda instancia debe tener una responsabilidad delimitada.
+4. Una conversación no es por sí misma una fuente autoritativa del proyecto.
+5. El conocimiento duradero debe sincronizarse con el repositorio.
+6. Cada responsabilidad debe tener un propietario o línea de trabajo identificable.
+7. Un THREAD no absorbe silenciosamente trabajo perteneciente a otra línea.
+8. Las dependencias documentales deben poder identificarse y, cuando sea relevante, fijarse a una versión.
+9. Un HANDOFF representa una transferencia de responsabilidad y puede declarar la creación de un THREAD receptor.
+10. El MANIFEST es la autoridad sobre el estado actual del THREAD; un HANDOFF antiguo no puede sustituirlo.
+11. Los conflictos entre conversación y repositorio se hacen explícitos; no se resuelven silenciosamente.
+12. El cierre de un THREAD termina un ciclo de trabajo, no elimina su conocimiento.
+13. Las vistas o índices derivados no sustituyen a las fuentes autoritativas.
 
 ## 3. Modelo conceptual
 
@@ -32,8 +37,9 @@ El sistema documental se organiza en las siguientes categorías:
 
 ```text
 KNOWLEDGE  → qué sabe el proyecto
-THREAD     → quién es responsable de trabajar sobre ello
-HANDOFF    → cómo se transfiere una responsabilidad
+THREAD     → unidad persistente de responsabilidad
+MANIFEST   → estado operativo actual del THREAD
+HANDOFF    → declaración/transferencia de responsabilidad
 ACTIVITY   → qué ocurrió durante la evolución del trabajo
 DERIVED    → vistas o índices regenerables
 ```
@@ -41,14 +47,17 @@ DERIVED    → vistas o índices regenerables
 Estas categorías son complementarias:
 
 - **KNOWLEDGE** incluye metodología, especificaciones, decisiones e informes validados.
-- **THREAD** define una unidad de responsabilidad y su estado.
-- **HANDOFF** transmite contexto y responsabilidad entre hilos.
+- **THREAD** define una unidad persistente de responsabilidad y su ciclo de vida.
+- **MANIFEST** permite reconstruir la identidad y estado actual del THREAD.
+- **HANDOFF** transmite contexto y responsabilidad entre hilos y puede actuar como declaración de creación de un receptor.
 - **ACTIVITY** conserva eventos operativos significativos sin convertirse en una copia de las conversaciones.
 - **DERIVED** contiene índices, resúmenes o vistas que pueden reconstruirse desde las fuentes.
 
-## 4. Identidad de un hilo
+## 4. THREAD como entidad persistente
 
-Un hilo debe poder identificarse mediante, al menos:
+Un THREAD existe independientemente de que haya una conversación abierta en ChatGPT. Su identidad se conserva en el repositorio mediante un MANIFEST.
+
+Como mínimo, un THREAD debe poder identificarse mediante:
 
 ```yaml
 thread_id:
@@ -58,49 +67,104 @@ owner:
 created:
 current_cycle:
 responsibility:
+origin:
 ```
 
-El `thread_id` debe permanecer estable durante su ciclo de vida. Si una misma responsabilidad vuelve a abrirse posteriormente, se crea un nuevo ciclo o una nueva unidad de trabajo según determine el manifest del proyecto.
+El `thread_id` es el identificador primario y permanece estable durante la vida del THREAD. Si la misma responsabilidad vuelve a abrirse posteriormente, se crea un nuevo ciclo o una nueva unidad de trabajo según determine el MANIFEST.
 
-## 5. Contrato de responsabilidad
+### 4.1 Origen del THREAD
 
-Toda conversación sustantiva debe poder responder:
+Todo THREAD debe registrar cómo fue declarado inicialmente:
+
+```yaml
+origin:
+  type: HANDOFF | USER_DECLARED | MIGRATED
+  source_id:
+```
+
+- `HANDOFF`: el THREAD fue declarado por otro THREAD mediante una transferencia.
+- `USER_DECLARED`: una conversación nueva declaró directamente una responsabilidad sin HANDOFF previo.
+- `MIGRATED`: una responsabilidad o conversación existente fue formalizada posteriormente como THREAD.
+
+El origen es histórico: no cambia porque el THREAD reciba posteriormente otros HANDOFF.
+
+## 5. THREAD DECLARATION
+
+Una **THREAD DECLARATION** es el acto mediante el cual una responsabilidad pasa a convertirse en un THREAD formal.
+
+Puede originarse de tres formas:
 
 ```text
-Responsabilidad de la conversación:
-Propietario / línea de trabajo:
-Dentro de alcance:
-Fuera de alcance:
-Documentos principales del repositorio:
-Código / datos principales:
-Entregables esperados:
-Validación requerida:
-Dependencias de otras líneas de trabajo:
-Siguiente handoff:
+                 THREAD DECLARATION
+                         │
+            ┌────────────┼────────────┐
+            ▼            ▼            ▼
+         HANDOFF     USER_DECLARED   MIGRATED
+            │            │            │
+            └────────────┼────────────┘
+                         ▼
+                       THREAD
+                         │
+                         ▼
+                      MANIFEST
 ```
 
-Este contrato amplía las reglas ya definidas en `CHATGPT_PROJECT_CONTEXT.md`. Si la responsabilidad no es evidente, debe proponerse y confirmarse antes de ampliar el alcance.
+La declaración no equivale todavía a trabajo técnico. Primero se inicializa la identidad, alcance, dependencias y estado del THREAD.
 
-## 6. Manifest del hilo
+## 6. MANIFEST del THREAD
 
-El manifest es el contrato persistente que permite reconstruir la identidad y el estado de un hilo sin leer su historial completo.
+El MANIFEST es el **contrato persistente y fuente autoritativa del estado operativo actual del THREAD**. Permite reconstruir su identidad sin leer el historial completo de una conversación.
 
 Como mínimo debe resolver:
 
-- identidad del hilo;
+- `thread_id`;
 - dominio y responsabilidad;
-- estado y ciclo actual;
+- propietario/línea de trabajo;
+- estado actual;
+- ciclo actual;
+- origen de la declaración;
 - documentos autoritativos;
 - dependencias;
 - trabajo recibido;
 - entregables esperados;
 - validación;
-- siguiente transferencia prevista;
-- cuestiones abiertas.
+- handoff actual, si existe;
+- historial relevante de handoffs;
+- cuestiones abiertas;
+- siguiente transferencia prevista.
 
-El formato concreto del manifest puede evolucionar. No se crea un manifest separado para cada hilo hasta que exista una necesidad operativa real; el sistema debe evitar proliferación documental innecesaria.
+### 6.1 Handoff actual e histórico
 
-## 7. Estados del hilo
+El MANIFEST debe evitar que una conexión al THREAD seleccione arbitrariamente un HANDOFF antiguo.
+
+Como mínimo, cuando existan handoffs:
+
+```yaml
+current_handoff:
+  handoff_id:
+  version:
+  status: ACTIVE
+
+handoff_history:
+  - handoff_id:
+    version:
+    role: CREATION | TRANSFER | UPDATE
+    status: SUPERSEDED | CLOSED | ACTIVE
+```
+
+La regla es:
+
+> **Para conectar con un THREAD se consulta primero su MANIFEST. El MANIFEST determina el estado y el HANDOFF vigente. Nunca se selecciona un HANDOFF simplemente por ser el primero o el más antiguo encontrado.**
+
+Un HANDOFF histórico puede conservarse indefinidamente como trazabilidad aunque ya no sea vigente.
+
+### 6.2 Ubicación y formato
+
+El formato y ubicación definitivos del MANIFEST pueden evolucionar. Mientras la arquitectura se prueba, se permite un manifest documental por THREAD cuando aporte valor operativo.
+
+No se debe crear una proliferación de manifests derivados que dupliquen información de otros documentos sin necesidad.
+
+## 7. Estados del THREAD
 
 Se adopta provisionalmente el siguiente conjunto:
 
@@ -113,7 +177,7 @@ CLOSED
 ARCHIVED
 ```
 
-- `PROPOSED`: responsabilidad definida pero todavía no iniciada.
+- `PROPOSED`: responsabilidad declarada pero todavía no inicializada o aceptada.
 - `ACTIVE`: trabajo en curso.
 - `BLOCKED`: el trabajo no puede avanzar por una dependencia o decisión pendiente.
 - `READY_FOR_HANDOFF`: el resultado está preparado para transferirse.
@@ -122,12 +186,125 @@ ARCHIVED
 
 El estado debe reflejar el repositorio, no una impresión temporal de la conversación.
 
-## 8. Ciclos de trabajo
+## 8. THREAD BOOTSTRAP
+
+El **THREAD BOOTSTRAP** es el protocolo universal mediante el cual una nueva instancia de conversación se incorpora al sistema.
+
+### 8.1 Entrada por HANDOFF
+
+Cuando el usuario indique:
+
+> **«Parte del handoff `<id>`.»**
+
+el agente debe:
+
+1. localizar el HANDOFF;
+2. identificar el `thread_id` receptor;
+3. buscar el MANIFEST del receptor;
+4. comprobar si el THREAD ya está inicializado;
+5. si no existe, crear/inicializar el THREAD y su MANIFEST a partir de la declaración contenida en el HANDOFF;
+6. registrar `origin.type: HANDOFF` y el `source_id` del HANDOFF;
+7. resolver documentos autoritativos y dependencias;
+8. validar que el contexto del HANDOFF sigue siendo compatible con el estado del repositorio;
+9. pasar el THREAD a `ACTIVE` cuando la inicialización sea válida;
+10. informar del diagnóstico de incorporación y comenzar el trabajo.
+
+La creación del THREAD es la **primera responsabilidad operativa** del agente cuando el HANDOFF declara un receptor todavía inexistente.
+
+### 8.2 Entrada directa a un THREAD existente
+
+Cuando el usuario indique:
+
+> **«Conecta con el hilo `<thread_id>`.»**
+
+el agente debe:
+
+1. localizar el MANIFEST del THREAD;
+2. verificar su identidad y estado;
+3. leer el `current_handoff` si existe, sin utilizar automáticamente HANDOFF históricos;
+4. resolver las dependencias vigentes;
+5. comprobar si existen cambios relevantes desde el último estado conocido;
+6. informar del diagnóstico de incorporación;
+7. continuar el trabajo dentro de la responsabilidad vigente.
+
+La conexión directa **no crea un nuevo THREAD** ni reinicia el ciclo.
+
+### 8.3 Entrada desde una conversación nueva con responsabilidad declarada
+
+Cuando una conversación nueva, ya dentro del contexto del proyecto, declare una responsabilidad sin HANDOFF previo, el agente debe:
+
+1. comprobar si ya existe un THREAD que cubra esa responsabilidad;
+2. si existe, proponer/conectar con el THREAD correspondiente en lugar de duplicarlo;
+3. si no existe, crear una nueva THREAD DECLARATION de tipo `USER_DECLARED`;
+4. crear su MANIFEST;
+5. establecer identidad, responsabilidad, alcance, dependencias y estado;
+6. pasar a `ACTIVE` cuando la declaración sea suficientemente clara;
+7. comenzar el trabajo.
+
+El usuario no necesita conocer la estructura interna del MANIFEST para declarar una responsabilidad.
+
+### 8.4 Entrada desde una conversación histórica
+
+Cuando una conversación antigua se reincorpore mediante:
+
+> **«Reincorpórate al contexto del proyecto.»**
+
+el agente debe reconstruir la responsabilidad a partir de la conversación y del repositorio y determinar:
+
+```text
+¿existe THREAD compatible?
+   │
+   ├── SÍ → conectar con el THREAD
+   │
+   └── NO → proponer/inicializar THREAD de tipo MIGRATED
+```
+
+Debe aplicar además las reglas de reconciliación documental de la sección de reincorporación.
+
+## 9. Conexión, creación y transferencia no son lo mismo
+
+Estas operaciones deben mantenerse separadas:
+
+### Crear THREAD
+
+Convierte una responsabilidad declarada en una entidad persistente con MANIFEST.
+
+### Conectar con THREAD
+
+Asocia una nueva instancia de conversación a un THREAD existente y recupera su estado vigente.
+
+### Transferir responsabilidad
+
+Mueve o declara la responsabilidad de una línea a otra mediante un HANDOFF. Puede iniciar la creación de un THREAD receptor o actualizar el estado de uno ya existente.
+
+Una nueva conversación conectada a un THREAD no crea por sí misma un nuevo ciclo ni un nuevo THREAD.
+
+## 10. Contrato de responsabilidad
+
+Toda instancia de conversación sustantiva debe poder responder:
+
+```text
+THREAD al que está conectada:
+Responsabilidad:
+Propietario / línea de trabajo:
+Dentro de alcance:
+Fuera de alcance:
+Documentos principales:
+Código / datos principales:
+Entregables esperados:
+Validación requerida:
+Dependencias:
+Handoff actual:
+```
+
+Este contrato amplía las reglas ya definidas en `CHATGPT_PROJECT_CONTEXT.md`. Si la responsabilidad no es evidente, debe proponerse antes de ampliar el alcance.
+
+## 11. Estados y ciclos de trabajo
 
 Una responsabilidad puede tener varios ciclos:
 
 ```text
-responsabilidad X
+THREAD X
   ├── ciclo 1 → CLOSED
   ├── ciclo 2 → CLOSED
   └── ciclo 3 → ACTIVE
@@ -135,9 +312,9 @@ responsabilidad X
 
 Reabrir una responsabilidad no debe borrar ni reescribir el historial del ciclo anterior. El nuevo ciclo debe indicar qué conocimiento, documentos y decisiones hereda.
 
-## 9. Dependencias
+## 12. Dependencias
 
-Las dependencias entre hilos deben ser explícitas.
+Las dependencias entre THREADs deben ser explícitas.
 
 Cuando una dependencia documental sea relevante para la reproducibilidad, debe fijarse a una versión:
 
@@ -148,18 +325,19 @@ dependency:
   status: current
 ```
 
-Si la dependencia cambia de versión, el hilo debe poder detectar que su contexto puede haber quedado desactualizado y revisar la compatibilidad antes de continuar.
+Si la dependencia cambia de versión, el THREAD debe poder detectar que su contexto puede haber quedado desactualizado y revisar la compatibilidad antes de continuar.
 
-Una dependencia no transfiere automáticamente responsabilidad. La responsabilidad sigue perteneciendo al hilo propietario del dominio correspondiente.
+Una dependencia no transfiere automáticamente responsabilidad.
 
-## 10. HANDOFF
+## 13. HANDOFF
 
-Un HANDOFF debe representar una transferencia explícita entre una responsabilidad de origen y una responsabilidad receptora.
+Un HANDOFF es un artefacto de transferencia entre THREADs o una declaración inicial de un THREAD receptor.
 
 Debe incluir, cuando proceda:
 
-- hilo emisor;
-- hilo receptor previsto;
+- identificador del HANDOFF y versión;
+- THREAD emisor;
+- THREAD receptor previsto;
 - objetivo;
 - estado actual;
 - decisiones ya adoptadas;
@@ -173,9 +351,9 @@ Debe incluir, cuando proceda:
 
 El receptor debe poder continuar sin reconstruir la conversación completa.
 
-Un HANDOFF no autoriza al receptor a modificar silenciosamente decisiones de otra línea. Si detecta un conflicto, debe registrarlo y remitirlo al propietario correspondiente.
+El HANDOFF no es la autoridad sobre el estado posterior del THREAD. Una vez creado el receptor, el MANIFEST pasa a ser la referencia de estado actual.
 
-## 11. Propuestas y decisiones
+## 14. Propuestas y decisiones
 
 Una conversación puede producir propuestas, hipótesis o alternativas. No deben confundirse con decisiones validadas.
 
@@ -187,7 +365,7 @@ propuesta → discusión → decisión → documentación → implementación/va
 
 Una propuesta permanece como propuesta hasta que la autoridad correspondiente la adopta. El chat no convierte por sí solo una propuesta en conocimiento autoritativo.
 
-## 12. Activity Log
+## 15. Activity Log
 
 El proyecto puede mantener un registro de actividad para eventos operativos significativos. No debe utilizarse como copia íntegra de conversaciones.
 
@@ -203,11 +381,9 @@ documentos afectados
 commit
 ```
 
-Son candidatos a registrar: decisiones de arquitectura, transferencias, cambios de estado, bloqueos resueltos, cambios de dependencia y cierres de ciclos.
+La implementación del Activity Log queda abierta hasta que exista una necesidad real.
 
-La implementación del Activity Log queda deliberadamente abierta hasta que el proyecto determine una necesidad real de automatización o consulta.
-
-## 13. Autoridad documental
+## 16. Autoridad documental
 
 La autoridad se interpreta de forma separada por función:
 
@@ -217,20 +393,16 @@ La autoridad se interpreta de forma separada por función:
 | Integración ChatGPT ↔ proyecto | `CHATGPT_PROJECT_CONTEXT.md` |
 | Arquitectura de hilos | `THREAD_ARCHITECTURE.md` |
 | Estado/metodología validada | informes y documentos de conocimiento vigentes |
-| Responsabilidad de un hilo | manifest/handoff correspondiente |
-| Transferencia de responsabilidad | HANDOFF |
+| Identidad y estado actual de THREAD | MANIFEST |
+| Transferencia/declaración de responsabilidad | HANDOFF |
 | Comportamiento ejecutable | código y tests |
 | Datos observados | datos fuente + procedencia |
 | Historial operativo | Activity Log, cuando exista |
 | Conversación | contexto no autoritativo que debe sincronizarse |
 
-Si dos fuentes con autoridad comparable discrepan, debe exponerse el conflicto y determinarse cuál debe prevalecer. No se debe fusionar silenciosamente información incompatible.
+Si dos fuentes con autoridad comparable discrepan, debe exponerse el conflicto y determinarse cuál debe prevalecer.
 
-## 14. Reincorporación de conversaciones existentes
-
-La instrucción de entrada es:
-
-> **Reincorpórate al contexto del proyecto.**
+## 17. Reincorporación de conversaciones existentes
 
 El flujo es:
 
@@ -239,7 +411,7 @@ conversación existente
         ↓
 leer reglas y arquitectura
         ↓
-leer manifest/handoff e informes relevantes
+identificar THREAD por manifest/histórico
         ↓
 comparar conversación ↔ repositorio
         ↓
@@ -252,27 +424,19 @@ confirmar responsabilidad y límites
 continuar trabajo
 ```
 
-Las discrepancias se clasifican como:
-
-- `NUEVO`: aparece en la conversación pero no en el repositorio;
-- `OBSOLETO`: el repositorio contiene una versión sustituida por trabajo validado;
-- `CONFLICTO`: existen afirmaciones o decisiones incompatibles;
-- `DUPLICADO`: la información ya existe en otro lugar autoritativo;
-- `FUERA DE ALCANCE`: pertenece al proyecto pero no al hilo actual.
+Las discrepancias se clasifican como `NUEVO`, `OBSOLETO`, `CONFLICTO`, `DUPLICADO` o `FUERA DE ALCANCE`.
 
 La conversación no debe sobrescribir silenciosamente el repositorio ante un `CONFLICTO`.
 
-## 15. Separación de dominios
+## 18. Separación de dominios
 
 Los dominios deben mantenerse desacoplados cuando tengan responsabilidades, datos, validaciones o criterios metodológicos diferentes.
 
-Por ejemplo, adquisición, AEMET/QC, agregación de agua, Station/Location/Evidence, alcance espacial, interpolación, mapa/UI, scoring e investigación documental pueden ser líneas distintas.
-
 Encontrar una dependencia entre dominios no justifica absorber el trabajo del otro dominio.
 
-## 16. Cierre y reapertura
+## 19. Cierre y reapertura
 
-El cierre de un hilo sustantivo debe seguir el protocolo de `PROJECT_WORKING_RULES.md` y, como mínimo, dejar:
+El cierre de un THREAD sustantivo debe dejar:
 
 - decisiones y resultados persistentes documentados;
 - validación realizada;
@@ -280,41 +444,41 @@ El cierre de un hilo sustantivo debe seguir el protocolo de `PROJECT_WORKING_RUL
 - archivos/datos afectados;
 - rama y SHA;
 - incertidumbres restantes;
-- siguiente HANDOFF, si existe.
+- siguiente HANDOFF, si existe;
+- estado actualizado del MANIFEST.
 
-Un hilo cerrado puede volver a originar trabajo mediante un nuevo ciclo. El nuevo ciclo debe referenciar el conocimiento heredado y no alterar retrospectivamente el ciclo anterior salvo corrección documental explícita.
+Un THREAD cerrado puede volver a originar trabajo mediante un nuevo ciclo. El nuevo ciclo debe referenciar el conocimiento heredado y no alterar retrospectivamente el ciclo anterior salvo corrección documental explícita.
 
-## 17. Relación con la documentación existente
+## 20. Relación con la documentación existente
 
-Este documento **complementa**:
+Este documento complementa:
 
-- `docs/PROJECT_WORKING_RULES.md`, que contiene las reglas permanentes de trabajo;
-- `docs/CHATGPT_PROJECT_CONTEXT.md`, que conecta las conversaciones de ChatGPT con el repositorio;
-- informes de proyecto, que contienen el estado validado de líneas concretas;
-- `docs/THREAD_*.md`, que actúan como handoffs especializados.
+- `docs/PROJECT_WORKING_RULES.md`;
+- `docs/CHATGPT_PROJECT_CONTEXT.md`;
+- informes de proyecto;
+- manifests de THREAD;
+- `docs/THREAD_*.md` y HANDOFFs especializados.
 
 No sustituye los documentos de dominio ni define la metodología científica de ClimaScope.
 
-## 18. Migración gradual
+## 21. Migración gradual
 
-La adopción debe ser progresiva.
-
-1. Formalizar esta arquitectura sin reestructurar todavía los dominios existentes.
-2. Actualizar las reglas maestras y el contexto ChatGPT para referenciarla.
-3. Utilizar el modelo en los nuevos hilos y en conversaciones antiguas que se reincorporen.
-4. Crear manifests individuales solo cuando aporten valor operativo.
-5. Introducir Activity Log o índices derivados únicamente cuando exista una necesidad demostrable.
+1. Formalizar esta arquitectura sin reestructurar los dominios existentes.
+2. Actualizar reglas maestras y contexto ChatGPT para referenciarla.
+3. Utilizar THREAD BOOTSTRAP en nuevos hilos y conversaciones reincorporadas.
+4. Crear manifests individuales cuando aporten valor operativo; durante la prueba son obligatorios para THREADs formalizados.
+5. Introducir Activity Log o índices derivados únicamente cuando exista necesidad demostrable.
 6. No migrar ni renombrar documentos de dominio por razones puramente estilísticas.
 
-## 19. Estado de esta especificación
+## 22. Estado de esta especificación
 
-La versión `0.1.0` establece el modelo conceptual y operativo inicial. Quedan deliberadamente abiertos para futuras iteraciones:
+La versión `0.2.0` incorpora la distinción formal entre THREAD, MANIFEST, HANDOFF e instancia conversacional y define el THREAD BOOTSTRAP para los tres orígenes iniciales de un THREAD.
+
+Quedan abiertos para futuras iteraciones:
 
 - formato definitivo de `THREAD_MANIFEST`;
-- ubicación y formato de un Activity Log persistente;
+- ubicación y formato de Activity Log persistente;
 - automatización de detección de dependencias desactualizadas;
-- índices derivados de hilos;
+- índices derivados de THREADs;
 - reglas detalladas de reestructuración de dominios;
 - automatización de comprobaciones de coherencia entre manifests, handoffs y documentos.
-
-Estas cuestiones no deben bloquear el uso manual del modelo.
