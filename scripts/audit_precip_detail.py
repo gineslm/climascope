@@ -27,10 +27,13 @@ def main() -> None:
         observed = pd.DatetimeIndex(df["fecha"]).normalize().drop_duplicates() if not df.empty else pd.DatetimeIndex([])
         missing_dates = expected.difference(observed)
 
-        raw_missing = df[df["prec"].isna() | (df["prec"].astype(str).str.strip() == "")].copy()
+        # Use the same semantic definition as the main QC: a precipitation
+        # value is missing when normalization produces None/NaN. This keeps
+        # detail and aggregate QC counts consistent (e.g. null/nan/NA/N/A).
+        raw_missing = df[df["prcp"].isna()].copy()
         raw_missing["station_id"] = station
         if not raw_missing.empty:
-            missing_rows.append(raw_missing[["station_id", "fecha", "prec"]])
+            missing_rows.append(raw_missing[["station_id", "fecha", "prec", "prcp"]])
 
         annual = (
             df.assign(year=df["fecha"].dt.year)
@@ -56,7 +59,7 @@ def main() -> None:
     if missing_rows:
         pd.concat(missing_rows, ignore_index=True).to_csv(out_dir / "precipitation_missing_values.csv", index=False)
     else:
-        pd.DataFrame(columns=["station_id", "fecha", "prec"]).to_csv(out_dir / "precipitation_missing_values.csv", index=False)
+        pd.DataFrame(columns=["station_id", "fecha", "prec", "prcp"]).to_csv(out_dir / "precipitation_missing_values.csv", index=False)
 
     print(json.dumps(summary, indent=2, ensure_ascii=False))
     print(f"Annual QC written under {out_dir}")
