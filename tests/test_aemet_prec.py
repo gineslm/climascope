@@ -12,6 +12,9 @@ def test_prec_explicit_zero():
 def test_prec_missing_is_none():
     assert normalize_prec(None) is None
     assert normalize_prec("") is None
+    assert normalize_prec("nan") is None
+    assert normalize_prec("NA") is None
+    assert normalize_prec("N/A") is None
 
 
 def test_prec_normalization_preserves_raw_field():
