@@ -1,11 +1,12 @@
 # ClimaScope — Manifest del hilo de arquitectura de hilos
 
-**Versión:** 0.2.0  
+**Versión:** 0.3.0  
 **Estado:** READY_FOR_HANDOFF  
 **Ciclo:** 1  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
-**Rama:** `agent/thread-architecture`
+**Rama de trabajo histórica:** `agent/thread-architecture`  
+**Rama raíz de conocimiento:** `knowledge`
 
 ## 1. Identidad
 
@@ -19,11 +20,17 @@ current_cycle: 1
 origin:
   type: USER_DECLARED
   source_id: conversation
+repository:
+  knowledge_branch: knowledge
+  knowledge_commit: 33757848176c6d8e3f53b5e2c35b7048b657b286
+  work_branch: agent/thread-architecture
 ```
+
+La rama `agent/thread-architecture` conserva el trabajo histórico de este ciclo. El estado autoritativo de conocimiento y arquitectura queda consolidado en `knowledge`.
 
 ## 2. Responsabilidad
 
-Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar conversaciones, responsabilidades, dominios, dependencias, handoffs y trazabilidad sin depender del historial completo de ChatGPT.
+Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar conversaciones, responsabilidades, dominios, dependencias, HANDOFFs y trazabilidad sin depender del historial completo de ChatGPT.
 
 ## 3. Dentro de alcance
 
@@ -34,12 +41,13 @@ Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar con
 - declaraciones de creación de hilos;
 - THREAD BOOTSTRAP;
 - dependencias versionadas;
-- handoffs y transferencia de responsabilidad;
+- HANDOFFs y transferencia de responsabilidad;
 - separación entre propuestas y decisiones;
 - autoridad documental;
 - reincorporación de conversaciones existentes;
 - actividad operativa e índices derivados como capacidades futuras;
-- integración de esta arquitectura con las reglas maestras y el contexto de ChatGPT.
+- integración con las reglas maestras y el contexto de ChatGPT;
+- separación entre `knowledge`, `develop` y `main`.
 
 ## 4. Fuera de alcance
 
@@ -53,9 +61,11 @@ Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar con
 
 ## 5. Documentos autoritativos
 
-- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.2.0.
-- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes del proyecto, versión 1.1.0.
-- `docs/CHATGPT_PROJECT_CONTEXT.md` — integración ChatGPT ↔ repositorio, versión 1.1.0.
+- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.3.0.
+- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes del proyecto, versión 1.2.0.
+- `docs/CHATGPT_PROJECT_CONTEXT.md` — integración ChatGPT ↔ repositorio, versión 1.2.0.
+
+Todos estos documentos son autoritativos desde `knowledge`.
 
 ## 6. Dependencias
 
@@ -69,28 +79,28 @@ Las líneas de dominio, incluido Station/Location/Evidence y W2, son dependencia
 1. especificación `THREAD_ARCHITECTURE.md`;
 2. manifest operativo de este hilo;
 3. integración de la arquitectura en las reglas maestras y el contexto de ChatGPT;
-4. handoff receptor para `thread-station-location-evidence`;
-5. formalización de THREAD DECLARATION y THREAD BOOTSTRAP.
+4. HANDOFF receptor para `thread-station-location-evidence`;
+5. formalización de THREAD DECLARATION y THREAD BOOTSTRAP;
+6. separación explícita entre raíz `knowledge` y ciclo de software.
 
 ## 8. Handoff siguiente
 
 **Receptor único:** `thread-station-location-evidence`  
-**Documento:** `docs/THREAD_HANDOFF_STATION_LOCATION_EVIDENCE.md`  
+**Documento:** `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`  
 **Estado:** `READY_FOR_HANDOFF`
 
-El receptor debe utilizar además `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md` como documento de requisitos específicos de la tarea.
+El receptor debe utilizar además el informe `docs/WATER_PIPELINE_AUDIT_REPORT.md` como estado del pipeline y consultar la rama de trabajo declarada por el HANDOFF sólo como espacio operativo asociado.
 
 ## 9. Criterio de cierre
 
-El ciclo puede cerrarse cuando el protocolo THREAD BOOTSTRAP haya sido probado con un THREAD receptor real y la integración resultante no requiera instrucciones manuales adicionales al usuario.
+El ciclo de arquitectura se considera preparado para cierre cuando el protocolo THREAD BOOTSTRAP haya sido probado con un THREAD receptor real y la integración resultante no requiera instrucciones manuales adicionales al usuario. La prueba realizada valida la entrada por HANDOFF y THREAD, pero la semántica de `knowledge` como raíz de bootstrap se consolida en esta versión y debe volver a validarse.
 
 ## 10. Estado abierto para futuros ciclos
-
-Quedan deliberadamente pendientes de futuros ciclos:
 
 - formato general definitivo de manifests;
 - Activity Log persistente;
 - automatización de dependencias desactualizadas;
 - índices derivados;
 - reglas detalladas para reestructuración de dominios;
-- automatización de comprobaciones de coherencia entre manifests, handoffs y documentos.
+- automatización de comprobaciones de coherencia entre manifests, HANDOFFs y documentos;
+- política detallada de promoción del software entre `develop` y `main`.
