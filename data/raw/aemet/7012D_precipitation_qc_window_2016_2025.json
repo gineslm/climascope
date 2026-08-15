@@ -1,0 +1,111 @@
+{
+  "station_id": "7012D",
+  "window_start": "2016-02-22",
+  "window_end": "2025-12-31",
+  "expected_days": 3601,
+  "observed_days": 3572,
+  "missing_days": 29,
+  "coverage_pct": 99.195,
+  "annual": [
+    {
+      "station_id": "7012D",
+      "year": 2016,
+      "expected_days": 314,
+      "observed_days": 288,
+      "missing_days": 26,
+      "coverage_pct": 91.72,
+      "first_observed": "2016-02-22",
+      "last_observed": "2016-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2017,
+      "expected_days": 365,
+      "observed_days": 365,
+      "missing_days": 0,
+      "coverage_pct": 100.0,
+      "first_observed": "2017-01-01",
+      "last_observed": "2017-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2018,
+      "expected_days": 365,
+      "observed_days": 365,
+      "missing_days": 0,
+      "coverage_pct": 100.0,
+      "first_observed": "2018-01-01",
+      "last_observed": "2018-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2019,
+      "expected_days": 365,
+      "observed_days": 365,
+      "missing_days": 0,
+      "coverage_pct": 100.0,
+      "first_observed": "2019-01-01",
+      "last_observed": "2019-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2020,
+      "expected_days": 366,
+      "observed_days": 366,
+      "missing_days": 0,
+      "coverage_pct": 100.0,
+      "first_observed": "2020-01-01",
+      "last_observed": "2020-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2021,
+      "expected_days": 365,
+      "observed_days": 365,
+      "missing_days": 0,
+      "coverage_pct": 100.0,
+      "first_observed": "2021-01-01",
+      "last_observed": "2021-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2022,
+      "expected_days": 365,
+      "observed_days": 364,
+      "missing_days": 1,
+      "coverage_pct": 99.726,
+      "first_observed": "2022-01-01",
+      "last_observed": "2022-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2023,
+      "expected_days": 365,
+      "observed_days": 365,
+      "missing_days": 0,
+      "coverage_pct": 100.0,
+      "first_observed": "2023-01-01",
+      "last_observed": "2023-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2024,
+      "expected_days": 366,
+      "observed_days": 364,
+      "missing_days": 2,
+      "coverage_pct": 99.454,
+      "first_observed": "2024-01-01",
+      "last_observed": "2024-12-31"
+    },
+    {
+      "station_id": "7012D",
+      "year": 2025,
+      "expected_days": 365,
+      "observed_days": 365,
+      "missing_days": 0,
+      "coverage_pct": 100.0,
+      "first_observed": "2025-01-01",
+      "last_observed": "2025-12-31"
+    }
+  ]
+}

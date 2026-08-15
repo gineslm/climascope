@@ -15,7 +15,7 @@ def test_missing_day_is_not_zero_and_period_is_incomplete():
     assert monthly.iloc[0]["observed_prcp_days"] == 2
     assert monthly.iloc[0]["missing_prcp_days"] == 1
     assert monthly.iloc[0]["prcp_total_mm"] is None
-    assert monthly.iloc[0]["complete"] is False
+    assert not monthly.iloc[0]["complete"]
     assert annual.iloc[0]["coverage_pct"] == round(2 / 3 * 100, 3)
 
 
@@ -28,5 +28,5 @@ def test_complete_period_sums_explicit_zero():
     monthly, annual = aggregate_precipitation(df, "2025-01-01", "2025-01-02")
 
     assert monthly.iloc[0]["prcp_total_mm"] == 2.0
-    assert monthly.iloc[0]["complete"] is True
+    assert bool(monthly.iloc[0]["complete"])
     assert annual.iloc[0]["prcp_total_mm"] == 2.0
