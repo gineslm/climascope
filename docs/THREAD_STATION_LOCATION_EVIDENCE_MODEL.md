@@ -1,14 +1,43 @@
 # Handoff de nuevo hilo: modelo Station / Location / Evidence
 
-**Versión del documento:** 0.1.1  
+**Versión del documento:** 0.1.2  
 **Creado:** 2026-08-15  
 **Proyecto:** ClimaScope  
 **Repositorio:** `gineslm/climascope`  
-**URL del repositorio:** `https://github.com/gineslm/climascope`  
-**Rama de trabajo:** `agent/water-pipeline-audit`  
-**Raíz local del proyecto:** `C:\Users\User\Downloads\climate_refuge_aemet_v0_4`
+**Rama raíz de conocimiento:** `knowledge`  
+**Rama de trabajo asociada:** `agent/water-pipeline-audit`
 
 > **Idioma del proyecto: español (España).** El trabajo y la documentación de este hilo deben realizarse en castellano.
+
+## Fuente de verdad y bootstrap
+
+El repositorio es la fuente central de verdad. Para este HANDOFF, `knowledge` es la raíz de conocimiento y el punto de entrada para reconstruir el estado consolidado del proyecto.
+
+La rama `agent/water-pipeline-audit` es únicamente la **rama de trabajo asociada** al trabajo recibido. No constituye una fuente alternativa de verdad global y no debe utilizarse para reconstruir por sí sola el estado actual del THREAD.
+
+El agente debe seguir este orden:
+
+```text
+knowledge
+   ↓
+reglas + contexto + arquitectura
+   ↓
+MANIFEST / HANDOFF vigente
+   ↓
+estado consolidado
+   ↓
+agent/water-pipeline-audit (trabajo asociado)
+```
+
+**Base de conocimiento del HANDOFF:**
+
+```yaml
+knowledge_basis:
+  branch: knowledge
+  commit: 33757848176c6d8e3f53b5e2c35b7048b657b286
+```
+
+Si el commit de `knowledge` cambia posteriormente, el MANIFEST del THREAD debe actualizar la referencia vigente cuando corresponda. El HANDOFF histórico conserva esta referencia como trazabilidad.
 
 ## Requisitos de acceso
 
@@ -24,18 +53,12 @@ Requisitos:
 
 No inventar documentos de proyecto que falten. Si un documento referenciado no está presente en el repositorio/contexto actual, comunicarlo y solicitarlo al propietario del proyecto.
 
-## Fuente de verdad
-
-El repositorio es la fuente central de verdad. La documentación debe versionarse en GitHub y referenciarse desde el informe correspondiente para que hilos independientes puedan recuperar el estado más reciente del proyecto.
-
-Informe de auditoría actual: `docs/WATER_PIPELINE_AUDIT_REPORT.md`.
-
 ## Objetivo
 
 Diseñar, documentar y probar el modelo de dominio que relaciona:
 
 ```text
-Station -> Location -> Evidence
+Station -> Location -> Scope/Representativeness -> Evidence
 ```
 
 El modelo debe soportar la futura aplicación de mapa, la adquisición progresiva de datos, el alcance/representatividad espacial, las observaciones cuantitativas, los indicadores derivados y la evidencia cualitativa/documental.
@@ -188,8 +211,9 @@ Al terminar el hilo:
 3. actualizar el informe correspondiente con una nueva etiqueta de versión;
 4. hacer commit de los cambios documentales/de código en GitHub;
 5. registrar el SHA del commit en el handoff final;
-6. crear el siguiente handoff si se necesita otro hilo especializado.
+6. consolidar en `knowledge` cualquier cambio que modifique conocimiento o estructura autoritativos;
+7. crear el siguiente handoff si se necesita otro hilo especializado.
 
 ## Instrucción de inicio del nuevo hilo
 
-> Trabaja desde este handoff y el estado actual del repositorio. Primero inspecciona la documentación existente y la implementación AEMET/W2. Después diseña el modelo Station / Location / Scope / Evidence antes de escribir código de producción. Mantén el repositorio como fuente central de verdad y versiona cada nuevo artefacto documental.
+> Trabaja desde este HANDOFF y el estado actual del repositorio. Empieza siempre en `knowledge`, lee las reglas, el contexto, la arquitectura y el estado consolidado. Después resuelve desde el MANIFEST la rama de trabajo asociada y continúa con el diseño Station / Location / Scope / Evidence. No trates la rama de trabajo como fuente alternativa de verdad y no escribas código de producción hasta haber cerrado el modelo.
