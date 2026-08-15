@@ -1,240 +1,243 @@
-# ClimaScope — Project Working Rules
+# ClimaScope — Reglas de trabajo del proyecto
 
-**Document version:** 1.0.0  
-**Created:** 2026-08-15  
-**Repository:** `gineslm/climascope`  
-**Repository URL:** https://github.com/gineslm/climascope  
-**Current working branch:** `agent/water-pipeline-audit`  
-**Known local project root:** `C:\Users\User\Downloads\climate_refuge_aemet_v0_4`
+**Versión del documento:** 1.0.1  
+**Creado:** 2026-08-15  
+**Repositorio:** `gineslm/climascope`  
+**URL del repositorio:** https://github.com/gineslm/climascope  
+**Rama de trabajo actual:** `agent/water-pipeline-audit`  
+**Raíz local conocida del proyecto:** `C:\Users\User\Downloads\climate_refuge_aemet_v0_4`
 
-## 1. Purpose
+> **Idioma oficial del proyecto: español (España).** La documentación, decisiones, handoffs e informes deben redactarse en castellano salvo que exista una razón técnica para conservar un término original.
 
-This document is the permanent operational contract for ClimaScope work across separate conversation threads. It exists so that project method, provenance, documentation practice, and handoff rules do not depend on the memory of a particular chat.
+## 1. Propósito
 
-The Git repository is the central source of truth. A new thread must recover project state from the repository before making decisions or changes.
+Este documento es el contrato operativo permanente para el trabajo de ClimaScope entre conversaciones independientes. Existe para que el método del proyecto, la trazabilidad, la práctica documental y las reglas de transferencia no dependan de la memoria de una conversación concreta.
 
-## 2. Mandatory first step for every new thread
+El repositorio Git es la fuente central de verdad. Un hilo nuevo debe recuperar el estado del proyecto desde el repositorio antes de tomar decisiones o realizar cambios.
 
-Before doing project work, the thread must:
+## 2. Primer paso obligatorio en cada hilo nuevo
 
-1. read this document;
-2. inspect the current branch and Git status;
-3. read the current project report(s);
-4. inspect any task-specific handoff document;
-5. identify the current documentation version and relevant commits;
-6. inspect existing implementation/tests before proposing changes;
-7. report any referenced document that is missing instead of inventing its contents.
+Antes de realizar trabajo del proyecto, el hilo debe:
 
-A conversation's previous context is useful, but is not the project's authoritative record.
+1. leer este documento;
+2. inspeccionar la rama actual y el estado de Git;
+3. leer el/los informe(s) actual(es) del proyecto;
+4. inspeccionar cualquier documento de handoff específico de la tarea;
+5. identificar la versión vigente de la documentación y los commits relevantes;
+6. inspeccionar la implementación y los tests existentes antes de proponer cambios;
+7. informar de cualquier documento referenciado que falte en lugar de inventar su contenido.
 
-## 3. Repository and access
+El contexto previo de una conversación es útil, pero no constituye el registro autoritativo del proyecto.
 
-All work must be associated with the repository `gineslm/climascope`.
+## 3. Repositorio y acceso
 
-Required capabilities for an implementation thread:
+Todo trabajo debe estar asociado al repositorio `gineslm/climascope`.
 
-- read repository files, branches and documentation;
-- create/update files and commit changes on the agreed working branch, or create a dedicated feature branch when appropriate;
-- have a local checkout when code execution or generated-data inspection is required;
-- use the repository's Python environment and run `python -m pytest` for Python test validation.
+Capacidades requeridas para un hilo de implementación:
 
-Do not assume access to documents that exist only in another conversation. If they are not in the repository, request them or state that they are unavailable.
+- leer archivos, ramas y documentación del repositorio;
+- crear/actualizar archivos y hacer commits en la rama de trabajo acordada, o crear una rama específica cuando proceda;
+- disponer de un checkout local cuando sea necesario ejecutar código o inspeccionar datos generados;
+- utilizar el entorno Python del repositorio y ejecutar `python -m pytest` para validar los tests de Python.
 
-## 4. Branch and change discipline
+No se debe asumir acceso a documentos que existan únicamente en otra conversación. Si no están en el repositorio, deben solicitarse o indicarse como no disponibles.
 
-- Do not work directly on the default branch unless explicitly requested.
-- Prefer a task-specific branch such as `agent/<task>`.
-- Keep unrelated changes out of the task commit.
-- Do not overwrite or regenerate raw source data unnecessarily.
-- Before committing, inspect `git status` and the diff/stat.
-- A completed task must leave a reproducible Git state.
+## 4. Disciplina de ramas y cambios
 
-## 5. Documentation is versioned project state
+- No trabajar directamente sobre la rama por defecto salvo petición explícita.
+- Preferir una rama específica de tarea como `agent/<tarea>`.
+- Mantener los cambios no relacionados fuera del commit de la tarea.
+- No sobrescribir ni regenerar datos fuente sin necesidad.
+- Antes de hacer commit, inspeccionar `git status` y el diff/estadísticas.
+- Una tarea completada debe dejar un estado Git reproducible.
 
-Every substantive project document must contain a version identifier.
+## 5. La documentación es estado versionado del proyecto
 
-Recommended convention:
+Todo documento sustantivo del proyecto debe contener un identificador de versión.
 
-- major: structural/methodological change;
-- minor: new documented capability, decision, or substantial section;
-- patch: clarification, correction, or editorial update.
+Convención recomendada:
 
-Documentation artifacts must be committed to GitHub.
+- major: cambio estructural/metodológico;
+- minor: nueva capacidad documentada, decisión o sección sustancial;
+- patch: aclaración, corrección o actualización editorial.
 
-The relevant project report must reference important documentation artifacts and record their current versions. This allows independent conversation threads to recover the latest state.
+Los artefactos documentales deben estar comprometidos en GitHub.
 
-## 6. Reports and handoffs
+El informe correspondiente debe referenciar los documentos importantes y registrar sus versiones actuales. Esto permite que hilos independientes recuperen el estado más reciente.
 
-The project uses three complementary document roles:
+## 6. Informes y handoffs
 
-### Master rules
+El proyecto utiliza tres tipos documentales complementarios:
+
+### Reglas maestras
 
 `docs/PROJECT_WORKING_RULES.md`
 
-Permanent operating rules for all threads.
+Reglas operativas permanentes para todos los hilos.
 
-### Project reports
+### Informes de proyecto
 
-Examples include:
+Por ejemplo:
 
 `docs/WATER_PIPELINE_AUDIT_REPORT.md`
 
-Reports record what has actually been implemented, tested, measured, decided, and changed over time.
+Los informes registran lo que realmente se ha implementado, probado, medido, decidido y cambiado a lo largo del tiempo.
 
-### Thread handoffs
+### Handoffs de hilo
 
-Examples include:
+Por ejemplo:
 
 `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`
 
-Handoffs define the scope and starting context for a specialised next thread. They must contain repository, branch, local path when known, access requirements, objective, current state, constraints, deliverables, validation and completion protocol.
+Los handoffs definen el alcance y el contexto de partida para un hilo especializado siguiente. Deben contener repositorio, rama, ruta local cuando se conozca, requisitos de acceso, objetivo, estado actual, restricciones, entregables, validación y protocolo de cierre.
 
-## 7. Completion protocol for every substantive thread
+## 7. Protocolo de cierre de cada hilo sustantivo
 
-Before declaring a task complete:
+Antes de declarar completada una tarea:
 
-1. run the relevant tests;
-2. inspect generated outputs when applicable;
-3. update the relevant report;
-4. increment document version where substantive documentation changed;
-5. create/update the next handoff if another thread is required;
-6. commit changes with an intentional message;
-7. push the agreed branch;
-8. record the commit SHA in the final handoff/report;
-9. state any remaining uncertainty or missing evidence.
+1. ejecutar los tests relevantes;
+2. inspeccionar los resultados generados cuando proceda;
+3. actualizar el informe correspondiente;
+4. incrementar la versión documental cuando haya cambios sustantivos de documentación;
+5. crear/actualizar el siguiente handoff si se necesita otro hilo;
+6. hacer commit con un mensaje intencionado;
+7. hacer push de la rama acordada;
+8. registrar el SHA del commit en el handoff/informe final;
+9. indicar cualquier incertidumbre o evidencia que falte.
 
-## 8. Data provenance and evidence rules
+## 8. Reglas de trazabilidad y evidencia
 
-ClimaScope must preserve the distinction between source facts, project-derived data, modelled values and qualitative evidence.
+ClimaScope debe conservar la distinción entre hechos de las fuentes, datos derivados del proyecto, valores modelados y evidencia cualitativa.
 
-Every derived dataset or indicator should be traceable to:
+Todo dataset o indicador derivado debe poder rastrearse hasta:
 
-- source/provider;
-- source dataset or document;
-- acquisition/observation period;
-- transformation or calculation;
-- relevant code/version;
-- quality-control status.
+- fuente/proveedor;
+- dataset o documento de origen;
+- periodo de adquisición/observación;
+- transformación o cálculo;
+- código/versión relevante;
+- estado del control de calidad.
 
-Never silently convert missing data into zero.
+Nunca convertir silenciosamente datos missing en cero.
 
-Never present an interpolated or modelled value as a direct station observation.
+Nunca presentar un valor interpolado o modelado como una observación directa de una estación.
 
-Never treat absence of research as evidence of absence of risk.
+Nunca tratar la ausencia de investigación como evidencia de ausencia de riesgo.
 
-## 9. Raw / processed / derived data
+## 9. Datos raw / processed / derived
 
-The project should progressively converge on a clear separation such as:
+El proyecto debería converger progresivamente hacia una separación clara como:
 
 ```text
 data/
-├── raw/          # source material; preserved and traceable
-├── processed/    # cleaned/normalised representations
-├── derived/      # indicators, scores, map layers, models
-└── reports/      # generated or publication-facing outputs
+├── raw/          # material fuente; preservado y trazable
+├── processed/    # representaciones limpiadas/normalizadas
+├── derived/      # indicadores, scores, capas de mapa, modelos
+└── reports/      # resultados generados o destinados a publicación
 ```
 
-Existing paths must not be moved solely for stylistic reasons. Migration requires a deliberate decision and documentation.
+Las rutas existentes no deben moverse únicamente por razones de estilo. Una migración requiere una decisión deliberada y documentación.
 
-Current AEMET work is under `data/raw/aemet/`, including raw JSON, `.NO_DATA` acquisition evidence, QC outputs and W2 monthly/annual CSV outputs. Treat these as existing project state unless a documented migration is approved.
+El trabajo AEMET actual está en `data/raw/aemet/`, incluyendo JSON originales, evidencia de adquisición `.NO_DATA`, resultados de QC y CSV mensuales/anuales W2. Tratarlo como estado existente del proyecto salvo que se apruebe una migración documentada.
 
-## 10. Station, Location and Evidence principles
+## 10. Principios Station, Location y Evidence
 
-The domain model must distinguish at least:
+El modelo de dominio debe distinguir al menos:
 
 ```text
-Station -> observations
-Location -> user-facing place/site being evaluated
-Scope/Representativeness -> spatial relevance between stations and locations
-Evidence -> quantitative, derived, or documentary support
+Station -> observaciones
+Location -> lugar/sitio evaluado por el usuario
+Scope/Representativeness -> relevancia espacial entre estaciones y ubicaciones
+Evidence -> soporte cuantitativo, derivado o documental
 ```
 
-A station observation is not automatically the value for every nearby location.
+Una observación de estación no es automáticamente el valor de cualquier ubicación cercana.
 
-If interpolation is introduced later, it must be explicitly labelled as modelled/interpolated and retain method, provenance and uncertainty.
+Si posteriormente se introduce interpolación, debe etiquetarse explícitamente como modelada/interpolada y conservar método, trazabilidad e incertidumbre.
 
-Quantitative station data and qualitative/documentary evidence are different evidence types but may both attach to a location.
+Los datos cuantitativos de estaciones y la evidencia cualitativa/documental son tipos de evidencia diferentes, pero ambos pueden asociarse a una ubicación.
 
-## 11. Progressive acquisition and research
+## 11. Adquisición e investigación progresivas
 
-Do not attempt to download or investigate every possible location before prioritisation exists.
+No intentar descargar o investigar todas las ubicaciones posibles antes de disponer de un mecanismo de priorización.
 
-The preferred pipeline is:
+El flujo preferido es:
 
 ```text
-candidate
-  -> screened
-  -> quantitative data acquired
-  -> QC passed
-  -> documentary research prioritised
-  -> assessed
-  -> promoted / deprioritised / rejected
+candidata
+  -> cribada
+  -> datos cuantitativos adquiridos
+  -> QC superado
+  -> investigación documental priorizada
+  -> evaluada
+  -> promovida / despriorizada / rechazada
 ```
 
-The project should prioritise promising locations/stations first and expand progressively.
+El proyecto debe priorizar primero las ubicaciones/estaciones prometedoras y ampliar progresivamente.
 
-Documentary research should also be proportional to the promise and relevance of a candidate. A location that has not yet been researched must remain explicitly `not_assessed` or equivalent, not `low risk` or `no risk`.
+La investigación documental también debe ser proporcional al interés y relevancia de una candidata. Una ubicación que todavía no haya sido investigada debe permanecer explícitamente como `not_assessed` o equivalente, nunca como `low risk` o `no risk`.
 
-## 12. Map principles
+## 12. Principios del mapa
 
-The future map should be able to distinguish:
+El futuro mapa debe poder distinguir:
 
-- physical stations;
-- evaluated locations;
-- station coverage/scope;
-- direct observations;
-- derived indicators;
-- modelled/interpolated values;
-- data quality;
-- documentary evidence;
-- provenance.
+- estaciones físicas;
+- ubicaciones evaluadas;
+- cobertura/alcance de estaciones;
+- observaciones directas;
+- indicadores derivados;
+- valores modelados/interpolados;
+- calidad de los datos;
+- evidencia documental;
+- trazabilidad.
 
-Spatial scope is a representation of relevance, not proof that a station measures conditions identically across the whole scope.
+El alcance espacial es una representación de relevancia, no una prueba de que una estación mida condiciones idénticas en toda el área.
 
-Interpolation is deferred until the Station/Location/Scope model and its uncertainty requirements are designed.
+La interpolación se pospone hasta diseñar el modelo Station/Location/Scope y sus requisitos de incertidumbre.
 
-## 13. Current documented project state
+## 13. Estado documentado actual del proyecto
 
-At the time of version 1.0.0 of these rules:
+En la versión 1.0.0 de estas reglas:
 
-- the water pipeline has been audited around AEMET stations `8416`, `3195` and `7012D`;
-- W2 monthly and annual precipitation aggregation has been implemented and tested;
-- the current aggregation preserves observed precipitation totals while exposing missing days, coverage and completeness;
-- the test suite reached 13 tests after the latest aggregation changes;
-- the next planned specialised task is the Station / Location / Scope / Evidence domain model.
+- el pipeline de agua se ha auditado alrededor de las estaciones AEMET `8416`, `3195` y `7012D`;
+- se ha implementado y probado la agregación mensual y anual W2 de precipitación;
+- la agregación actual conserva los totales observados de precipitación y expone días missing, cobertura y completitud;
+- la suite de tests alcanzó 13 tests después de los últimos cambios de agregación;
+- la siguiente tarea especializada prevista es el modelo de dominio Station / Location / Scope / Evidence.
 
-For the detailed current state, read the latest `docs/WATER_PIPELINE_AUDIT_REPORT.md` and the task-specific handoff.
+Para el estado detallado actual, leer el último `docs/WATER_PIPELINE_AUDIT_REPORT.md` y el handoff específico de la tarea.
 
-## 14. Known documentation inventory
+## 14. Inventario documental conocido
 
-The following project documents are known to be present and relevant from the current repository context:
+Los siguientes documentos del proyecto constan como presentes y relevantes en el contexto actual del repositorio:
 
-| Document | Role | Version known |
+| Documento | Función | Versión conocida |
 |---|---|---:|
-| `docs/PROJECT_WORKING_RULES.md` | Permanent project operating rules | 1.0.0 |
-| `docs/WATER_PIPELINE_AUDIT_REPORT.md` | Water pipeline audit/report | 0.3.0 |
-| `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md` | Next-thread handoff | 0.1.0 |
+| `docs/PROJECT_WORKING_RULES.md` | Reglas operativas permanentes | 1.0.1 |
+| `docs/CHATGPT_PROJECT_CONTEXT.md` | Contexto de integración con ChatGPT | 1.0.1 |
+| `docs/WATER_PIPELINE_AUDIT_REPORT.md` | Informe/auditoría del pipeline de agua | 0.3.1 |
+| `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md` | Handoff del siguiente hilo | 0.1.1 |
 
-This inventory is not a claim that these are the only documents ever created in other conversations. A document is part of the project method only once it is committed to the repository or otherwise explicitly incorporated into the report.
+Este inventario no afirma que sean los únicos documentos creados en otras conversaciones. Un documento forma parte del método del proyecto cuando está comprometido en el repositorio o se incorpora explícitamente al informe.
 
-## 15. How to start a new thread
+## 15. Cómo iniciar un hilo nuevo
 
-A new thread should receive a short instruction such as:
+Un hilo nuevo debe recibir una instrucción breve como:
 
-> Work on ClimaScope from the central GitHub repository. First read `docs/PROJECT_WORKING_RULES.md`, then the latest project report and the task-specific handoff. Treat GitHub as the source of truth, preserve provenance, do not invent missing project documents, and follow the completion protocol. Report the current documentation versions and branch before making substantive changes.
+> Trabaja en ClimaScope desde el repositorio central de GitHub. Primero lee `docs/CHATGPT_PROJECT_CONTEXT.md` y `docs/PROJECT_WORKING_RULES.md`, después el informe de proyecto más reciente y el handoff específico de la tarea. Trata GitHub como fuente de verdad, conserva la trazabilidad, no inventes documentos de proyecto que falten y sigue el protocolo de cierre. Informa de las versiones documentales actuales y de la rama antes de realizar cambios sustantivos.
 
-The task-specific handoff then defines the actual objective.
+El handoff específico define el objetivo real.
 
-## 16. How to close a thread
+## 16. Cómo cerrar un hilo
 
-The closing message should state:
+El mensaje de cierre debe indicar:
 
-- what was implemented or decided;
-- tests/validation performed;
-- documentation version changes;
-- files/data affected;
-- branch and commit SHA;
-- unresolved questions;
-- next handoff document, if applicable.
+- qué se ha implementado o decidido;
+- tests/validación realizados;
+- cambios de versión documental;
+- archivos/datos afectados;
+- rama y SHA del commit;
+- cuestiones no resueltas;
+- siguiente documento de handoff, si procede.
 
-This keeps future threads independent of the historical chat while preserving the project's decision trail in Git.
+Esto mantiene los hilos futuros independientes del histórico del chat y conserva el rastro de decisiones del proyecto en Git.
