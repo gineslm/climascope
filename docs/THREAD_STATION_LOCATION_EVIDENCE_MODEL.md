@@ -1,193 +1,195 @@
-# New-thread handoff: Station / Location / Evidence model
+# Handoff de nuevo hilo: modelo Station / Location / Evidence
 
-**Document version:** 0.1.0  
-**Created:** 2026-08-15  
-**Project:** ClimaScope  
-**Repository:** `gineslm/climascope`  
-**Repository URL:** `https://github.com/gineslm/climascope`  
-**Working branch:** `agent/water-pipeline-audit`  
-**Project root (local):** `C:\Users\User\Downloads\climate_refuge_aemet_v0_4`
+**Versión del documento:** 0.1.1  
+**Creado:** 2026-08-15  
+**Proyecto:** ClimaScope  
+**Repositorio:** `gineslm/climascope`  
+**URL del repositorio:** `https://github.com/gineslm/climascope`  
+**Rama de trabajo:** `agent/water-pipeline-audit`  
+**Raíz local del proyecto:** `C:\Users\User\Downloads\climate_refuge_aemet_v0_4`
 
-## Access requirements
+> **Idioma del proyecto: español (España).** El trabajo y la documentación de este hilo deben realizarse en castellano.
 
-The next thread must work against the central GitHub repository, not an isolated copy.
+## Requisitos de acceso
 
-Required:
+El siguiente hilo debe trabajar contra el repositorio central de GitHub, no contra una copia aislada.
 
-- access to repository `gineslm/climascope`;
-- ability to read the current branch and its documentation/data;
-- ability to create/update files and commit changes on the working branch, or create a dedicated feature branch if agreed first;
-- local checkout for running tests and inspecting generated data when required;
-- Python environment capable of running the repository test suite with `python -m pytest`.
+Requisitos:
 
-Do not invent missing project documents. If a referenced document is not present in the repository/current project context, report it and request it from the project owner.
+- acceso al repositorio `gineslm/climascope`;
+- capacidad para leer la rama actual y su documentación/datos;
+- capacidad para crear/actualizar archivos y hacer commits en la rama de trabajo, o crear una rama específica si se acuerda previamente;
+- checkout local para ejecutar tests e inspeccionar datos generados cuando sea necesario;
+- entorno Python capaz de ejecutar la suite con `python -m pytest`.
 
-## Source of truth
+No inventar documentos de proyecto que falten. Si un documento referenciado no está presente en el repositorio/contexto actual, comunicarlo y solicitarlo al propietario del proyecto.
 
-The repository is the central source of truth. Documentation must be versioned in GitHub and referenced from the relevant report so separate conversation threads can recover the latest project state.
+## Fuente de verdad
 
-Current audit report: `docs/WATER_PIPELINE_AUDIT_REPORT.md`.
+El repositorio es la fuente central de verdad. La documentación debe versionarse en GitHub y referenciarse desde el informe correspondiente para que hilos independientes puedan recuperar el estado más reciente del proyecto.
 
-## Objective
+Informe de auditoría actual: `docs/WATER_PIPELINE_AUDIT_REPORT.md`.
 
-Design, document and test the domain model linking:
+## Objetivo
+
+Diseñar, documentar y probar el modelo de dominio que relaciona:
 
 ```text
 Station -> Location -> Evidence
 ```
 
-The model must support the future map application, progressive data acquisition, spatial scope/representativeness, quantitative observations, derived indicators, and qualitative/documentary evidence.
+El modelo debe soportar la futura aplicación de mapa, la adquisición progresiva de datos, el alcance/representatividad espacial, las observaciones cuantitativas, los indicadores derivados y la evidencia cualitativa/documental.
 
-This is a **design task first**. Do not prematurely implement interpolation or the final Water Score.
+Esta es **primero una tarea de diseño**. No implementar prematuramente la interpolación ni el Water Score definitivo.
 
-## Context already established
+## Contexto ya establecido
 
-The current water pipeline has been audited around AEMET stations `8416` (Valencia), `3195` (Madrid), and `7012D` (Cartagena). W2 monthly and annual precipitation outputs are under `data/raw/aemet/`, alongside raw AEMET JSON and `.NO_DATA` acquisition evidence.
+El pipeline actual de agua se ha auditado alrededor de las estaciones AEMET `8416` (Valencia), `3195` (Madrid) y `7012D` (Cartagena). Las salidas W2 mensuales y anuales están en `data/raw/aemet/`, junto con JSON AEMET originales y evidencia de adquisición `.NO_DATA`.
 
-The current W2 semantics distinguish observed precipitation, explicit zero precipitation, missing precipitation, expected days, observed days, missing days, coverage and complete periods. The latest aggregation preserves the observed precipitation total even when a period is incomplete and exposes coverage/completeness for downstream eligibility rules.
+La semántica actual de W2 distingue precipitación observada, cero explícito, precipitación missing, días esperados, días observados, días missing, cobertura y periodos completos. La última agregación conserva el total observado de precipitación aunque el periodo sea incompleto y expone cobertura/completitud para las reglas de elegibilidad posteriores.
 
-### Decisions already agreed
+### Decisiones ya acordadas
 
-1. A station observation must not automatically be treated as the value for every nearby location.
-2. The map should show physical stations and an explicit spatial scope/representativeness layer.
-3. Interpolation is **not** part of the current implementation. If introduced later, it must be distinguishable from direct observations and carry method, provenance and uncertainty.
-4. Acquisition should be progressive: prioritise promising stations/locations rather than downloading all available history at once.
-5. Quantitative station data and qualitative/documentary evidence must be modelled as different evidence types that can both attach to a location.
-6. Documentary research should also be progressive; lack of research must never mean absence of risk.
+1. Una observación de estación no debe tratarse automáticamente como el valor de toda ubicación cercana.
+2. El mapa debe mostrar estaciones físicas y una capa espacial explícita de alcance/representatividad.
+3. La interpolación **no** forma parte de la implementación actual. Si se introduce posteriormente, debe distinguirse de las observaciones directas y llevar método, trazabilidad e incertidumbre.
+4. La adquisición debe ser progresiva: priorizar estaciones/ubicaciones prometedoras en lugar de descargar todo el histórico disponible de una vez.
+5. Los datos cuantitativos de estaciones y la evidencia cualitativa/documental deben modelarse como tipos de evidencia diferentes que puedan asociarse ambos a una ubicación.
+6. La investigación documental también debe ser progresiva; la falta de investigación nunca debe significar ausencia de riesgo.
 
-## Questions the new thread must resolve
+## Preguntas que debe resolver el nuevo hilo
 
-### 1. Station model
+### 1. Modelo Station
 
-Define the minimum canonical station record:
+Definir el registro canónico mínimo de una estación:
 
-- stable station identifier;
-- provider/source;
-- name;
-- coordinates;
-- elevation where available;
-- administrative/geographic metadata;
-- active/inactive status where available;
-- data availability window;
-- variables available;
-- source/provenance;
-- acquisition status and last successful acquisition.
+- identificador estable de estación;
+- proveedor/fuente;
+- nombre;
+- coordenadas;
+- altitud cuando esté disponible;
+- metadatos administrativos/geográficos;
+- estado activa/inactiva cuando esté disponible;
+- ventana de disponibilidad de datos;
+- variables disponibles;
+- fuente/trazabilidad;
+- estado de adquisición y última adquisición correcta.
 
-Decide which fields are source facts and which are project-derived metadata.
+Decidir qué campos son hechos de la fuente y cuáles son metadatos derivados del proyecto.
 
-### 2. Location model
+### 2. Modelo Location
 
-Define what the application means by a `Location`. A location is not necessarily a station; it represents the user-facing place/site evaluated on the map.
+Definir qué significa `Location` en la aplicación. Una ubicación no es necesariamente una estación; representa el lugar/sitio evaluado por el usuario en el mapa.
 
-Determine:
+Determinar:
 
-- stable location ID;
-- coordinates/geometry;
-- name/label;
-- location type;
-- administrative hierarchy;
-- candidate status;
-- relationship to one or more stations;
-- relationship to quantitative indicators;
-- relationship to documentary evidence.
+- ID estable de ubicación;
+- coordenadas/geometría;
+- nombre/etiqueta;
+- tipo de ubicación;
+- jerarquía administrativa;
+- estado de candidata;
+- relación con una o varias estaciones;
+- relación con indicadores cuantitativos;
+- relación con evidencia documental.
 
-### 3. Scope / representativeness
+### 3. Scope / Representativeness
 
-Design how the spatial relevance of a station to a location is represented. Consider, without committing prematurely:
+Diseñar cómo se representa la relevancia espacial de una estación para una ubicación. Considerar, sin comprometerse prematuramente:
 
-- explicit radius;
-- station-specific scope;
-- terrain/climate regime;
-- distance weighting;
-- Voronoi/service areas;
-- multiple-station coverage;
-- uncertainty.
+- radio explícito;
+- alcance específico de cada estación;
+- régimen de terreno/clima;
+- ponderación por distancia;
+- polígonos de Voronoi/Thiessen o áreas de servicio;
+- cobertura de varias estaciones;
+- incertidumbre.
 
-The model must distinguish:
-
-```text
-observed at station
-relevant to location
-modelled/interpolated for location
-```
-
-### 4. Evidence model
-
-Design a common evidence abstraction capable of representing:
-
-- quantitative time-series observations;
-- derived quantitative indicators;
-- official reports;
-- planning documents;
-- environmental studies;
-- local/qualitative assessments;
-- source URLs/documents;
-- publication date;
-- evidence date/period;
-- provenance;
-- confidence/quality;
-- assessment status.
-
-Define how multiple evidence items attach to a location and how conflicts or different time periods are represented.
-
-### 5. Progressive research/acquisition
-
-Design states for a pipeline such as:
+El modelo debe distinguir:
 
 ```text
-candidate -> screened -> quantitative data acquired -> QC passed
--> documentary research prioritised -> assessed -> promoted
+observado en estación
+relevante para ubicación
+modelado/interpolado para ubicación
 ```
 
-The model must also represent insufficient evidence and rejected/deprioritised candidates.
+### 4. Modelo Evidence
 
-### 6. Map requirements
+Diseñar una abstracción de evidencia común capaz de representar:
 
-Define the minimum data needed for a map that can:
+- observaciones cuantitativas de series temporales;
+- indicadores cuantitativos derivados;
+- informes oficiales;
+- documentos de planificación;
+- estudios ambientales;
+- evaluaciones locales/cualitativas;
+- URLs/documentos fuente;
+- fecha de publicación;
+- fecha/periodo de la evidencia;
+- trazabilidad;
+- confianza/calidad;
+- estado de evaluación.
 
-- display locations;
-- display stations;
-- show station scope/representativeness;
-- show data availability/quality;
-- open a location detail view;
-- show quantitative indicators;
-- show documentary evidence;
-- distinguish observed vs derived/modelled values;
-- expose provenance.
+Definir cómo se asocian múltiples evidencias a una ubicación y cómo se representan conflictos o periodos temporales diferentes.
 
-## Required deliverables
+### 5. Investigación/adquisición progresivas
 
-1. documented domain model;
-2. proposed schema/data structures for `Station`, `Location`, `Scope/Representativeness`, and `Evidence`;
-3. relationship/cardinality rules;
-4. provenance rules;
-5. status/state machine for progressive acquisition and research;
-6. map-facing requirements;
-7. explicit decision on whether interpolation is deferred and prerequisites for it;
-8. migration/implementation plan that does not unnecessarily disturb existing AEMET raw/W2 data;
-9. tests or validation rules where implementation is introduced;
-10. updated documentation report with a new version number.
+Diseñar estados para un pipeline como:
 
-## Constraints
+```text
+candidata -> cribada -> datos cuantitativos adquiridos -> QC superado
+-> investigación documental priorizada -> evaluada -> promovida
+```
 
-- Preserve current AEMET raw data and W2 outputs unless a deliberate migration is approved.
-- Do not silently reinterpret missing data as zero.
-- Do not present interpolation/modelled values as station observations.
-- Preserve provenance and source identity.
-- Avoid broad data acquisition until the prioritisation model is defined.
-- Do not calculate the final Water Score as part of this task unless the design explicitly requires a placeholder interface.
+El modelo debe representar también evidencia insuficiente y candidatas rechazadas/despriorizadas.
 
-## Completion protocol
+### 6. Requisitos del mapa
 
-At the end of the thread:
+Definir los datos mínimos necesarios para un mapa que pueda:
 
-1. run the repository tests;
-2. document the resulting design and decisions;
-3. update the relevant report with a new version tag;
-4. commit the documentation/code changes to GitHub;
-5. record the commit SHA in the final handoff;
-6. create the next handoff document if another specialised thread is required.
+- mostrar ubicaciones;
+- mostrar estaciones;
+- mostrar alcance/representatividad de las estaciones;
+- mostrar disponibilidad/calidad de datos;
+- abrir el detalle de una ubicación;
+- mostrar indicadores cuantitativos;
+- mostrar evidencia documental;
+- distinguir valores observados de derivados/modelados;
+- exponer la trazabilidad.
 
-## Starting instruction for the new thread
+## Entregables requeridos
 
-> Work from this handoff and the current repository state. First inspect the existing documentation and AEMET/W2 implementation. Then design the Station / Location / Scope / Evidence model before writing production code. Keep the repository as the central source of truth and version every resulting documentation artifact.
+1. modelo de dominio documentado;
+2. esquema/estructuras de datos propuestas para `Station`, `Location`, `Scope/Representativeness` y `Evidence`;
+3. reglas de relación/cardinalidad;
+4. reglas de trazabilidad;
+5. máquina de estados para adquisición e investigación progresivas;
+6. requisitos orientados al mapa;
+7. decisión explícita sobre el aplazamiento de la interpolación y sus prerrequisitos;
+8. plan de migración/implementación que no altere innecesariamente los datos AEMET raw/W2 existentes;
+9. tests o reglas de validación cuando se introduzca implementación;
+10. informe de documentación actualizado con un nuevo número de versión.
+
+## Restricciones
+
+- Preservar los datos AEMET raw actuales y las salidas W2 salvo que se apruebe una migración deliberada.
+- No reinterpretar silenciosamente datos missing como cero.
+- No presentar valores interpolados/modelados como observaciones de estación.
+- Preservar trazabilidad e identidad de la fuente.
+- Evitar ampliar la adquisición de datos hasta definir el modelo de priorización.
+- No calcular el Water Score definitivo como parte de esta tarea salvo que el diseño requiera explícitamente una interfaz provisional.
+
+## Protocolo de cierre
+
+Al terminar el hilo:
+
+1. ejecutar los tests del repositorio;
+2. documentar el diseño y las decisiones resultantes;
+3. actualizar el informe correspondiente con una nueva etiqueta de versión;
+4. hacer commit de los cambios documentales/de código en GitHub;
+5. registrar el SHA del commit en el handoff final;
+6. crear el siguiente handoff si se necesita otro hilo especializado.
+
+## Instrucción de inicio del nuevo hilo
+
+> Trabaja desde este handoff y el estado actual del repositorio. Primero inspecciona la documentación existente y la implementación AEMET/W2. Después diseña el modelo Station / Location / Scope / Evidence antes de escribir código de producción. Mantén el repositorio como fuente central de verdad y versiona cada nuevo artefacto documental.
