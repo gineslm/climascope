@@ -18,11 +18,13 @@ def _complete_daily_frame(df: pd.DataFrame, start: str, end: str) -> pd.DataFram
 
 
 def aggregate_precipitation(df: pd.DataFrame, start: str, end: str) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Aggregate daily precipitation to monthly and annual totals with coverage metadata.
+    """Aggregate daily precipitation while preserving coverage quality metadata.
 
     Missing dates and missing precipitation values are never converted to zero.
-    A period total is marked ``complete`` only when every expected day has an
-    observed, non-missing precipitation value.
+    ``prcp_observed_total_mm`` is the sum of available precipitation values only;
+    ``complete`` identifies periods with observations for every expected day.
+    Consumers must use the coverage fields to decide whether a total is fit for
+    a particular analysis.
     """
     daily = _complete_daily_frame(df, start, end)
     daily["period_month"] = daily["fecha"].dt.to_period("M").astype(str)
@@ -32,14 +34,14 @@ def aggregate_precipitation(df: pd.DataFrame, start: str, end: str) -> tuple[pd.
         expected = len(group)
         observed = int(group["prcp"].notna().sum())
         missing = expected - observed
-        total = group["prcp"].sum(min_count=expected)
+        total = group["prcp"].sum(min_count=1)
         return {
             key: group[key].iloc[0],
             "expected_days": expected,
             "observed_prcp_days": observed,
             "missing_prcp_days": missing,
             "coverage_pct": round(observed / expected * 100, 3) if expected else 0.0,
-            "prcp_total_mm": float(total) if pd.notna(total) else None,
+            "prcp_observed_total_mm": float(total) if pd.notna(total) else None,
             "complete": missing == 0,
         }
 
