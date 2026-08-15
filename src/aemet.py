@@ -2,15 +2,19 @@ import os, time, json, csv
 from pathlib import Path
 from datetime import date, timedelta
 import requests
+from dotenv import load_dotenv
 
 BASE = "https://opendata.aemet.es/opendata/api"
 CHUNK_DAYS = 180
 
+
 def _chunk_path(out_dir, station_id, start, end):
     return Path(out_dir) / f"{station_id}_{start}_{end}.json"
 
+
 def _no_data_path(out_dir, station_id, start, end):
     return Path(out_dir) / f"{station_id}_{start}_{end}.NO_DATA"
+
 
 def _download_chunk(station_id, start, end, key, max_retries=6):
     url = (
@@ -31,8 +35,6 @@ def _download_chunk(station_id, start, end, key, max_retries=6):
             r.raise_for_status()
             meta = r.json()
 
-            # 404 from the AEMET API is a permanent "no data for this criteria"
-            # condition, not a transient download failure.
             if meta.get("estado") == 404:
                 desc = meta.get("descripcion", "No hay datos")
                 return None, f"NO_DATA: {desc}"
@@ -71,6 +73,7 @@ def _download_chunk(station_id, start, end, key, max_retries=6):
         f"tras {max_retries} intentos. Último error: {last_error}"
     )
 
+
 def _expected_chunks(start_date, end_date):
     chunks = []
     cursor = start_date
@@ -80,8 +83,10 @@ def _expected_chunks(start_date, end_date):
         cursor = chunk_end + timedelta(days=1)
     return chunks
 
+
 def _read_chunk(path):
     return json.loads(Path(path).read_text(encoding="utf-8"))
+
 
 def _update_coverage(out_dir, station_id, records):
     """Actualiza un CSV sencillo con cobertura por estación."""
@@ -108,6 +113,34 @@ def _update_coverage(out_dir, station_id, records):
         writer.writeheader()
         writer.writerows(sorted(rows.values(), key=lambda x: x["station_id"]))
 
+
+def normalize_prec(value):
+    """Normaliza la precipitación AEMET conservando la semántica de missing.
+
+    AEMET entrega el campo fuente como ``prec`` y usa coma decimal en valores
+    textuales. Los ceros explícitos siguen siendo 0.0; valores ausentes o
+    vacíos se convierten en None y nunca en cero.
+    """
+    if value is None:
+        return None
+    if isinstance(value, str):
+        value = value.strip()
+        if not value or value.lower() in {"null", "nan", "na", "n/a"}:
+            return None
+        value = value.replace(",", ".")
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def normalize_daily_row(row):
+    """Añade precipitación normalizada sin alterar el payload raw."""
+    normalized = dict(row)
+    normalized["prcp"] = normalize_prec(row.get("prec"))
+    return normalized
+
+
 def get_daily_data(station_id, start, end, out_dir):
     """
     Descarga climatología diaria AEMET en bloques <=180 días.
@@ -117,6 +150,7 @@ def get_daily_data(station_id, start, end, out_dir):
     - 404 "no hay datos": crea .NO_DATA y continúa.
     - errores transitorios: reintenta.
     """
+    load_dotenv()
     key = os.getenv("AEMET_API_KEY")
     if not key:
         raise RuntimeError(
