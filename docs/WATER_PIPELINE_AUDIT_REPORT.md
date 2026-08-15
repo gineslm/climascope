@@ -1,60 +1,62 @@
-# Climate Refuge / ClimaScope — Water Pipeline Audit Report
+# Climate Refuge / ClimaScope — Informe de auditoría del pipeline de agua
 
-**Report version:** 0.3.0  
-**Branch:** `agent/water-pipeline-audit`  
-**Scope:** AEMET climate and precipitation acquisition, QC, W2 aggregation, data storage, map scope, progressive acquisition, future qualitative layers, and cross-thread documentation.  
-**Status:** W2 implemented and locally validated with 13 tests passing after the latest aggregation change.  
-**Last updated:** 2026-08-15
+**Versión del informe:** 0.3.1  
+**Rama:** `agent/water-pipeline-audit`  
+**Alcance:** adquisición AEMET de clima y precipitación, QC, agregación W2, almacenamiento de datos, alcance del mapa, adquisición progresiva, futuras capas cualitativas y documentación entre hilos.  
+**Estado:** W2 implementado y validado localmente con 13 tests superados tras el último cambio de agregación.  
+**Última actualización:** 2026-08-15
+
+> **Idioma del proyecto: español (España).** Este informe y la documentación asociada se mantienen en castellano.
 
 ---
 
-## 1. Purpose and starting objective
+## 1. Propósito y objetivo inicial
 
-The initial objective of this work was to audit and operationalize the water/climate data pipeline around AEMET station observations, with enough provenance and quality information to support later location-level analysis and a map-based application.
+El objetivo inicial de este trabajo era auditar y operacionalizar el pipeline de datos de agua/clima alrededor de observaciones de estaciones AEMET, con suficiente trazabilidad e información de calidad para soportar posteriormente análisis a nivel de ubicación y una aplicación basada en mapa.
 
-The work deliberately stopped short of defining a final Water Score. The current phase establishes the data foundation and makes data quality explicit before any scoring or ranking is applied.
+El trabajo se detuvo deliberadamente antes de definir un Water Score definitivo. Esta fase establece la base de datos y hace explícita la calidad de los datos antes de aplicar cualquier scoring o ranking.
 
-## 2. Work completed in this phase
+## 2. Trabajo completado en esta fase
 
-### 2.1 Source registry
+### 2.1 Registro de fuentes
 
-The water source registry was repaired and validated. A malformed YAML entry was diagnosed and corrected, and the registry test subsequently passed.
+Se reparó y validó el registro de fuentes de agua. Se diagnosticó y corrigió una entrada YAML mal formada y posteriormente el test del registro pasó correctamente.
 
-### 2.2 AEMET access and acquisition
+### 2.2 Acceso y adquisición AEMET
 
-AEMET API access was verified. A direct daily-data query for station `8416` (Valencia) was validated using `2025-01-01` to `2025-01-07`.
+Se verificó el acceso a la API de AEMET. Se validó una consulta directa de datos diarios para la estación `8416` (Valencia) usando el periodo `2025-01-01` a `2025-01-07`.
 
-AEMET decimal-comma precipitation values are handled correctly. Explicit `0,0` precipitation is treated as zero precipitation, while missing precipitation remains missing.
+Los valores de precipitación AEMET con coma decimal se gestionan correctamente. La precipitación explícita `0,0` se trata como cero, mientras que la precipitación missing permanece como missing.
 
-### 2.3 Stations audited
+### 2.3 Estaciones auditadas
 
-| Station | Location/role | Available period used for audit |
+| Estación | Ubicación/función | Periodo disponible utilizado en la auditoría |
 |---|---|---|
 | `8416` | Valencia | 2011-01-01 → 2025-12-31 |
 | `3195` | Madrid | 2011-01-01 → 2025-12-31 |
 | `7012D` | Cartagena | 2016-02-22 → 2025-12-31 |
 
-The acquisition layer retains raw JSON data and explicit `.NO_DATA` markers for unavailable query windows. Empty/unavailable windows are therefore evidence, not silent dry periods.
+La capa de adquisición conserva los JSON originales y marcadores `.NO_DATA` explícitos para ventanas de consulta sin disponibilidad. Por tanto, las ventanas vacías/no disponibles son evidencia y no periodos secos silenciosos.
 
-### 2.4 Raw precipitation QC
+### 2.4 QC de precipitación raw
 
-The station-level QC distinguishes target days, observed days, missing days, coverage, explicit zero precipitation days, positive precipitation days, precipitation-missing days, and first/last observed dates.
+El QC a nivel de estación distingue días objetivo, días observados, días missing, cobertura, días con precipitación explícitamente cero, días con precipitación positiva, días con precipitación missing y primera/última fecha observada.
 
-Initial audit results:
+Resultados iniciales de auditoría:
 
-| Station | Target days | Observed days | Missing days | Coverage |
+| Estación | Días objetivo | Días observados | Días missing | Cobertura |
 |---|---:|---:|---:|---:|
 | `8416` | 5479 | 5479 | 0 | 100.000% |
 | `7012D` | 5479 | 3572 | 1907 | 65.194% |
 | `3195` | 5479 | 5478 | 1 | 99.982% |
 
-For `7012D`, the effective observation window starts on `2016-02-22`; within that actual window there are 29 missing days over 3601 expected days (99.195% coverage).
+Para `7012D`, la ventana efectiva de observación comienza el `2016-02-22`; dentro de esa ventana real hay 29 días missing sobre 3601 días esperados (99.195% de cobertura).
 
-Raw date coverage is separate from `prec` quality: a station can have a date record while precipitation itself is missing.
+La cobertura de fechas se separa de la calidad de `prec`: una estación puede tener un registro de fecha mientras la precipitación de ese registro sea missing.
 
-### 2.5 W2 aggregation
+### 2.5 Agregación W2
 
-Monthly and annual precipitation aggregation is implemented. Current outputs are:
+Está implementada la agregación mensual y anual de precipitación. Las salidas actuales son:
 
 ```text
 data/raw/aemet/3195_precip_monthly.csv
@@ -65,112 +67,112 @@ data/raw/aemet/8416_precip_monthly.csv
 data/raw/aemet/8416_precip_annual.csv
 ```
 
-The first aggregation semantics discarded an entire period total when one expected day was missing. That was corrected.
+La primera semántica de agregación descartaba el total completo de un periodo cuando faltaba un día esperado. Esto se corrigió.
 
-Current semantics:
+Semántica actual:
 
-- `prcp_observed_total_mm` = sum of actually observed precipitation values;
-- `expected_days` = calendar days expected in the period;
-- `observed_prcp_days` = days with usable precipitation;
-- `missing_prcp_days` = expected days without usable precipitation;
-- `coverage_pct` = observed/expected;
-- `complete` = true only when all expected days have usable precipitation.
+- `prcp_observed_total_mm` = suma de los valores de precipitación realmente observados;
+- `expected_days` = días naturales esperados en el periodo;
+- `observed_prcp_days` = días con precipitación utilizable;
+- `missing_prcp_days` = días esperados sin precipitación utilizable;
+- `coverage_pct` = observados/esperados;
+- `complete` = verdadero únicamente cuando todos los días esperados tienen precipitación utilizable.
 
-A missing value is never converted to zero, but it also does not erase precipitation that was actually observed.
+Un valor missing nunca se convierte en cero, pero tampoco borra la precipitación que sí se ha observado.
 
 ### 2.6 Tests
 
-The latest local test run reports:
+La última ejecución local de tests informa:
 
 ```text
 13 passed
 ```
 
-Coverage includes source registry loading, precipitation parsing, decimal comma, explicit zero, missing precipitation, precipitation QC, monthly/annual aggregation, incomplete periods and preservation of observed totals.
+La cobertura incluye carga del registro de fuentes, parsing de precipitación, coma decimal, cero explícito, precipitación missing, QC de precipitación, agregación mensual/anual, periodos incompletos y conservación de totales observados.
 
 ---
 
-## 3. Changes relative to the initial objective
+## 3. Cambios respecto al objetivo inicial
 
-The architecture is no longer treating a station's raw observations as automatically suitable for scoring.
+La arquitectura ya no trata las observaciones raw de una estación como datos automáticamente aptos para scoring.
 
-The current progression is:
+La progresión actual es:
 
 ```text
-AEMET source
+fuente AEMET
     ↓
-raw station observations
+observaciones raw de estación
     ↓
-acquisition/date QC
+QC de adquisición/fechas
     ↓
-precipitation value QC
+QC de valores de precipitación
     ↓
-monthly / annual aggregation
+agregación mensual / anual
     ↓
-coverage-aware analytical inputs
+entradas analíticas con cobertura explícita
     ↓
-future Water Score
+Water Score futuro
 ```
 
-The Water Score is intentionally not yet defined.
+El Water Score todavía no está definido intencionadamente.
 
-The scope has also expanded from a station-centric pipeline to a location-centric architecture in which stations, locations, spatial representativeness, quantitative indicators and documentary evidence remain distinct.
+El alcance también ha pasado de un pipeline centrado en estaciones a una arquitectura centrada en ubicaciones en la que estaciones, ubicaciones, representatividad espacial, indicadores cuantitativos y evidencia documental permanecen diferenciados.
 
 ---
 
-## 4. Station, location and interpolation direction
+## 4. Dirección Station, Location e interpolación
 
-A station is a physical observation point. A location is the user-facing place/site being evaluated. A station observation must not automatically become the value for every nearby location.
+Una estación es un punto físico de observación. Una ubicación es el lugar/sitio que el usuario evalúa. Una observación de estación no debe convertirse automáticamente en el valor de cualquier ubicación cercana.
 
-The map should initially show station points, observation periods, coverage and quality. A separate representativeness/scope layer can indicate which locations a station is considered relevant to.
+Inicialmente, el mapa debería mostrar puntos de estación, periodos de observación, cobertura y calidad. Una capa separada de representatividad/alcance puede indicar qué ubicaciones se consideran relevantes para una estación.
 
-Interpolation is **deferred**. If introduced later, it must be a separate derived product with method, provenance and uncertainty. The application must distinguish:
+La interpolación queda **aplazada**. Si se introduce posteriormente, debe ser un producto derivado separado con método, trazabilidad e incertidumbre. La aplicación debe distinguir:
 
 ```text
-observed at station
-relevant to location
-modelled/interpolated for location
+observado en estación
+relevante para ubicación
+modelado/interpolado para ubicación
 ```
 
-A future influence model may use a radius, Thiessen/Voronoi-style areas or distance weighting, but climate representativeness may also depend on elevation, terrain, coast/inland position, urban effects and climate regime.
+Un futuro modelo de influencia puede utilizar un radio, áreas tipo Thiessen/Voronoi o ponderación por distancia, pero la representatividad climática también puede depender de altitud, terreno, posición litoral/interior, efectos urbanos y régimen climático.
 
-Recommendation: keep raw station observations authoritative and make interpolation an optional derived layer only after its assumptions are validated.
+Recomendación: mantener las observaciones raw de estación como autoridad y convertir la interpolación en una capa derivada opcional únicamente después de validar sus supuestos.
 
 ---
 
-## 5. Progressive acquisition strategy
+## 5. Estrategia de adquisición progresiva
 
-A full historical download for every station is not the preferred operating model. Acquisition should be progressive:
+No se considera preferible descargar todo el histórico de todas las estaciones. La adquisición debe ser progresiva:
 
 ```text
-station catalogue
-    -> candidate ranking
-    -> priority stations
-    -> bounded historical acquisition
+catálogo de estaciones
+    -> ranking de candidatas
+    -> estaciones prioritarias
+    -> adquisición histórica acotada
     -> QC
-    -> analytical qualification
-    -> promotion
+    -> cualificación analítica
+    -> promoción
 ```
 
-Priority should consider historical coverage, completeness, available variables, geographic relevance and source stability. Existing reuse behaviour and `.NO_DATA` evidence should be retained.
+La prioridad debería considerar cobertura histórica, completitud, variables disponibles, relevancia geográfica y estabilidad de la fuente. Deben conservarse el comportamiento de reutilización existente y la evidencia `.NO_DATA`.
 
-A station should move through explicit acquisition/quality states rather than becoming analytically valid merely because data were downloaded.
+Una estación debe pasar por estados explícitos de adquisición/calidad en lugar de considerarse analíticamente válida simplemente porque sus datos se hayan descargado.
 
 ---
 
-## 6. Data storage
+## 6. Almacenamiento de datos
 
-Current AEMET raw and derived data are under:
+Los datos raw y derivados actuales de AEMET están en:
 
 ```text
 data/raw/aemet/
 ```
 
-This includes raw JSON, `.NO_DATA` evidence, QC outputs and W2 CSV products.
+Incluye JSON originales, evidencia `.NO_DATA`, resultados de QC y productos W2 CSV.
 
-The W2 CSV products are derived analytical tables and do not replace the raw observations.
+Los productos CSV W2 son tablas analíticas derivadas y no sustituyen las observaciones raw.
 
-A future separation may evolve toward:
+Una separación futura podría evolucionar hacia:
 
 ```text
 data/
@@ -185,126 +187,134 @@ data/
   reports/
 ```
 
-The migration should be deliberate and should not disturb the current audit trail unnecessarily.
+La migración debe ser deliberada y no debe alterar innecesariamente el rastro actual de auditoría.
 
 ---
 
-## 7. Quantitative vs documentary evidence
+## 7. Evidencia cuantitativa frente a documental
 
-Not every future information layer needs a physical station or numeric time series. The application should support both quantitative and documentary evidence.
+No todas las futuras capas de información necesitan una estación física o una serie temporal numérica. La aplicación debe soportar tanto evidencia cuantitativa como documental.
 
-Conceptually:
+Conceptualmente:
 
 ```text
 Location
 │
-├── Quantitative observations
-│   ├── climate
-│   ├── precipitation
-│   ├── water
-│   └── other measured variables
+├── Observaciones cuantitativas
+│   ├── clima
+│   ├── precipitación
+│   ├── agua
+│   └── otras variables medidas
 │
-├── Derived quantitative indicators
-│   ├── coverage-aware aggregates
-│   ├── trends
+├── Indicadores cuantitativos derivados
+│   ├── agregados con cobertura
+│   ├── tendencias
 │   └── scores
 │
-└── Documentary evidence
-    ├── official reports
-    ├── planning documents
-    ├── environmental evidence
-    └── qualitative assessments
+└── Evidencia documental
+    ├── informes oficiales
+    ├── documentos de planificación
+    ├── evidencia ambiental
+    └── evaluaciones cualitativas
 ```
 
-Documentary evidence should preserve source title, issuing organisation, publication date, URL/file reference, geographic scope, evidence type, relevance, extraction date and confidence/quality.
+La evidencia documental debe conservar título de la fuente, organización emisora, fecha de publicación, URL/referencia al archivo, alcance geográfico, tipo de evidencia, relevancia, fecha de extracción y confianza/calidad.
 
-Documentary research should be progressive rather than exhaustive. Broad quantitative screening should identify promising candidates before deeper qualitative research. `not_assessed` must never mean `no_risk`.
+La investigación documental debe ser progresiva y no exhaustiva. El cribado cuantitativo amplio debe identificar candidatas prometedoras antes de realizar una investigación cualitativa más profunda. `not_assessed` nunca debe significar `no_risk`.
 
-Suggested documentary assessment states are `not_assessed`, `in_research`, `assessed` and `insufficient_evidence`.
+Los estados documentales sugeridos son `not_assessed`, `in_research`, `assessed` e `insufficient_evidence`.
 
 ---
 
-## 8. Map architecture direction
+## 8. Dirección de la arquitectura del mapa
 
-The future map should expose two connected layers:
+El futuro mapa debería exponer dos capas conectadas:
 
-### Station layer
+### Capa de estaciones
 
-Station marker detail can include:
+El detalle de una estación puede incluir:
 
 ```text
 station_id
-coordinates
-available period
-coverage
-precipitation summary
-climate summary
-QC status
+coordenadas
+periodo disponible
+cobertura
+resumen de precipitación
+resumen climático
+estado QC
 ```
 
-### Location layer
+### Capa de ubicaciones
 
-A location detail view should be able to expose:
+El detalle de una ubicación debería poder exponer:
 
 ```text
-candidate location
+ubicación candidata
 ↓
-relevant stations
+estaciones relevantes
 ↓
-station evidence
+evidencia de estaciones
 ↓
-derived climate/water indicators
+indicadores climáticos/de agua derivados
 ↓
-other evidence layers
+otras capas de evidencia
 ↓
-final suitability analysis
+análisis final de idoneidad
 ```
 
-The map is therefore a visualization and navigation layer over evidence, not a replacement for the evidence.
+Por tanto, el mapa es una capa de visualización y navegación sobre la evidencia, no un sustituto de la evidencia.
 
 ---
 
-## 9. Documentation and cross-thread protocol
+## 9. Protocolo documental y entre hilos
 
-The repository is the central source of truth for this project. Documentation artifacts must be versioned in GitHub and referenced from the relevant report so different conversation threads can recover the latest state.
+El repositorio es la fuente central de verdad del proyecto. Los artefactos documentales deben versionarse en GitHub y referenciarse desde el informe correspondiente para que diferentes hilos puedan recuperar el estado más reciente.
 
-Every new-thread handoff document must contain:
+Todo documento de handoff para un hilo nuevo debe contener:
 
-- project and repository location;
-- working branch;
-- access prerequisites;
-- current report/documentation version;
-- objective and scope;
-- established decisions and constraints;
-- deliverables;
-- validation/tests required;
-- files/data that should not be regenerated unnecessarily;
-- completion protocol;
-- next handoff requirements where applicable.
+- ubicación del proyecto y repositorio;
+- rama de trabajo;
+- requisitos de acceso;
+- versión actual del informe/documentación;
+- objetivo y alcance;
+- decisiones y restricciones establecidas;
+- entregables;
+- validaciones/tests requeridos;
+- archivos/datos que no deberían regenerarse innecesariamente;
+- protocolo de cierre;
+- requisitos del siguiente handoff cuando proceda.
 
-### Current handoff document
+### Documentos de contexto y reglas
 
-**Version:** 0.1.0  
-**File:** `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`  
-**Commit:** `ddbe309e9e6aacc3016212e3a31e4efcbaae4786`  
-**Purpose:** design the `Station → Location → Scope/Representativeness → Evidence` model before broadening acquisition or implementing the Water Score.
+**`docs/CHATGPT_PROJECT_CONTEXT.md` — versión 1.0.1**  
+Puente entre el Proyecto de ChatGPT y el repositorio; define el arranque de conversaciones nuevas y la reincorporación de conversaciones existentes.
 
-The handoff explicitly requires centralised work against `gineslm/climascope`, local validation with `python -m pytest`, preservation of existing AEMET/W2 data, and versioned documentation updates.
+**`docs/PROJECT_WORKING_RULES.md` — versión 1.0.1**  
+Reglas operativas permanentes del proyecto e idioma oficial: español (España).
+
+### Handoff actual
+
+**Versión:** 0.1.1  
+**Archivo:** `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`  
+**Propósito:** diseñar el modelo `Station → Location → Scope/Representativeness → Evidence` antes de ampliar la adquisición o implementar el Water Score.
+
+El handoff exige explícitamente trabajo centralizado contra `gineslm/climascope`, validación local con `python -m pytest`, conservación de los datos AEMET/W2 existentes y actualización de documentación versionada.
 
 ---
 
-## 10. Immediate next step
+## 10. Siguiente paso inmediato
 
-The next engineering/design thread is responsible for designing and documenting the `Station`, `Location`, `Scope/Representativeness` and `Evidence` model, including provenance, relationships, progressive acquisition/research states and map-facing requirements.
+El siguiente hilo de ingeniería/diseño es responsable de diseñar y documentar el modelo `Station`, `Location`, `Scope/Representativeness` y `Evidence`, incluyendo trazabilidad, relaciones, estados de adquisición/investigación progresivos y requisitos orientados al mapa.
 
-Do this before broadening station acquisition, implementing interpolation, or defining the final Water Score.
+Esto debe hacerse antes de ampliar la adquisición de estaciones, implementar interpolación o definir el Water Score definitivo.
 
 ---
 
-## 11. Version history
+## 11. Historial de versiones
 
-| Version | Date | Change |
+| Versión | Fecha | Cambio |
 |---|---|---|
-| 0.1.0 | 2026-08-15 | Initial water pipeline audit and W1/W2 documentation. |
-| 0.2.0 | 2026-08-15 | Added W2 observed-total semantics, progressive acquisition strategy, spatial/evidence architecture and cross-thread documentation protocol. |
-| 0.3.0 | 2026-08-15 | Added the versioned Station/Location/Evidence handoff and made the central documentation/versioning protocol explicit. |
+| 0.1.0 | 2026-08-15 | Auditoría inicial del pipeline de agua y documentación W1/W2. |
+| 0.2.0 | 2026-08-15 | Añadida la semántica de totales observados W2, estrategia de adquisición progresiva, arquitectura espacial/evidencial y protocolo documental entre hilos. |
+| 0.3.0 | 2026-08-15 | Añadido el handoff versionado Station/Location/Evidence y explicitado el protocolo central de documentación/versionado. |
+| 0.3.1 | 2026-08-15 | Traducción y normalización de la documentación del proyecto al castellano (España); incorporado el contexto ChatGPT y las reglas maestras al inventario documental. |
