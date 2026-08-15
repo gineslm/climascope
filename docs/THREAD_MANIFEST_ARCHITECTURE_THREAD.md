@@ -1,6 +1,6 @@
 # ClimaScope — Manifest del hilo de arquitectura de hilos
 
-**Versión:** 0.1.1  
+**Versión:** 0.2.0  
 **Estado:** READY_FOR_HANDOFF  
 **Ciclo:** 1  
 **Idioma:** español (España)  
@@ -16,6 +16,9 @@ status: READY_FOR_HANDOFF
 owner: línea de arquitectura del proyecto
 created: 2026-08-15
 current_cycle: 1
+origin:
+  type: USER_DECLARED
+  source_id: conversation
 ```
 
 ## 2. Responsabilidad
@@ -28,6 +31,8 @@ Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar con
 - identidad y responsabilidad de un hilo;
 - estados y ciclos;
 - manifests;
+- declaraciones de creación de hilos;
+- THREAD BOOTSTRAP;
 - dependencias versionadas;
 - handoffs y transferencia de responsabilidad;
 - separación entre propuestas y decisiones;
@@ -48,7 +53,7 @@ Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar con
 
 ## 5. Documentos autoritativos
 
-- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.1.0.
+- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.2.0.
 - `docs/PROJECT_WORKING_RULES.md` — reglas permanentes del proyecto, versión 1.1.0.
 - `docs/CHATGPT_PROJECT_CONTEXT.md` — integración ChatGPT ↔ repositorio, versión 1.1.0.
 
@@ -64,7 +69,8 @@ Las líneas de dominio, incluido Station/Location/Evidence y W2, son dependencia
 1. especificación `THREAD_ARCHITECTURE.md`;
 2. manifest operativo de este hilo;
 3. integración de la arquitectura en las reglas maestras y el contexto de ChatGPT;
-4. handoff receptor único para `thread-station-location-evidence`.
+4. handoff receptor para `thread-station-location-evidence`;
+5. formalización de THREAD DECLARATION y THREAD BOOTSTRAP.
 
 ## 8. Handoff siguiente
 
@@ -76,7 +82,7 @@ El receptor debe utilizar además `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.m
 
 ## 9. Criterio de cierre
 
-El ciclo puede cerrarse porque la arquitectura está integrada en las reglas maestras, el contexto de ChatGPT y dispone de un handoff receptor único, sin asumir responsabilidades del dominio Station / Location / Scope / Evidence.
+El ciclo puede cerrarse cuando el protocolo THREAD BOOTSTRAP haya sido probado con un THREAD receptor real y la integración resultante no requiera instrucciones manuales adicionales al usuario.
 
 ## 10. Estado abierto para futuros ciclos
 
@@ -86,4 +92,5 @@ Quedan deliberadamente pendientes de futuros ciclos:
 - Activity Log persistente;
 - automatización de dependencias desactualizadas;
 - índices derivados;
-- reglas detalladas para reestructuración de dominios.
+- reglas detalladas para reestructuración de dominios;
+- automatización de comprobaciones de coherencia entre manifests, handoffs y documentos.
