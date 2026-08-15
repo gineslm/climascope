@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.2.0  
+**Versión:** 0.2.1  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`
@@ -30,6 +30,7 @@ Una conversación es una **instancia operativa de IA** que se conecta a un THREA
 11. Los conflictos entre conversación y repositorio se hacen explícitos; no se resuelven silenciosamente.
 12. El cierre de un THREAD termina un ciclo de trabajo, no elimina su conocimiento.
 13. Las vistas o índices derivados no sustituyen a las fuentes autoritativas.
+14. La nomenclatura debe priorizar la legibilidad humana. No se introducen abreviaturas o prefijos compactos mientras no exista una necesidad operativa demostrada.
 
 ## 3. Modelo conceptual
 
@@ -449,7 +450,25 @@ El cierre de un THREAD sustantivo debe dejar:
 
 Un THREAD cerrado puede volver a originar trabajo mediante un nuevo ciclo. El nuevo ciclo debe referenciar el conocimiento heredado y no alterar retrospectivamente el ciclo anterior salvo corrección documental explícita.
 
-## 20. Relación con la documentación existente
+## 20. Nomenclatura e identificadores
+
+Durante la fase actual de adopción, los identificadores utilizan **nombres completos y legibles**. No se establecen prefijos compactos ni códigos abreviados como parte de la arquitectura.
+
+Los identificadores deben hacer explícito el tipo de entidad cuando sea necesario, por ejemplo:
+
+```text
+thread_id: thread-station-location-evidence
+manifest_id: manifest-station-location-evidence
+handoff_id: handoff-station-location-evidence-v0.1
+```
+
+Las abreviaturas o prefijos (`THR-`, `MFT-`, `HOF-`, etc.) podrán introducirse en una iteración futura únicamente si existe una necesidad operativa demostrada. Su eventual adopción deberá preservar la identidad y trazabilidad de las entidades existentes.
+
+Los nombres de archivo pueden conservar una nomenclatura documental descriptiva propia y no están obligados a repetir ningún código de entidad.
+
+No se formalizan todavía identificadores para categorías conceptuales futuras como `DECISION`, `PROPOSAL` o `EVIDENCE` hasta que su condición de entidades persistentes del proyecto quede justificada.
+
+## 21. Relación con la documentación existente
 
 Este documento complementa:
 
@@ -461,7 +480,7 @@ Este documento complementa:
 
 No sustituye los documentos de dominio ni define la metodología científica de ClimaScope.
 
-## 21. Migración gradual
+## 22. Migración gradual
 
 1. Formalizar esta arquitectura sin reestructurar los dominios existentes.
 2. Actualizar reglas maestras y contexto ChatGPT para referenciarla.
@@ -469,10 +488,11 @@ No sustituye los documentos de dominio ni define la metodología científica de 
 4. Crear manifests individuales cuando aporten valor operativo; durante la prueba son obligatorios para THREADs formalizados.
 5. Introducir Activity Log o índices derivados únicamente cuando exista necesidad demostrable.
 6. No migrar ni renombrar documentos de dominio por razones puramente estilísticas.
+7. Mantener nombres completos y legibles hasta que el uso real justifique una nomenclatura abreviada.
 
-## 22. Estado de esta especificación
+## 23. Estado de esta especificación
 
-La versión `0.2.0` incorpora la distinción formal entre THREAD, MANIFEST, HANDOFF e instancia conversacional y define el THREAD BOOTSTRAP para los tres orígenes iniciales de un THREAD.
+La versión `0.2.1` incorpora la política inicial de nomenclatura legible sin prefijos compactos. La arquitectura queda deliberadamente abierta a revisar esta decisión después de experiencia real de uso.
 
 Quedan abiertos para futuras iteraciones:
 
@@ -481,4 +501,5 @@ Quedan abiertos para futuras iteraciones:
 - automatización de detección de dependencias desactualizadas;
 - índices derivados de THREADs;
 - reglas detalladas de reestructuración de dominios;
-- automatización de comprobaciones de coherencia entre manifests, handoffs y documentos.
+- automatización de comprobaciones de coherencia entre manifests, handoffs y documentos;
+- posible nomenclatura abreviada si la experiencia real demuestra que aporta valor.
