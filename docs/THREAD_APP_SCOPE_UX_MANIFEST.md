@@ -1,6 +1,6 @@
 # ClimaScope — MANIFEST del THREAD de diseño de aplicación Scope
 
-**Versión:** 0.1.0  
+**Versión:** 0.1.1  
 **THREAD:** `thread-app-scope-ux`  
 **Estado:** ACTIVE  
 **Origen:** `USER_DECLARED`  
@@ -99,11 +99,14 @@ Si durante el diseño aparece una necesidad que requiere cambiar el modelo de do
 Base de conocimiento utilizada para inicializar este THREAD:
 
 ```yaml
-branch: knowledge
-commit: 33757848176c6d8e3f53b5e2c35b7048b657b286
+created_from_knowledge:
+  branch: knowledge
+  commit: 33757848176c6d8e3f53b5e2c35b7048b657b286
 ```
 
-Este SHA es la base indicada por el handoff consultado al crear el THREAD; el estado posterior de `knowledge` prevalece cuando exista una actualización.
+El campo anterior es **histórico e inmutable**: identifica exactamente el estado de `knowledge` utilizado como base para crear este THREAD. No debe interpretarse como el estado vigente de la rama.
+
+El estado consolidado actual de `knowledge` se resuelve siempre consultando la rama `knowledge` y prevalece sobre esta base histórica cuando el THREAD se reconecta posteriormente.
 
 ## 10. Handoff
 
@@ -114,3 +117,4 @@ No existe todavía un handoff de salida. Se creará cuando el ciclo de diseño a
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 0.1.0 | 2026-08-16 | Creación del THREAD y MANIFEST para el diseño de la aplicación que presenta los resultados del Scope. |
+| 0.1.1 | 2026-08-16 | Se sustituye la semántica ambigua de `knowledge_basis` por `created_from_knowledge`, diferenciando la base histórica de creación del estado vigente de `knowledge`. |
