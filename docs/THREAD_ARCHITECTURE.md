@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.3.0  
+**Versión:** 0.3.1  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -32,6 +32,7 @@ SOFTWARE  → desarrollo, integración y publicación del software
 9. Una rama de trabajo no es autoritativa por el mero hecho de existir.
 10. El conocimiento consolidado y la implementación del software son dimensiones distintas.
 11. La nomenclatura prioriza nombres completos y legibles; no se introducen prefijos compactos mientras no exista necesidad demostrada.
+12. Los identificadores Git que fijan un estado histórico deben expresar su función temporal y no presentarse como si fueran referencias dinámicas al estado actual.
 
 ## 3. Modelo de ramas y raíz del proyecto
 
@@ -88,6 +89,8 @@ knowledge_basis:
   branch: knowledge
   commit: <sha>
 ```
+
+En este caso `knowledge_basis.commit` es una **base histórica de la implementación** y no debe interpretarse como el estado actual de `knowledge` una vez que la rama haya avanzado.
 
 No se establece que todo el contenido de `knowledge` deba fusionarse físicamente en `develop`. La implementación puede incorporar selectivamente la documentación técnica que necesite.
 
@@ -216,19 +219,31 @@ Debe resolver, cuando proceda:
 - cuestiones abiertas;
 - referencias Git relevantes.
 
-Cuando exista relación con Git:
+### 7.1 Referencia de conocimiento del MANIFEST
+
+El MANIFEST debe distinguir entre **el estado de conocimiento utilizado para crear el THREAD** y **el estado vigente de `knowledge`**.
+
+Al crear un THREAD, registrar el commit exacto de `knowledge` que se leyó como base histórica de creación:
 
 ```yaml
 repository:
   knowledge_branch: knowledge
-  knowledge_commit: <sha>
+  created_from_knowledge_commit: <sha>
   work_branch: <branch>
   work_commit: <sha>
 ```
 
+`created_from_knowledge_commit` significa: **«este THREAD fue declarado a partir de este estado de `knowledge`»**. Es una referencia histórica y no se actualiza automáticamente cuando `knowledge` avanza.
+
+No utilizar `knowledge_commit` sin calificador para representar el estado actual de `knowledge`, porque induce a interpretar un SHA histórico como si fuera una referencia dinámica.
+
+El estado vigente del conocimiento se resuelve siempre desde la rama `knowledge` y sus documentos actuales. Si un THREAD necesita fijar una base histórica para una implementación o una dependencia reproducible, puede utilizar `knowledge_basis.commit` con esa función explícita.
+
+Un MANIFEST nuevo debe aplicar esta distinción desde su primera versión; no debe copiar el campo ambiguo de un MANIFEST anterior.
+
 Los campos se utilizan según el tipo de THREAD. Un THREAD exclusivamente documental puede no tener `work_branch`.
 
-### 7.1 HANDOFF actual e histórico
+### 7.2 HANDOFF actual e histórico
 
 ```yaml
 current_handoff:
@@ -338,8 +353,9 @@ Si una conversación nueva declara una responsabilidad sin HANDOFF:
 4. si no existe, crear una THREAD DECLARATION `USER_DECLARED`;
 5. crear su MANIFEST;
 6. establecer identidad, alcance, dependencias y estado;
-7. consolidar la declaración y MANIFEST en `knowledge` cuando constituyan estado persistente;
-8. comenzar el trabajo.
+7. registrar `created_from_knowledge_commit` con el SHA de `knowledge` utilizado para crear el MANIFEST;
+8. consolidar la declaración y MANIFEST en `knowledge` cuando constituyan estado persistente;
+9. comenzar el trabajo.
 
 El usuario no necesita conocer la estructura interna del MANIFEST.
 
@@ -355,7 +371,7 @@ se debe entrar en `knowledge`, reconstruir la responsabilidad y comparar la conv
 
 ### Crear THREAD
 
-Convierte una responsabilidad declarada en una entidad persistente con MANIFEST.
+Convierte una responsabilidad declarada en una entidad persistente con MANIFEST. La primera versión del MANIFEST debe conservar el SHA de `knowledge` utilizado para su creación mediante `created_from_knowledge_commit`.
 
 ### Conectar con THREAD
 
@@ -466,29 +482,3 @@ Antes de cerrar un THREAD sustantivo:
 8. indicar incertidumbres restantes.
 
 Cerrar un THREAD no elimina su conocimiento.
-
-## 18. Nomenclatura
-
-Durante la fase actual se utilizan identificadores completos y legibles. No se formalizan prefijos compactos (`THR-`, `MFT-`, `HOF-`, etc.) hasta que el uso real demuestre que aportan valor.
-
-Ejemplos:
-
-```text
-thread_id: thread-station-location-evidence
-manifest_id: manifest-station-location-evidence
-handoff_id: handoff-station-location-evidence-v0.1
-```
-
-## 19. Estado de esta especificación
-
-La versión `0.3.0` establece `knowledge` como raíz de conocimiento y bootstrap del proyecto y separa explícitamente conocimiento consolidado, trabajo de software e integración en producción.
-
-La validación mediante uso real debe comprobar al menos:
-
-```text
-HANDOFF → knowledge → MANIFEST → THREAD → work_branch
-THREAD  → knowledge → MANIFEST → work_branch
-USER_DECLARED → knowledge → THREAD/MANIFEST
-```
-
-Quedan abiertos para futuras iteraciones el formato definitivo de MANIFEST, Activity Log persistente, automatización de dependencias desactualizadas, índices derivados y política detallada de promoción de software.
