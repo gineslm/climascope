@@ -1,265 +1,253 @@
-# ClimaScope — New Thread Context Bootstrap
+# ClimaScope — Bootstrap de contexto de nuevos hilos
 
-**Document version:** 1.0.0  
-**Created:** 2026-08-15  
-**Repository:** `gineslm/climascope`  
-**Repository URL:** https://github.com/gineslm/climascope  
-**Default project root (known):** `C:\Users\User\Downloads\climate_refuge_aemet_v0_4`  
-**Purpose:** reusable context/instruction block for opening a new ClimaScope conversation.
+**Versión del documento:** 1.1.0  
+**Creado:** 2026-08-15  
+**Repositorio:** `gineslm/climascope`  
+**Rama raíz de conocimiento:** `knowledge`  
+**Propósito:** bloque reutilizable de contexto/instrucciones para abrir una nueva conversación de ClimaScope.
 
-## 1. Purpose
+## 1. Propósito
 
-This document is the standard bootstrap instruction for a new conversation working on ClimaScope.
+Este documento es el bootstrap estándar para una nueva conversación que trabaje en ClimaScope.
 
-Its purpose is to make each conversation:
+Su propósito es hacer que cada conversación:
 
-- independent of previous chat history;
-- connected to the central repository;
-- aware of the current project method and documentation;
-- explicitly scoped to one responsibility;
-- prevented from silently taking responsibility for unrelated areas.
+- sea independiente del histórico de chats anteriores;
+- se conecte al repositorio central;
+- conozca el método y la documentación vigente del proyecto;
+- quede explícitamente acotada a una responsabilidad;
+- no absorba silenciosamente responsabilidades de otras líneas.
 
-The repository is the source of truth. The conversation is a working session, not the permanent project memory.
+El repositorio es la fuente de verdad. La conversación es una sesión de trabajo, no la memoria permanente del proyecto.
 
-## 2. Bootstrap instruction
+## 2. Bootstrap obligatorio
 
-When this document is supplied as project context, the conversation should follow this sequence before substantive work:
+Cuando este documento forme parte del contexto del proyecto, la conversación debe seguir esta secuencia antes de realizar trabajo sustantivo:
 
-> **ClimaScope project bootstrap**
+> **Bootstrap de proyecto ClimaScope**
 >
-> Work against the central GitHub repository `gineslm/climascope`.
+> Trabaja contra el repositorio central de GitHub `gineslm/climascope`.
 >
-> First read `docs/PROJECT_WORKING_RULES.md`. Then inspect the current branch, Git status, the latest relevant project report, and any task-specific handoff referenced by the user or found in `docs/`.
+> **Primero entra conceptualmente en la rama `knowledge` como raíz de conocimiento y estructura consolidada.** Después lee `docs/PROJECT_WORKING_RULES.md`, `docs/THREAD_ARCHITECTURE.md` y el contexto de proyecto vigente. A continuación inspecciona el informe relevante y cualquier HANDOFF o MANIFEST aplicable.
 >
-> Treat GitHub as the authoritative project record. Do not assume that information exists merely because it appeared in another conversation. If a referenced document is missing from the repository, report that fact and request it rather than inventing its contents.
+> GitHub es el registro autoritativo del proyecto. No asumas que una información existe porque apareciera en otra conversación. Si falta un documento referenciado en el repositorio, informa de ello y solicítalo en lugar de inventarlo.
 >
-> Before making substantive changes, report the relevant documentation versions and current branch.
->
-> **Then stop and ask the project owner to define the responsibilities of this conversation:**
->
-> 1. What specific part of ClimaScope is this conversation responsible for?
-> 2. What is explicitly outside its scope?
-> 3. Is the task design/documentation, implementation/code, data acquisition/QC, research/evidence, analysis/scoring, or another defined area?
-> 4. Which task-specific handoff or document governs the work, if any?
-> 5. What is the expected deliverable for this conversation?
->
-> Do not start unrelated work while waiting for the responsibility boundary, unless the user has already supplied a sufficiently explicit scope.
+> Antes de realizar cambios sustantivos, informa de las versiones documentales relevantes, el estado consolidado y la responsabilidad que se ha resuelto.
 
-## 3. Responsibility boundary
+### Regla de autoridad
 
-Every substantive conversation should establish a compact responsibility contract before work expands.
+Una rama de trabajo indicada por un HANDOFF o MANIFEST es una referencia al trabajo operativo, no una fuente alternativa de verdad global. Las reglas, arquitectura, identidad de THREAD, MANIFEST, HANDOFF y decisiones consolidadas deben resolverse desde `knowledge`.
 
-Recommended format:
+## 3. Creación de THREAD y MANIFEST
 
-```text
-CONVERSATION RESPONSIBILITY
+Cuando una conversación nueva declara una responsabilidad y no existe un THREAD compatible:
 
-Owner/task:
-In scope:
-Out of scope:
-Primary documents:
-Primary code/data:
-Expected deliverable:
-Validation required:
-Next handoff, if applicable:
+1. resolver primero el estado de `knowledge`;
+2. declarar el nuevo THREAD como `USER_DECLARED`;
+3. crear su MANIFEST;
+4. registrar en la primera versión del MANIFEST el SHA exacto de `knowledge` que se utilizó para crear la declaración:
+
+```yaml
+repository:
+  knowledge_branch: knowledge
+  created_from_knowledge_commit: <sha>
 ```
 
-The conversation must actively enforce this boundary.
+`created_from_knowledge_commit` es **histórico**: identifica el estado de conocimiento desde el que nació el THREAD y no se actualiza automáticamente.
 
-### In-scope work
+No crear nuevos MANIFEST con un campo ambiguo `knowledge_commit` que pueda interpretarse como el estado actual de `knowledge`.
 
-The conversation may:
+El estado actual de conocimiento se obtiene siempre leyendo la rama `knowledge` vigente. Si una implementación necesita fijar una base reproducible, utilizar `knowledge_basis.commit` con esa función explícita.
 
-- inspect project context needed to perform its assigned task;
-- modify files directly relevant to the assigned task;
-- add or update tests relevant to those changes;
-- update documentation required to preserve the decision trail;
-- create a handoff for the next specialised conversation.
+El usuario no necesita conocer la estructura interna del MANIFEST para declarar una responsabilidad.
 
-### Out-of-scope work
+## 4. Responsabilidad y alcance
 
-The conversation must not silently:
+Toda conversación sustantiva debe establecer un contrato compacto de responsabilidad antes de que el trabajo se expanda.
 
-- redesign unrelated subsystems;
-- download broad datasets merely because they are available;
-- modify raw source data without an explicit reason;
-- define final scoring rules when the task is only data preparation;
-- introduce interpolation when the assigned task does not cover it;
-- perform exhaustive documentary research when the task is only quantitative screening;
-- change project-wide methodology without documenting and escalating the decision;
-- consume another conversation's responsibility merely because the work appears adjacent.
-
-If an adjacent issue blocks the assigned task, record it as a dependency/open question rather than expanding scope automatically.
-
-## 4. Required repository orientation
-
-The first repository-oriented inspection should normally cover:
+Formato recomendado:
 
 ```text
-1. docs/PROJECT_WORKING_RULES.md
-2. latest relevant project report
-3. relevant THREAD_* handoff
-4. README.md where applicable
-5. relevant source code
-6. relevant tests
-7. Git branch/status/diff
+RESPONSABILIDAD DE LA CONVERSACIÓN
+
+Responsabilidad:
+Dentro de alcance:
+Fuera de alcance:
+Documentos principales:
+Código/datos principales:
+Entregable esperado:
+Validación requerida:
+Siguiente handoff, si procede:
 ```
 
-Do not inspect the entire repository indiscriminately. Start with the minimum context needed to establish the task boundary and then expand only where the assigned task requires it.
+La conversación debe hacer cumplir activamente este límite.
 
-## 5. Current project documentation hierarchy
+### Trabajo dentro de alcance
 
-The project currently uses three principal document roles:
+Puede:
 
-### Master rules
+- inspeccionar el contexto necesario para su tarea;
+- modificar archivos directamente relevantes;
+- añadir o actualizar tests relevantes;
+- actualizar documentación necesaria para conservar la trazabilidad;
+- crear un handoff para la siguiente conversación especializada.
+
+### Trabajo fuera de alcance
+
+No debe:
+
+- rediseñar subsistemas no relacionados;
+- descargar grandes datasets sólo porque estén disponibles;
+- modificar datos raw sin razón explícita;
+- definir scoring definitivo cuando la tarea sólo cubre preparación de datos;
+- introducir interpolación cuando la responsabilidad no la incluye;
+- realizar investigación documental exhaustiva cuando la tarea sólo cubre cribado cuantitativo;
+- cambiar metodología de proyecto sin documentar y escalar la decisión;
+- asumir la responsabilidad de otra conversación porque el trabajo parezca adyacente.
+
+Si un problema adyacente bloquea la tarea, registrarlo como dependencia/cuestion abierta en lugar de ampliar automáticamente el alcance.
+
+## 5. Orientación mínima del repositorio
+
+La inspección inicial debe cubrir normalmente:
+
+```text
+1. knowledge
+2. docs/PROJECT_WORKING_RULES.md
+3. docs/THREAD_ARCHITECTURE.md
+4. informe de proyecto relevante
+5. MANIFEST/HANDOFF específico, si existe
+6. README.md cuando proceda
+7. código y tests relevantes
+8. rama/commit de trabajo resueltos desde el MANIFEST
+```
+
+No inspeccionar todo el repositorio indiscriminadamente. Comenzar con el contexto mínimo necesario y ampliar sólo según la responsabilidad.
+
+## 6. Jerarquía documental
+
+### Reglas maestras
 
 `docs/PROJECT_WORKING_RULES.md`
 
-Permanent operating rules for all conversations. It defines provenance, branch discipline, documentation, data semantics and completion rules. fileciteturn46file0L2-L2
+Reglas operativas permanentes.
 
-### Project reports
+### Arquitectura de hilos
 
-Example:
+`docs/THREAD_ARCHITECTURE.md`
 
-`docs/WATER_PIPELINE_AUDIT_REPORT.md`
+Especificación del modelo operativo de THREADs: identidad, responsabilidad, estados, ciclos, dependencias, HANDOFF, MANIFEST, autoridad documental y bootstrap.
 
-Reports record implemented work, validated results, decisions, scope changes and current status. The latest water report is version 0.3.0 and records the current AEMET/W2 state. fileciteturn34file0L2-L2
+### Informes de proyecto
 
-### Task-specific handoffs
+Los informes registran lo implementado, probado, medido, decidido y cambiado.
 
-Example:
+### MANIFESTs y HANDOFFs
 
-`docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`
+Los MANIFESTs registran el estado operativo actual de cada THREAD. Los HANDOFFs transfieren responsabilidad/contexto. Ambos se consolidan en `knowledge`.
 
-A handoff narrows the responsibility of a specialised next conversation and records its starting state, constraints and deliverables. The current Station/Location/Evidence handoff is version 0.1.0. fileciteturn35file0L2-L2
+## 7. Aislamiento de responsabilidades
 
-## 6. Known current project state
-
-At the creation of this bootstrap document:
-
-- repository: `gineslm/climascope`;
-- current working branch for the water audit: `agent/water-pipeline-audit`;
-- local project root known to the project: `C:\Users\User\Downloads\climate_refuge_aemet_v0_4`;
-- AEMET/W2 work has been completed and locally validated with 13 tests;
-- current AEMET raw and W2 outputs are under `data/raw/aemet/`;
-- stations audited include `8416`, `3195`, and `7012D`;
-- the next planned specialised design task is Station / Location / Scope / Evidence;
-- interpolation is currently deferred;
-- broad acquisition is currently deferred until prioritisation is designed;
-- documentary research is intended to be progressive and prioritised rather than exhaustive.
-
-These statements are context only. The latest report and handoff take precedence if versions or decisions have changed.
-
-## 7. Scope isolation rules
-
-ClimaScope should be developed as a set of bounded workstreams. Typical responsibilities may include:
+ClimaScope debe desarrollarse como un conjunto de líneas acotadas. Algunas responsabilidades típicas son:
 
 ```text
-A. Project method / documentation
-B. Station catalogue and acquisition
-C. Climate data / QC
-D. Water data / QC / aggregation
-E. Station-Location-Scope domain model
-F. Documentary evidence / qualitative research
-G. Spatial analysis / interpolation
+A. Método / documentación de proyecto
+B. Catálogo y adquisición de estaciones
+C. Datos climáticos / QC
+D. Datos de agua / QC / agregación
+E. Modelo Station-Location-Scope
+F. Evidencia documental / investigación cualitativa
+G. Análisis espacial / interpolación
 H. Scoring / ranking
-I. Map / application UX
-J. Data architecture / persistence
+I. UX / aplicación / mapa
+J. Arquitectura de datos / persistencia
 K. Testing / CI / release engineering
 ```
 
-A conversation should normally own one primary workstream and, if necessary, a small number of explicitly named secondary dependencies.
+Una conversación debe asumir normalmente una línea principal y, como máximo, dependencias secundarias explícitas.
 
-Workstream labels are organisational aids, not permission to change unrelated project areas.
+## 8. Escalado en lugar de expansión de alcance
 
-## 8. Escalation instead of scope expansion
-
-When the conversation discovers a problem outside its responsibility, use:
+Cuando aparezca un problema fuera de responsabilidad:
 
 ```text
-DISCOVERED OUT-OF-SCOPE ISSUE
-Issue:
-Why it matters to current task:
-Evidence:
-Recommended owner/workstream:
-Blocking? yes/no
-Proposed next handoff:
+PROBLEMA FUERA DE ALCANCE
+Problema:
+Por qué afecta a la tarea actual:
+Evidencia:
+Responsable recomendado:
+¿Bloquea?: sí/no
+Siguiente handoff propuesto:
 ```
 
-Only expand scope when the project owner explicitly authorises it or when the current task definition already includes that responsibility.
+Sólo ampliar el alcance cuando el propietario lo autorice o la definición actual ya lo incluya.
 
-## 9. Documentation discipline
+## 9. Disciplina documental
 
-If a conversation makes a substantive methodological decision, the decision must not remain only in chat.
+Si una conversación adopta una decisión metodológica sustantiva, no debe permanecer sólo en el chat.
 
-The conversation should:
+Debe:
 
-1. identify the relevant report/document;
-2. update its version;
-3. record the decision and rationale at the appropriate level;
-4. commit the documentation to GitHub;
-5. reference the resulting commit in the closing message.
+1. identificar el documento adecuado;
+2. actualizar su versión;
+3. registrar decisión y justificación;
+4. hacer commit en GitHub;
+5. consolidar en `knowledge` cuando modifique conocimiento o estructura autoritativos;
+6. registrar los SHAs relevantes.
 
-The master rules are changed only for project-wide operating rules, not for every task-level detail.
+Las reglas maestras sólo cambian cuando cambia una regla operativa global. Las decisiones específicas pertenecen al documento, informe, MANIFEST o HANDOFF correspondiente.
 
-Task-specific decisions belong in the relevant report or handoff.
+## 10. Seguridad de datos
 
-## 10. Data safety
+El bootstrap hereda las reglas del proyecto:
 
-The bootstrap inherits the project rules:
+- preservar material raw;
+- nunca convertir silenciosamente missing en cero;
+- distinguir observado, derivado y modelado;
+- conservar procedencia;
+- no regenerar grandes datasets innecesariamente;
+- no tratar `not_assessed` como ausencia de riesgo;
+- utilizar tests y QC antes de promover datos a análisis.
 
-- preserve raw source material;
-- never silently turn missing into zero;
-- distinguish observed, derived and modelled values;
-- preserve source/provenance;
-- do not regenerate large datasets unnecessarily;
-- do not treat `not_assessed` as `no risk`;
-- use tests and QC before promoting data to analytical use.
+## 11. Protocolo de finalización
 
-## 11. Completion protocol
-
-A substantive conversation should close with:
+Una conversación sustantiva debe cerrar con:
 
 ```text
-RESPONSIBILITY CLOSED
+RESPONSABILIDAD CERRADA
 
-In-scope work completed:
-Out-of-scope issues discovered:
-Files changed:
-Data changed:
-Tests/validation:
-Documentation versions:
-Branch:
+Trabajo dentro de alcance completado:
+Problemas fuera de alcance descubiertos:
+Archivos modificados:
+Datos modificados:
+Tests/validación:
+Versiones documentales:
+Rama:
 Commit SHA:
-Remaining uncertainty:
-Next handoff:
+SHA de consolidación en knowledge:
+Incertidumbre restante:
+Siguiente handoff:
 ```
 
-The final project state must be reproducible from GitHub without requiring the historical conversation.
+El estado final debe poder reproducirse desde GitHub sin necesitar el histórico de la conversación.
 
-## 12. Copy/paste compact version for new conversations
+## 12. Versión compacta para nuevas conversaciones
 
-The following block can be used directly as the opening context of a new conversation:
-
-> **ClimaScope — conversation bootstrap**
+> **ClimaScope — bootstrap de conversación**
 >
-> Repository: `gineslm/climascope`  
-> Project root: `C:\Users\User\Downloads\climate_refuge_aemet_v0_4`  
-> Source of truth: GitHub repository  
+> Repositorio: `gineslm/climascope`  
+> Fuente de verdad: GitHub  
+> Raíz de conocimiento: `knowledge`
 >
-> Before doing any work, read `docs/PROJECT_WORKING_RULES.md`, then the latest relevant report and any task-specific `docs/THREAD_*` handoff. Inspect the relevant code/tests and report the current branch and documentation versions. Do not invent missing project documents; request them if needed.
+> Antes de trabajar, entra conceptualmente en `knowledge`, lee `docs/PROJECT_WORKING_RULES.md` y `docs/THREAD_ARCHITECTURE.md`, y después el informe, MANIFEST o HANDOFF aplicable. No inventes documentos ausentes.
 >
-> After orientation, ask me to define:
-> 1. the responsibility of this conversation;
-> 2. what is explicitly out of scope;
-> 3. the primary documents/code/data it should work on;
-> 4. the expected deliverable;
-> 5. the required validation.
+> Si se declara una responsabilidad nueva y no existe THREAD compatible, crea una THREAD DECLARATION `USER_DECLARED` y su MANIFEST. La primera versión del MANIFEST debe registrar `created_from_knowledge_commit` con el SHA de `knowledge` utilizado para crearlo. Ese SHA es histórico; el estado vigente se resuelve siempre desde `knowledge`.
 >
-> Keep this conversation narrowly scoped. If you discover an adjacent issue, record it as an out-of-scope dependency rather than silently expanding the task. Any substantive decision must be versioned in the repository documentation. At completion, provide the files changed, tests, documentation versions, branch, commit SHA and next handoff if required.
+> Mantén esta conversación acotada. Si aparece una dependencia adyacente, regístrala como fuera de alcance. Al terminar, informa de archivos, tests, versiones documentales, rama, SHA de trabajo y SHA de consolidación en `knowledge` cuando corresponda.
 
-## 13. Version history
+## 13. Historial de versiones
 
-| Version | Date | Change |
+| Versión | Fecha | Cambio |
 |---|---|---|
-| 1.0.0 | 2026-08-15 | Initial standard bootstrap protocol for independent, responsibility-bounded ClimaScope conversations. |
+| 1.0.0 | 2026-08-15 | Bootstrap estándar inicial para conversaciones independientes y acotadas por responsabilidad. |
+| 1.1.0 | 2026-08-16 | Alineación con `knowledge` como raíz de bootstrap y distinción explícita entre `created_from_knowledge_commit` y estado vigente de `knowledge`. |
