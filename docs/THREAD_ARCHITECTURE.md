@@ -212,9 +212,9 @@ Debe resolver, cuando proceda:
 
 ### 7.1 Referencia de conocimiento del MANIFEST
 
-El MANIFEST debe distinguir entre **el estado de conocimiento utilizado para crear el THREAD** y **el estado vigente de `knowledge`**.
+El MANIFEST debe distinguir entre **el estado de conocimiento desde el que se dio de alta el THREAD** y **el estado vigente de `knowledge`**.
 
-Al crear un THREAD, registrar el commit exacto de `knowledge` que se leyó como base histórica de creación:
+Al dar de alta un THREAD (crear su MANIFEST), registrar el commit de `knowledge` leído como base:
 
 ```yaml
 repository:
@@ -224,13 +224,18 @@ repository:
   work_commit: <sha>
 ```
 
-`created_from_knowledge_commit` significa: **«este THREAD fue declarado a partir de este estado de `knowledge`»**. Es una referencia histórica y no se actualiza automáticamente cuando `knowledge` avanza.
+**Definición canónica.** `created_from_knowledge_commit` es el commit de `knowledge` desde el que se **da de alta** el THREAD mediante la creación de su MANIFEST. Tiene la **misma semántica para los tres orígenes** (`USER_DECLARED`, `THREAD_DERIVED`, `MIGRATED`): siempre el commit de alta vía MANIFEST. Es una referencia histórica **inmutable**: no se actualiza cuando `knowledge` avanza ni por transferencias posteriores, y no depende del concepto de «declaración».
 
-No utilizar `knowledge_commit` sin calificador para representar el estado actual de `knowledge`, porque induce a interpretar un SHA histórico como si fuera una referencia dinámica.
+No representa el **estado vigente** de `knowledge` (que se resuelve siempre leyendo la rama) ni la **prehistoria** de la responsabilidad. En un THREAD `MIGRATED`, la historia previa a la formalización se representa mediante `origin.source_id` y las referencias al corpus/documentación incorporados, no mediante este campo.
 
-El estado vigente del conocimiento se resuelve siempre desde la rama `knowledge` y sus documentos actuales. Si un THREAD necesita fijar una base histórica para una implementación o una dependencia reproducible, puede utilizar `knowledge_basis.commit` con esa función explícita.
+**Forma canónica única**: el campo plano `created_from_knowledge_commit`. Quedan retiradas las variantes para el mismo concepto:
 
-Un MANIFEST nuevo debe aplicar esta distinción desde su primera versión; no debe copiar el campo ambiguo de un MANIFEST anterior.
+- `knowledge_commit` sin calificador (induce a leer un SHA histórico como referencia dinámica);
+- la forma anidada `created_from_knowledge` con `branch`/`commit`.
+
+Si un THREAD necesita fijar una base histórica para una implementación o dependencia reproducible de software, puede utilizar `knowledge_basis.commit` con esa función explícita; `knowledge_basis` no se emplea como base de alta de un THREAD.
+
+Un MANIFEST nuevo debe aplicar esta distinción desde su primera versión; no debe copiar un campo ambiguo de un MANIFEST anterior.
 
 Los campos se utilizan según el tipo de THREAD. Un THREAD exclusivamente documental puede no tener `work_branch`.
 
