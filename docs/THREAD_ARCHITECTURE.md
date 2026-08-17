@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.3.1  
+**Versión:** 0.5.0  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -22,7 +22,7 @@ SOFTWARE  → desarrollo, integración y publicación del software
 ## 2. Principios
 
 1. Un THREAD es una entidad persistente de trabajo; no es un chat.
-2. Una conversación es una instancia operativa que puede conectarse a un THREAD.
+2. Una conversación es una instancia operativa mediante la cual un agente se conecta a un THREAD y opera sobre él.
 3. Toda instancia debe tener una responsabilidad delimitada.
 4. Una conversación no es fuente autoritativa del proyecto.
 5. El conocimiento duradero debe sincronizarse con el repositorio.
