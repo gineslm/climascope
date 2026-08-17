@@ -173,15 +173,17 @@ El `thread_id` permanece estable durante la vida del THREAD. Los ciclos posterio
 
 ```yaml
 origin:
-  type: HANDOFF | USER_DECLARED | MIGRATED
+  type: USER_DECLARED | THREAD_DERIVED | MIGRATED
   source_id:
 ```
 
-- `HANDOFF`: declarado mediante una transferencia.
-- `USER_DECLARED`: declarado directamente por una conversación nueva.
-- `MIGRATED`: formalizado posteriormente desde una conversación/responsabilidad existente.
+`origin.type` representa el **origen de la responsabilidad**, no el mecanismo por el que llegó ni el momento de formalización:
 
-El origen es histórico y no cambia por posteriores transferencias.
+- `USER_DECLARED`: responsabilidad nueva identificada por el usuario desde una conversación nueva.
+- `THREAD_DERIVED`: responsabilidad nacida del trabajo de otro THREAD existente. Incluye el caso en que la responsabilidad se recibe por HANDOFF: el HANDOFF es el vehículo de transferencia, no el origen.
+- `MIGRATED`: importación de una conversación/responsabilidad externa —con su contexto y documentos— que se adopta como THREAD, extrayendo su responsabilidad y su corpus y revisando su compatibilidad con los THREAD preexistentes.
+
+El origen es histórico y no cambia por posteriores transferencias. `source_id` referencia la fuente del origen (la conversación, el THREAD de origen o la fuente importada, según el tipo).
 
 ## 6. Alta del THREAD
 
@@ -303,15 +305,15 @@ el agente debe:
 3. identificar el THREAD receptor;
 4. localizar su MANIFEST;
 5. comprobar si el THREAD ya está inicializado;
-6. si no existe, crear/inicializar THREAD y MANIFEST a partir de la declaración del HANDOFF;
-7. registrar `origin.type: HANDOFF` y `source_id`;
+6. si no existe, dar de alta el THREAD creando su MANIFEST a partir del contexto transferido por el HANDOFF;
+7. registrar `origin.type` según el origen de la responsabilidad (normalmente `THREAD_DERIVED` cuando procede de otro THREAD) y `source_id`; el HANDOFF es el vehículo, no el origen;
 8. resolver documentos y dependencias desde `knowledge`;
 9. validar compatibilidad del HANDOFF con el estado consolidado;
 10. resolver desde el MANIFEST la rama/commit de trabajo;
 11. pasar a `ACTIVE` cuando la inicialización sea válida;
 12. informar del diagnóstico y comenzar el trabajo.
 
-La creación del THREAD es la primera responsabilidad operativa cuando el HANDOFF declara un receptor inexistente.
+El alta del THREAD (crear su MANIFEST) es la primera responsabilidad operativa cuando el HANDOFF transfiere hacia un receptor inexistente.
 
 ### 9.3 Entrada directa por THREAD
 
