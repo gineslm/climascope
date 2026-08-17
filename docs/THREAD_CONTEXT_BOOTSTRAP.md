@@ -1,6 +1,6 @@
 # ClimaScope — Bootstrap de contexto de nuevos hilos
 
-**Versión del documento:** 1.1.0  
+**Versión del documento:** 1.2.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama raíz de conocimiento:** `knowledge`  
@@ -38,14 +38,15 @@ Cuando este documento forme parte del contexto del proyecto, la conversación de
 
 Una rama de trabajo indicada por un HANDOFF o MANIFEST es una referencia al trabajo operativo, no una fuente alternativa de verdad global. Las reglas, arquitectura, identidad de THREAD, MANIFEST, HANDOFF y decisiones consolidadas deben resolverse desde `knowledge`.
 
-## 3. Creación de THREAD y MANIFEST
+## 3. Alta de THREAD (crear su MANIFEST)
 
-Cuando una conversación nueva declara una responsabilidad y no existe un THREAD compatible:
+Dar de alta un THREAD es **crear y consolidar su MANIFEST**; no existe un artefacto de «declaración» independiente. Un THREAD existe si y solo si existe su MANIFEST.
+
+Cuando una conversación nueva identifica una responsabilidad y no existe un THREAD compatible:
 
 1. resolver primero el estado de `knowledge`;
-2. declarar el nuevo THREAD como `USER_DECLARED`;
-3. crear su MANIFEST;
-4. registrar en la primera versión del MANIFEST el SHA exacto de `knowledge` que se utilizó para crear la declaración:
+2. crear su MANIFEST (el alta) con `origin.type: USER_DECLARED`;
+3. registrar en el MANIFEST el commit de `knowledge` desde el que se da de alta el THREAD:
 
 ```yaml
 repository:
@@ -53,13 +54,11 @@ repository:
   created_from_knowledge_commit: <sha>
 ```
 
-`created_from_knowledge_commit` es **histórico**: identifica el estado de conocimiento desde el que nació el THREAD y no se actualiza automáticamente.
+`created_from_knowledge_commit` es el commit de `knowledge` desde el que se da de alta el THREAD mediante su MANIFEST. Tiene la misma semántica para los tres orígenes (`USER_DECLARED`, `THREAD_DERIVED`, `MIGRATED`); es histórico e inmutable y no se actualiza cuando `knowledge` avanza.
 
-No crear nuevos MANIFEST con un campo ambiguo `knowledge_commit` que pueda interpretarse como el estado actual de `knowledge`.
+Forma canónica única: el campo plano `created_from_knowledge_commit`. No usar `knowledge_commit` sin calificador ni la forma anidada `created_from_knowledge`. El estado vigente se resuelve siempre leyendo la rama `knowledge`; para fijar una base reproducible de software puede usarse `knowledge_basis.commit`.
 
-El estado actual de conocimiento se obtiene siempre leyendo la rama `knowledge` vigente. Si una implementación necesita fijar una base reproducible, utilizar `knowledge_basis.commit` con esa función explícita.
-
-El usuario no necesita conocer la estructura interna del MANIFEST para declarar una responsabilidad.
+El usuario no necesita conocer la estructura interna del MANIFEST.
 
 ## 4. Responsabilidad y alcance
 
@@ -241,7 +240,7 @@ El estado final debe poder reproducirse desde GitHub sin necesitar el histórico
 >
 > Antes de trabajar, entra conceptualmente en `knowledge`, lee `docs/PROJECT_WORKING_RULES.md` y `docs/THREAD_ARCHITECTURE.md`, y después el informe, MANIFEST o HANDOFF aplicable. No inventes documentos ausentes.
 >
-> Si se declara una responsabilidad nueva y no existe THREAD compatible, crea una THREAD DECLARATION `USER_DECLARED` y su MANIFEST. La primera versión del MANIFEST debe registrar `created_from_knowledge_commit` con el SHA de `knowledge` utilizado para crearlo. Ese SHA es histórico; el estado vigente se resuelve siempre desde `knowledge`.
+> Si se identifica una responsabilidad nueva y no existe THREAD compatible, da de alta el THREAD creando su MANIFEST con `origin.type: USER_DECLARED` (no hay un artefacto de declaración aparte). El MANIFEST debe registrar `created_from_knowledge_commit` con el commit de `knowledge` desde el que se da de alta el THREAD; es histórico e inmutable y el estado vigente se resuelve siempre desde `knowledge`.
 >
 > Mantén esta conversación acotada. Si aparece una dependencia adyacente, regístrala como fuera de alcance. Al terminar, informa de archivos, tests, versiones documentales, rama, SHA de trabajo y SHA de consolidación en `knowledge` cuando corresponda.
 
@@ -251,3 +250,4 @@ El estado final debe poder reproducirse desde GitHub sin necesitar el histórico
 |---|---|---|
 | 1.0.0 | 2026-08-15 | Bootstrap estándar inicial para conversaciones independientes y acotadas por responsabilidad. |
 | 1.1.0 | 2026-08-16 | Alineación con `knowledge` como raíz de bootstrap y distinción explícita entre `created_from_knowledge_commit` y estado vigente de `knowledge`. |
+| 1.2.0 | 2026-08-17 | Alineación con Arquitectura 0.5.0 (Alt 1): alta = crear el MANIFEST; retirada de THREAD DECLARATION; `created_from_knowledge_commit` con semántica uniforme y forma canónica única. |
