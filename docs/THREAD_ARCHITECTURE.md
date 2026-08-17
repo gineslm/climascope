@@ -332,7 +332,7 @@ el agente debe:
 7. informar del diagnóstico;
 8. continuar dentro de la responsabilidad vigente.
 
-La conexión directa no crea un nuevo THREAD ni reinicia el ciclo.
+La conexión directa no crea un nuevo THREAD ni reinicia el ciclo. Si no existe MANIFEST para `<thread_id>`, no hay THREAD que conectar: debe formalizarse (crear su MANIFEST) o declararse el estado como inconsistente (§6).
 
 ### 9.4 Entrada desde responsabilidad nueva
 
@@ -361,17 +361,17 @@ se debe entrar en `knowledge`, reconstruir la responsabilidad y comparar la conv
 
 ### Crear THREAD
 
-Convierte una responsabilidad declarada en una entidad persistente con MANIFEST. La primera versión del MANIFEST debe conservar el SHA de `knowledge` utilizado para su creación mediante `created_from_knowledge_commit`.
+Da de alta una entidad nueva **creando y consolidando su MANIFEST** (§6). Es el único acto que da de alta un THREAD; no presupone ni requiere un artefacto de declaración. El MANIFEST fija identidad, alcance, dependencias, estado, `origin.type` (§5.1) y `created_from_knowledge_commit` (§7.1).
 
 ### Conectar con THREAD
 
-Asocia una nueva instancia de conversación a un THREAD existente y recupera su estado vigente.
+Localiza el MANIFEST de un THREAD **existente**, resuelve su estado y su HANDOFF vigente, y asocia una nueva conversación/agente a esa responsabilidad. No crea ni modifica la entidad. Si el THREAD no tiene MANIFEST, no puede conectarse: debe formalizarse (crear su MANIFEST) o declararse el estado como inconsistente (§6).
 
 ### Transferir responsabilidad
 
-Mueve o declara una responsabilidad mediante HANDOFF. Puede iniciar la creación de un receptor o actualizar el estado de uno existente.
+Transfiere el estado operativo de un THREAD mediante HANDOFF. El HANDOFF **no da de alta ni declara** THREADs: si el receptor no existe, primero se le da de alta creando su MANIFEST (§6) y después se transfiere; si existe, se actualiza su estado.
 
-Son operaciones diferentes.
+Son operaciones distintas: **crear** da de alta la entidad; **conectar** engancha una conversación/agente a una entidad existente; **transferir** mueve estado operativo entre agentes.
 
 ## 11. Contrato de responsabilidad
 
