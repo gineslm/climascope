@@ -33,6 +33,8 @@ SOFTWARE  → desarrollo, integración y publicación del software
 10. El conocimiento consolidado y la implementación del software son dimensiones distintas.
 11. La nomenclatura prioriza nombres completos y legibles; no se introducen prefijos compactos mientras no exista necesidad demostrada.
 12. Los identificadores Git que fijan un estado histórico deben expresar su función temporal y no presentarse como si fueran referencias dinámicas al estado actual.
+13. Crear un THREAD es crear y consolidar su MANIFEST; un THREAD existe si y solo si existe su MANIFEST.
+14. No existe un artefacto de «declaración» de THREAD independiente del MANIFEST: «declarar» es la operación de crear el MANIFEST.
 
 ## 3. Modelo de ramas y raíz del proyecto
 
@@ -150,6 +152,8 @@ No todo borrador o pensamiento requiere consolidación. El criterio es si modifi
 
 Un THREAD existe independientemente de que haya una conversación abierta. Su identidad se conserva mediante un MANIFEST.
 
+Un THREAD existe **si y solo si** existe su MANIFEST en `knowledge`: crear un THREAD es crear y consolidar su MANIFEST. Ningún otro artefacto —una responsabilidad enunciada, un HANDOFF, una conversación o una entrada de índice— da de alta un THREAD.
+
 Como mínimo:
 
 ```yaml
@@ -179,28 +183,13 @@ origin:
 
 El origen es histórico y no cambia por posteriores transferencias.
 
-## 6. THREAD DECLARATION
+## 6. Alta del THREAD
 
-Una THREAD DECLARATION convierte una responsabilidad en una entidad persistente.
+Dar de alta un THREAD es **crear y consolidar su MANIFEST**. No existe un artefacto de «declaración» independiente del MANIFEST: «declarar» un THREAD es precisamente la operación que crea su MANIFEST.
 
-Puede originarse desde:
+Regla de existencia (anti-limbo): un THREAD existe **si y solo si** existe su MANIFEST en `knowledge`. No debe operarse ni transferirse un THREAD cuyo MANIFEST no exista; si se intenta conectar con un THREAD sin MANIFEST, debe formalizarse (crear el MANIFEST) o declararse el estado como inconsistente, en lugar de operarlo como si existiera.
 
-```text
-                 THREAD DECLARATION
-                         │
-            ┌────────────┼────────────┐
-            ▼            ▼            ▼
-         HANDOFF     USER_DECLARED   MIGRATED
-            │            │            │
-            └────────────┼────────────┘
-                         ▼
-                       THREAD
-                         │
-                         ▼
-                      MANIFEST
-```
-
-La declaración inicializa identidad, alcance, dependencias y estado antes de considerar completado cualquier trabajo técnico.
+El MANIFEST inicializa identidad, alcance, dependencias, origen y estado (§7) antes de considerar completado cualquier trabajo técnico. El origen de la responsabilidad se registra en `origin.type` (§5.1).
 
 ## 7. MANIFEST
 
@@ -350,12 +339,11 @@ Si una conversación nueva declara una responsabilidad sin HANDOFF:
 1. entrar en `knowledge`;
 2. comprobar si existe THREAD compatible;
 3. si existe, conectar con él;
-4. si no existe, crear una THREAD DECLARATION `USER_DECLARED`;
-5. crear su MANIFEST;
-6. establecer identidad, alcance, dependencias y estado;
-7. registrar `created_from_knowledge_commit` con el SHA de `knowledge` utilizado para crear el MANIFEST;
-8. consolidar la declaración y MANIFEST en `knowledge` cuando constituyan estado persistente;
-9. comenzar el trabajo.
+4. si no existe, crear su MANIFEST (alta del THREAD) con `origin.type: USER_DECLARED`;
+5. establecer en el MANIFEST identidad, alcance, dependencias y estado;
+6. registrar `created_from_knowledge_commit` (§7.1);
+7. consolidar el MANIFEST en `knowledge` cuando constituya estado persistente;
+8. comenzar el trabajo.
 
 El usuario no necesita conocer la estructura interna del MANIFEST.
 
@@ -419,7 +407,7 @@ Si una dependencia cambia, el THREAD debe poder detectar posible obsolescencia a
 
 ## 13. HANDOFF
 
-Un HANDOFF es un artefacto de transferencia o declaración inicial de un receptor. Debe incluir, cuando proceda:
+Un HANDOFF es un artefacto de transferencia de estado operativo de un THREAD existente; no da de alta ni declara THREADs. Debe incluir, cuando proceda:
 
 - identificador y versión;
 - emisor y receptor;
