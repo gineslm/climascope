@@ -454,12 +454,12 @@ Cuando una entrada modifica estado autoritativo, debe consolidarse en `knowledge
 | Integración ChatGPT ↔ proyecto | `CHATGPT_PROJECT_CONTEXT.md` en `knowledge` |
 | Arquitectura de hilos | `THREAD_ARCHITECTURE.md` en `knowledge` |
 | Estado/metodología validada | documentos de conocimiento vigentes en `knowledge` |
-| Identidad/estado actual de THREAD | MANIFEST en `knowledge` |
-| Transferencia/declaración | HANDOFF en `knowledge` |
+| Identidad, estado y alta de THREAD | MANIFEST en `knowledge` |
+| Transferencia de estado operativo | HANDOFF en `knowledge` |
 | Implementación en curso | rama/commit de trabajo |
 | Software integrado | `develop` / `main` |
 | Datos fuente | fuente + procedencia |
-| Conversación | contexto no autoritativo |
+| Conversación/agente | contexto operativo no autoritativo |
 
 Si fuentes comparables discrepan, se expone el conflicto y se determina cuál prevalece.
 
