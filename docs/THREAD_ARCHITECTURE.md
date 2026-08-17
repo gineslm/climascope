@@ -440,11 +440,19 @@ propuesta → discusión → decisión → documentación → implementación/va
 
 El chat no convierte por sí mismo una propuesta en conocimiento autoritativo.
 
-## 15. Activity Log
+## 15. Registro e índice del proyecto
 
-El proyecto puede mantener un registro de actividad para eventos operativos significativos. No debe ser una copia íntegra de conversaciones.
+### 15.1 Registro (Activity Log)
 
-Cuando una entrada modifica estado autoritativo, debe consolidarse en `knowledge` junto con los artefactos afectados.
+Cada THREAD puede mantener un **registro** de su actividad operativa significativa: eventos, decisiones y cambios de estado, con su origen y evidencia. No debe ser una copia íntegra de conversaciones.
+
+El registro es historial: conserva lo ocurrido, pero **no es autoritativo sobre el estado actual** (esa autoridad es del MANIFEST). Cuando una entrada del registro modifica estado autoritativo, debe consolidarse en `knowledge` junto con los artefactos afectados.
+
+### 15.2 Índice del proyecto
+
+El **índice del proyecto** es un artefacto de **descubrimiento**: permite localizar qué THREAD existen y dónde están sus artefactos.
+
+Es **derivado y no autoritativo**: debe poder reconstruirse a partir del conjunto de MANIFEST consolidados en `knowledge`. No es una segunda fuente de verdad; si el índice y un MANIFEST discrepan, **prevalece el MANIFEST**. El índice no da de alta THREAD: refleja los que ya existen (§6).
 
 ## 16. Autoridad documental
 
@@ -456,6 +464,8 @@ Cuando una entrada modifica estado autoritativo, debe consolidarse en `knowledge
 | Estado/metodología validada | documentos de conocimiento vigentes en `knowledge` |
 | Identidad, estado y alta de THREAD | MANIFEST en `knowledge` |
 | Transferencia de estado operativo | HANDOFF en `knowledge` |
+| Historial de actividad del THREAD | Registro (Activity Log) en `knowledge` |
+| Descubrimiento de THREAD | Índice del proyecto (derivado, no autoritativo) |
 | Implementación en curso | rama/commit de trabajo |
 | Software integrado | `develop` / `main` |
 | Datos fuente | fuente + procedencia |
