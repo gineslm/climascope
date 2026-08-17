@@ -1,6 +1,6 @@
 # ClimaScope — Reglas de trabajo del proyecto
 
-**Versión del documento:** 1.2.0  
+**Versión del documento:** 1.3.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama de consolidación documental:** `knowledge`
@@ -64,8 +64,8 @@ main      → software estable/desplegable
 - THREADs y MANIFESTs;
 - HANDOFFs;
 - conocimiento metodológico y decisiones consolidadas;
-- Activity Log u otros registros persistentes;
-- índices o vistas necesarias para descubrir el estado.
+- Registro (Activity Log) u otros registros persistentes;
+- índice de THREAD (derivado de los MANIFEST) y vistas necesarias para descubrir el estado.
 
 Una nueva conversación debe poder reconstruir desde `knowledge` la identidad y el estado de los THREADs sin recorrer arbitrariamente ramas de trabajo.
 
@@ -311,18 +311,11 @@ En la versión 1.0.0 de estas reglas:
 
 Para el estado detallado actual, leer el último `docs/WATER_PIPELINE_AUDIT_REPORT.md` y el handoff específico de la tarea.
 
-## 16. Inventario documental conocido
+## 16. Descubrimiento de THREAD y documentos
 
-Los siguientes documentos del proyecto constan como presentes y relevantes:
+El descubrimiento de los THREAD del proyecto se realiza a partir de sus **MANIFEST consolidados en `knowledge`**, que constituyen el índice del proyecto: **derivado y no autoritativo** (ver `THREAD_ARCHITECTURE.md` §15.2). Si un índice materializado y un MANIFEST discrepan, prevalece el MANIFEST.
 
-| Documento | Función | Versión conocida |
-|---|---|---:|
-| `docs/PROJECT_WORKING_RULES.md` | Reglas operativas permanentes | 1.2.0 |
-| `docs/CHATGPT_PROJECT_CONTEXT.md` | Contexto de integración con ChatGPT | 1.2.0 |
-| `docs/THREAD_ARCHITECTURE.md` | Arquitectura operativa de hilos | 0.3.0 |
-| `docs/THREAD_MANIFEST_ARCHITECTURE_THREAD.md` | Manifest de este hilo | 0.1.0 |
-| `docs/WATER_PIPELINE_AUDIT_REPORT.md` | Informe/auditoría del pipeline de agua | 0.3.1 |
-| `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md` | Handoff del siguiente hilo especializado | 0.1.1 |
+No se mantiene un inventario manual como fuente de verdad: un inventario copiado a mano se desincroniza. Los documentos de referencia (reglas, arquitectura, contexto, informes) y los artefactos de cada THREAD (MANIFEST, HANDOFF, registro) se descubren leyendo la rama `knowledge` vigente.
 
 ## 17. Cómo iniciar un hilo nuevo
 
