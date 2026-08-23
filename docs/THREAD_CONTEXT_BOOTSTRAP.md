@@ -1,6 +1,6 @@
 # ClimaScope — Bootstrap de contexto de nuevos hilos
 
-**Versión del documento:** 1.2.0  
+**Versión del documento:** 1.3.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama raíz de conocimiento:** `knowledge`  
@@ -9,6 +9,8 @@
 ## 1. Propósito
 
 Este documento es el bootstrap estándar para una nueva conversación que trabaje en ClimaScope.
+
+> **Fuente canónica del bloque operativo de bootstrap.** El modelo subyacente (definiciones de entrada, alta y reincorporación) es `THREAD_ARCHITECTURE.md` §9; este documento proporciona la secuencia operativa reutilizable y no lo redefine. `PROJECT_WORKING_RULES.md` referencia este documento, y `PROJECT_AGENT_CONTEXT.md` conserva un espejo de su §12 como única duplicación tolerada.
 
 Su propósito es hacer que cada conversación:
 
@@ -251,3 +253,4 @@ El estado final debe poder reproducirse desde GitHub sin necesitar el histórico
 | 1.0.0 | 2026-08-15 | Bootstrap estándar inicial para conversaciones independientes y acotadas por responsabilidad. |
 | 1.1.0 | 2026-08-16 | Alineación con `knowledge` como raíz de bootstrap y distinción explícita entre `created_from_knowledge_commit` y estado vigente de `knowledge`. |
 | 1.2.0 | 2026-08-17 | Alineación con Arquitectura 0.5.0 (Alt 1): alta = crear el MANIFEST; retirada de THREAD DECLARATION; `created_from_knowledge_commit` con semántica uniforme y forma canónica única. |
+| 1.3.0 | 2026-08-23 | Declaración de canonicidad del bloque operativo (M1); remisión explícita a THREAD_ARCHITECTURE.md §9. |
