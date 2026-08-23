@@ -1,5 +1,7 @@
 # HANDOFF — thread-architecture-methodology-evolution
 
+> Handoff de creación (histórico). No es un handoff de salida vigente.
+
 ## Identity
 
 - `thread_id`: `thread-architecture-methodology-evolution`

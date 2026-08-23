@@ -1,6 +1,6 @@
 # ClimaScope — Índice del proyecto
 
-**Versión:** 0.1.0  
+**Versión:** 0.2.0  
 **Estado:** Activo  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -15,9 +15,12 @@ Artefacto de **descubrimiento**: permite localizar qué THREAD existen y dónde 
 | thread_id | status | dominio | MANIFEST | handoff vigente | `created_from_knowledge_commit` |
 |---|---|---|---|---|---|
 | `thread-architecture` | CLOSED | arquitectura de hilos (ciclo fundacional) | `docs/core/threads/architecture/MANIFEST.md` | — | `3375784` |
-| `thread-architecture-methodology-evolution` | ACTIVE | evolución de arquitectura, metodología y reglas | `docs/core/threads/architecture-methodology-evolution/MANIFEST.md` | `THREAD_ARCHITECTURE_METHODOLOGY_EVOLUTION_HANDOFF` | `1cb593d` |
+| `thread-architecture-methodology-evolution` | ACTIVE | evolución de arquitectura, metodología y reglas | `docs/core/threads/architecture-methodology-evolution/MANIFEST.md` | — (nota¹) | `1cb593d` |
 | `thread-app-scope-ux` | ACTIVE | UX / aplicación de exploración del Scope | `docs/threads/app-scope-ux/MANIFEST.md` | — | `3375784` |
 | `thread-station-location-evidence` | ACTIVE | modelo de dominio Station / Location / Scope / Evidence | `docs/threads/station-location-evidence/MANIFEST.md` | — | `84d8845` |
+| `thread-water-pipeline` | ACTIVE | adquisición, QC y agregación de datos de agua/precipitación (pipeline W) | `docs/threads/water-pipeline/MANIFEST.md` | — | `a496358` |
+
+¹ `thread-architecture-methodology-evolution` no tiene handoff de salida vigente: `THREAD_ARCHITECTURE_METHODOLOGY_EVOLUTION_HANDOFF` es su handoff de **creación**, histórico, registrado en `handoff_history` del MANIFEST (ver `docs/core/threads/architecture-methodology-evolution/HANDOFF.md`).
 
 ## Mantenimiento
 
@@ -28,3 +31,4 @@ Regenerar este índice tras cualquier alta, cierre o cambio de estado de un THRE
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 0.1.0 | 2026-08-23 | Primera materialización del índice derivado (IMP-008), consistente con los cuatro THREAD tras la consolidación de coherencia estructural (Lote 2A). |
+| 0.2.0 | 2026-08-23 | Reorganización 2C: rutas de MANIFEST actualizadas a `core/`/`threads/`; alta de `thread-water-pipeline`; handoff de `thread-architecture-methodology-evolution` reclasificado como histórico (de creación, no vigente). |

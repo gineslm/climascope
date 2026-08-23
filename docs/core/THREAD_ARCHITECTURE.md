@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.5.1  
+**Versión:** 0.6.0  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -489,3 +489,20 @@ Antes de cerrar un THREAD sustantivo:
 8. indicar incertidumbres restantes.
 
 Cerrar un THREAD no elimina su conocimiento.
+
+## 18. Disposición física de `docs/`
+
+`docs/` se organiza en dos ramas físicas según la naturaleza de la responsabilidad, no según su estado o antigüedad:
+
+```text
+docs/
+├── core/              → sistema: hilos meta + documentos de sistema
+│   └── threads/       → MANIFEST/HANDOFF/IMPROVEMENTS de hilos meta
+└── threads/           → hilos de dominio (uno por THREAD, artefactos por rol)
+```
+
+**Criterio meta vs. dominio.** Un THREAD es **meta** si su responsabilidad es el propio sistema —arquitectura, metodología, reglas— y vive en `docs/core/threads/<thread>/`; es de **dominio** si produce el producto de ClimaScope —datos, modelo científico, UX— y vive en `docs/threads/<thread>/`. Los documentos de sistema que no son MANIFEST de un THREAD concreto (`PROJECT_WORKING_RULES.md`, `THREAD_ARCHITECTURE.md`, `THREAD_CONTEXT_BOOTSTRAP.md`, `PROJECT_AGENT_CONTEXT.md`, `PROJECT_INDEX.md`) viven directamente en `docs/core/`.
+
+Dentro de cada carpeta de THREAD, los artefactos se nombran por **rol**, no por el nombre del THREAD repetido en el fichero (`MANIFEST.md`, `HANDOFF.md`, `MODEL.md`, `AUDIT_REPORT.md`, etc.), ya que el nombre del THREAD ya está fijado por el nombre de la carpeta.
+
+Esta disposición es física, no autoritativa: la identidad y el estado de cada THREAD siguen residiendo en su MANIFEST (§7), no en su ubicación en el árbol.

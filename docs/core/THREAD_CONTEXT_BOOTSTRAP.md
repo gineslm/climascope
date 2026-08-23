@@ -1,6 +1,6 @@
 # ClimaScope — Bootstrap de contexto de nuevos hilos
 
-**Versión del documento:** 1.3.0  
+**Versión del documento:** 1.4.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama raíz de conocimiento:** `knowledge`  
@@ -254,3 +254,4 @@ El estado final debe poder reproducirse desde GitHub sin necesitar el histórico
 | 1.1.0 | 2026-08-16 | Alineación con `knowledge` como raíz de bootstrap y distinción explícita entre `created_from_knowledge_commit` y estado vigente de `knowledge`. |
 | 1.2.0 | 2026-08-17 | Alineación con Arquitectura 0.5.0 (Alt 1): alta = crear el MANIFEST; retirada de THREAD DECLARATION; `created_from_knowledge_commit` con semántica uniforme y forma canónica única. |
 | 1.3.0 | 2026-08-23 | Declaración de canonicidad del bloque operativo (M1); remisión explícita a THREAD_ARCHITECTURE.md §9. |
+| 1.4.0 | 2026-08-23 | Reorganización 2C: todas las rutas actualizadas a `docs/core/…`; bloque compacto §12 regenerado con las rutas nuevas. |

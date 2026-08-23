@@ -87,17 +87,17 @@ Validación: coherencia con `docs/core/THREAD_ARCHITECTURE.md` §7; consolidaci�
 ## 8. HANDOFF actual e histórico
 
 ```yaml
-current_handoff:
-  handoff_id: THREAD_ARCHITECTURE_METHODOLOGY_EVOLUTION_HANDOFF
-  version: 1        # el HANDOFF no declara versión; asumido (ver Cuestiones abiertas)
-  status: ACTIVE
+current_handoff: none
 
 handoff_history:
   - handoff_id: THREAD_ARCHITECTURE_METHODOLOGY_EVOLUTION_HANDOFF
-    version: 1
+    version: 1        # el HANDOFF no declara versión; asumido (ver Cuestiones abiertas)
     role: CREATION
-    status: ACTIVE
+    status: CLOSED
+    file: docs/core/threads/architecture-methodology-evolution/HANDOFF.md
 ```
+
+Reclasificado en el Lote 2C: era un handoff de **creación** (transfirió la responsabilidad inicial de este THREAD), no un handoff de salida vigente. No hay handoff activo en este momento.
 
 ## 9. Registro de mejoras vigente
 

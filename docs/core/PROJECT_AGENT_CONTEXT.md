@@ -1,6 +1,6 @@
 # ClimaScope — Contexto del proyecto para el agente asistente
 
-**Versión:** 1.4.0  
+**Versión:** 1.5.0  
 **Estado:** Activo  
 **Repositorio:** `gineslm/climascope`  
 **Rama de consolidación documental:** `knowledge`
@@ -56,3 +56,4 @@ Este documento es el punto de integración con el agente y un **espejo** del blo
 |---|---|---|
 | 1.3.0 | 2026-08-17 | Alineación con Arquitectura 0.5.0 (Alt 1): alta = crear el MANIFEST; retirada de la «declaración» de THREAD; `origin.type` sin `HANDOFF`. |
 | 1.4.0 | 2026-08-23 | Consolidación del bootstrap (M1) y renombrado a `PROJECT_AGENT_CONTEXT.md`, agnóstico respecto al agente: el documento se reduce a comandos de entrada y bloque compacto (espejo de `THREAD_CONTEXT_BOOTSTRAP.md` §12); el protocolo detallado se remite a los canónicos. |
+| 1.5.0 | 2026-08-23 | Reorganización 2C: todas las rutas actualizadas a `docs/core/…`; bloque espejo regenerado desde `THREAD_CONTEXT_BOOTSTRAP.md` §12. |

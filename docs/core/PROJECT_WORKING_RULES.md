@@ -1,6 +1,6 @@
 # ClimaScope — Reglas de trabajo del proyecto
 
-**Versión del documento:** 1.4.0  
+**Versión del documento:** 1.5.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama de consolidación documental:** `knowledge`
@@ -317,3 +317,4 @@ El cierre sigue el protocolo de §9 de este documento y el formato de finalizaci
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 1.4.0 | 2026-08-23 | Consolidación del bootstrap (M1): §2/§17/§18 remiten a los canónicos; retirada de la redundancia interna de cierre. |
+| 1.5.0 | 2026-08-23 | Reorganización 2C: todas las rutas de remisión actualizadas a `docs/core/…`. |
