@@ -1,19 +1,21 @@
 # ClimaScope — Manifest del hilo de arquitectura de hilos
 
-**Versión:** 0.3.0  
-**Estado:** READY_FOR_HANDOFF  
+**Versión:** 0.4.0  
+**Estado:** CLOSED  
 **Ciclo:** 1  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
 **Rama de trabajo histórica:** `agent/thread-architecture`  
 **Rama raíz de conocimiento:** `knowledge`
 
+> **Hilo cerrado.** Su ciclo fundacional está cumplido: produjo y consolidó la arquitectura de hilos. El mantenimiento y la evolución de esa arquitectura corresponden a `thread-architecture-methodology-evolution`. Se conserva como registro de procedencia; no es una línea de trabajo activa.
+
 ## 1. Identidad
 
 ```yaml
 thread_id: thread-architecture
-domain: arquitectura de hilos de trabajo
-status: READY_FOR_HANDOFF
+domain: arquitectura de hilos de trabajo (ciclo fundacional)
+status: CLOSED
 owner: línea de arquitectura del proyecto
 created: 2026-08-15
 current_cycle: 1
@@ -22,13 +24,13 @@ origin:
   source_id: conversation
 repository:
   knowledge_branch: knowledge
-  knowledge_commit: 33757848176c6d8e3f53b5e2c35b7048b657b286
+  created_from_knowledge_commit: 33757848176c6d8e3f53b5e2c35b7048b657b286
   work_branch: agent/thread-architecture
 ```
 
 La rama `agent/thread-architecture` conserva el trabajo histórico de este ciclo. El estado autoritativo de conocimiento y arquitectura queda consolidado en `knowledge`.
 
-## 2. Responsabilidad
+## 2. Responsabilidad (cumplida)
 
 Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar conversaciones, responsabilidades, dominios, dependencias, HANDOFFs y trazabilidad sin depender del historial completo de ChatGPT.
 
@@ -38,7 +40,6 @@ Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar con
 - identidad y responsabilidad de un hilo;
 - estados y ciclos;
 - manifests;
-- declaraciones de creación de hilos;
 - THREAD BOOTSTRAP;
 - dependencias versionadas;
 - HANDOFFs y transferencia de responsabilidad;
@@ -61,46 +62,37 @@ Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar con
 
 ## 5. Documentos autoritativos
 
-- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.3.0.
-- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes del proyecto, versión 1.2.0.
-- `docs/CHATGPT_PROJECT_CONTEXT.md` — integración ChatGPT ↔ repositorio, versión 1.2.0.
+- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.5.0.
+- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes del proyecto, versión 1.3.0.
+- `docs/CHATGPT_PROJECT_CONTEXT.md` — integración ChatGPT ↔ repositorio, versión 1.3.0.
 
-Todos estos documentos son autoritativos desde `knowledge`.
+Todos estos documentos son autoritativos desde `knowledge` y su estado vigente se resuelve leyendo la rama, no esta lista histórica.
 
 ## 6. Dependencias
 
 - `docs/PROJECT_WORKING_RULES.md` — reglas permanentes.
 - `docs/CHATGPT_PROJECT_CONTEXT.md` — protocolo de incorporación y reincorporación.
 
-Las líneas de dominio, incluido Station/Location/Evidence y W2, son dependencias contextuales pero no pertenecen a la responsabilidad de este hilo.
-
 ## 7. Entregables completados
 
 1. especificación `THREAD_ARCHITECTURE.md`;
 2. manifest operativo de este hilo;
 3. integración de la arquitectura en las reglas maestras y el contexto de ChatGPT;
-4. HANDOFF receptor para `thread-station-location-evidence`;
-5. formalización de THREAD DECLARATION y THREAD BOOTSTRAP;
-6. separación explícita entre raíz `knowledge` y ciclo de software.
+4. formalización del THREAD BOOTSTRAP y del alta de THREAD vía MANIFEST;
+5. separación explícita entre raíz `knowledge` y ciclo de software.
 
-## 8. Handoff siguiente
+## 8. Continuación
 
-**Receptor único:** `thread-station-location-evidence`  
-**Documento:** `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`  
-**Estado:** `READY_FOR_HANDOFF`
+La evolución controlada de la arquitectura, la metodología y las reglas —incluidas las revisiones posteriores a 0.3.0 (hasta la 0.5.0 vigente)— es responsabilidad de `thread-architecture-methodology-evolution`. Este hilo no reabre ciclo.
 
-El receptor debe utilizar además el informe `docs/WATER_PIPELINE_AUDIT_REPORT.md` como estado del pipeline y consultar la rama de trabajo declarada por el HANDOFF sólo como espacio operativo asociado.
+## 9. Referencias Git
 
-## 9. Criterio de cierre
+- `created_from_knowledge_commit`: `3375784` (base histórica de alta; inmutable).
+- Rama de trabajo histórica: `agent/thread-architecture`.
 
-El ciclo de arquitectura se considera preparado para cierre cuando el protocolo THREAD BOOTSTRAP haya sido probado con un THREAD receptor real y la integración resultante no requiera instrucciones manuales adicionales al usuario. La prueba realizada valida la entrada por HANDOFF y THREAD, pero la semántica de `knowledge` como raíz de bootstrap se consolida en esta versión y debe volver a validarse.
+## 10. Historial
 
-## 10. Estado abierto para futuros ciclos
-
-- formato general definitivo de manifests;
-- Activity Log persistente;
-- automatización de dependencias desactualizadas;
-- índices derivados;
-- reglas detalladas para reestructuración de dominios;
-- automatización de comprobaciones de coherencia entre manifests, HANDOFFs y documentos;
-- política detallada de promoción del software entre `develop` y `main`.
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 0.3.0 | 2026-08-15 | Manifest del ciclo fundacional (estado `READY_FOR_HANDOFF`). |
+| 0.4.0 | 2026-08-23 | Cierre del hilo (`CLOSED`); saneo de referencias (arquitectura 0.5.0, reglas/contexto 1.3.0); campo de conocimiento migrado a la forma canónica `created_from_knowledge_commit`; retirada del handoff de salida y de la mención a «THREAD DECLARATION». |
