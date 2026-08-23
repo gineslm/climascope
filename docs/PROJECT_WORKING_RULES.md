@@ -1,6 +1,6 @@
 # ClimaScope — Reglas de trabajo del proyecto
 
-**Versión del documento:** 1.3.0  
+**Versión del documento:** 1.4.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama de consolidación documental:** `knowledge`
@@ -17,20 +17,7 @@ La arquitectura operativa de los hilos está especificada en `docs/THREAD_ARCHIT
 
 ## 2. Primer paso obligatorio en cada hilo nuevo
 
-Antes de realizar trabajo del proyecto, el hilo debe:
-
-1. entrar en la rama `knowledge` como referencia inicial de conocimiento/estructura consolidada;
-2. leer este documento;
-3. leer `docs/THREAD_ARCHITECTURE.md` cuando exista y sea aplicable;
-4. inspeccionar el estado consolidado y las referencias Git relevantes;
-5. leer el/los informe(s) actual(es) del proyecto;
-6. inspeccionar cualquier documento de handoff específico de la tarea;
-7. identificar la versión vigente de la documentación y los commits relevantes;
-8. inspeccionar la implementación y los tests existentes antes de proponer cambios;
-9. resolver desde el MANIFEST la rama/commit de trabajo cuando el THREAD tenga implementación;
-10. informar de cualquier documento referenciado que falte en lugar de inventar su contenido.
-
-El contexto previo de una conversación es útil, pero no constituye el registro autoritativo del proyecto.
+El arranque de un hilo nuevo sigue la secuencia operativa canónica de `THREAD_CONTEXT_BOOTSTRAP.md` (§2 y §5) sobre el modelo de `THREAD_ARCHITECTURE.md` §9. Regla de fondo no delegable: el contexto de una conversación previa no es el registro autoritativo; el estado se recupera desde `knowledge` antes de decidir o cambiar.
 
 ## 3. Repositorio y acceso
 
@@ -319,23 +306,14 @@ No se mantiene un inventario manual como fuente de verdad: un inventario copiado
 
 ## 17. Cómo iniciar un hilo nuevo
 
-Un hilo nuevo debe recibir una instrucción breve como:
-
-> Trabaja en ClimaScope desde el repositorio central de GitHub. Primero entra en `knowledge` y lee `docs/PROJECT_AGENT_CONTEXT.md`, `docs/PROJECT_WORKING_RULES.md` y `docs/THREAD_ARCHITECTURE.md`, después el informe de proyecto más reciente y el handoff específico de la tarea. Trata `knowledge` como fuente de verdad para el estado consolidado de conocimiento y estructura; conserva la trazabilidad; no inventes documentos de proyecto que falten; y sigue el protocolo de cierre. Informa de las versiones documentales actuales, la rama y la responsabilidad antes de realizar cambios sustantivos.
-
-El handoff específico define el objetivo real y puede apuntar a una rama de trabajo distinta.
+La instrucción de arranque y su versión compacta son canónicas en `THREAD_CONTEXT_BOOTSTRAP.md` (§2 y §12). No se mantiene aquí una copia.
 
 ## 18. Cómo cerrar un hilo
 
-El mensaje de cierre debe indicar:
+El cierre sigue el protocolo de §9 de este documento y el formato de finalización de `THREAD_CONTEXT_BOOTSTRAP.md` §11. No se duplica aquí el checklist.
 
-- qué se ha implementado o decidido;
-- tests/validación realizados;
-- cambios de versión documental;
-- archivos/datos afectados;
-- rama y SHA del trabajo;
-- SHA de consolidación en `knowledge` cuando corresponda;
-- cuestiones no resueltas;
-- siguiente documento de handoff, si procede.
+## 19. Historial de versiones
 
-Esto mantiene los hilos futuros independientes del histórico del chat y conserva el rastro de decisiones del proyecto en Git.
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.4.0 | 2026-08-23 | Consolidación del bootstrap (M1): §2/§17/§18 remiten a los canónicos; retirada de la redundancia interna de cierre. |
