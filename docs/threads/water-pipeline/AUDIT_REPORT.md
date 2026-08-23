@@ -286,16 +286,16 @@ Todo documento de handoff para un hilo nuevo debe contener:
 
 ### Documentos de contexto y reglas
 
-**`docs/PROJECT_AGENT_CONTEXT.md` — versión 1.0.1**  
+**`docs/core/PROJECT_AGENT_CONTEXT.md` — versión 1.0.1**  
 Puente entre el agente asistente y el repositorio; define el arranque de conversaciones nuevas y la reincorporación de conversaciones existentes.
 
-**`docs/PROJECT_WORKING_RULES.md` — versión 1.0.1**  
+**`docs/core/PROJECT_WORKING_RULES.md` — versión 1.0.1**  
 Reglas operativas permanentes del proyecto e idioma oficial: español (España).
 
 ### Handoff actual
 
 **Versión:** 0.1.1  
-**Archivo:** `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`  
+**Archivo:** `docs/threads/station-location-evidence/MODEL.md`  
 **Propósito:** diseñar el modelo `Station → Location → Scope/Representativeness → Evidence` antes de ampliar la adquisición o implementar el Water Score.
 
 El handoff exige explícitamente trabajo centralizado contra `gineslm/climascope`, validación local con `python -m pytest`, conservación de los datos AEMET/W2 existentes y actualización de documentación versionada.

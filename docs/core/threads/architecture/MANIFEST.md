@@ -62,20 +62,20 @@ Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar con
 
 ## 5. Documentos autoritativos
 
-- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.5.0.
-- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes del proyecto, versión 1.3.0.
-- `docs/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio, versión 1.3.0.
+- `docs/core/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.5.0.
+- `docs/core/PROJECT_WORKING_RULES.md` — reglas permanentes del proyecto, versión 1.3.0.
+- `docs/core/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio, versión 1.3.0.
 
 Todos estos documentos son autoritativos desde `knowledge` y su estado vigente se resuelve leyendo la rama, no esta lista histórica.
 
 ## 6. Dependencias
 
-- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes.
-- `docs/PROJECT_AGENT_CONTEXT.md` — protocolo de incorporación y reincorporación.
+- `docs/core/PROJECT_WORKING_RULES.md` — reglas permanentes.
+- `docs/core/PROJECT_AGENT_CONTEXT.md` — protocolo de incorporación y reincorporación.
 
 ## 7. Entregables completados
 
-1. especificación `THREAD_ARCHITECTURE.md`;
+1. especificación `docs/core/THREAD_ARCHITECTURE.md`;
 2. manifest operativo de este hilo;
 3. integración de la arquitectura en las reglas maestras y el contexto de ChatGPT;
 4. formalización del THREAD BOOTSTRAP y del alta de THREAD vía MANIFEST;

@@ -42,11 +42,11 @@ La aplicación debe permitir pasar de una visión territorial/global a una ubica
 
 ### Conocimiento
 
-- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes;
-- `docs/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio;
-- `docs/THREAD_ARCHITECTURE.md` — arquitectura de THREADs;
-- `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md` — modelo Station / Location / Scope / Evidence;
-- `docs/WATER_PIPELINE_AUDIT_REPORT.md` — estado del pipeline y requisitos de presentación.
+- `docs/core/PROJECT_WORKING_RULES.md` — reglas permanentes;
+- `docs/core/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio;
+- `docs/core/THREAD_ARCHITECTURE.md` — arquitectura de THREADs;
+- `docs/threads/station-location-evidence/MODEL.md` — modelo Station / Location / Scope / Evidence;
+- `docs/threads/water-pipeline/AUDIT_REPORT.md` — estado del pipeline y requisitos de presentación.
 
 ### Modelo de dominio
 

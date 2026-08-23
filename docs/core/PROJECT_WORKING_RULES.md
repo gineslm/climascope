@@ -13,11 +13,11 @@ Este documento es el contrato operativo permanente para el trabajo de ClimaScope
 
 El repositorio Git es la fuente central de verdad. El estado consolidado de conocimiento y estructura se mantiene en `knowledge`; el ciclo de software utiliza `develop` y `main`. Un hilo nuevo debe recuperar el estado del proyecto desde `knowledge` antes de tomar decisiones o realizar cambios.
 
-La arquitectura operativa de los hilos está especificada en `docs/THREAD_ARCHITECTURE.md`. Este documento establece las reglas permanentes; la especificación de hilos define el modelo de identidad, estados, ciclos, dependencias y transferencias.
+La arquitectura operativa de los hilos está especificada en `docs/core/THREAD_ARCHITECTURE.md`. Este documento establece las reglas permanentes; la especificación de hilos define el modelo de identidad, estados, ciclos, dependencias y transferencias.
 
 ## 2. Primer paso obligatorio en cada hilo nuevo
 
-El arranque de un hilo nuevo sigue la secuencia operativa canónica de `THREAD_CONTEXT_BOOTSTRAP.md` (§2 y §5) sobre el modelo de `THREAD_ARCHITECTURE.md` §9. Regla de fondo no delegable: el contexto de una conversación previa no es el registro autoritativo; el estado se recupera desde `knowledge` antes de decidir o cambiar.
+El arranque de un hilo nuevo sigue la secuencia operativa canónica de `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` (§2 y §5) sobre el modelo de `docs/core/THREAD_ARCHITECTURE.md` §9. Regla de fondo no delegable: el contexto de una conversación previa no es el registro autoritativo; el estado se recupera desde `knowledge` antes de decidir o cambiar.
 
 ## 3. Repositorio y acceso
 
@@ -132,13 +132,13 @@ El proyecto utiliza tipos documentales complementarios:
 
 ### Reglas maestras
 
-`docs/PROJECT_WORKING_RULES.md`
+`docs/core/PROJECT_WORKING_RULES.md`
 
 Reglas operativas permanentes para todos los hilos.
 
 ### Arquitectura de hilos
 
-`docs/THREAD_ARCHITECTURE.md`
+`docs/core/THREAD_ARCHITECTURE.md`
 
 Especificación del modelo operativo de los hilos: identidad, responsabilidad, estados, ciclos, dependencias, HANDOFF, autoridad documental y reincorporación de conversaciones.
 
@@ -146,7 +146,7 @@ Especificación del modelo operativo de los hilos: identidad, responsabilidad, e
 
 Por ejemplo:
 
-`docs/WATER_PIPELINE_AUDIT_REPORT.md`
+`docs/threads/water-pipeline/AUDIT_REPORT.md`
 
 Los informes registran lo que realmente se ha implementado, probado, medido, decidido y cambiado a lo largo del tiempo.
 
@@ -154,7 +154,7 @@ Los informes registran lo que realmente se ha implementado, probado, medido, dec
 
 Por ejemplo:
 
-`docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`
+`docs/threads/station-location-evidence/MODEL.md`
 
 Los handoffs definen el alcance y el contexto de partida para un hilo especializado siguiente. Deben contener repositorio, rama de trabajo, ruta local cuando se conozca, requisitos de acceso, objetivo, estado actual, restricciones, entregables, validación y protocolo de cierre.
 
@@ -296,21 +296,21 @@ En la versión 1.0.0 de estas reglas:
 - la suite de tests alcanzó 13 tests después de los últimos cambios de agregación;
 - la siguiente tarea especializada prevista es el modelo de dominio Station / Location / Scope / Evidence.
 
-Para el estado detallado actual, leer el último `docs/WATER_PIPELINE_AUDIT_REPORT.md` y el handoff específico de la tarea.
+Para el estado detallado actual, leer el último `docs/threads/water-pipeline/AUDIT_REPORT.md` y el handoff específico de la tarea.
 
 ## 16. Descubrimiento de THREAD y documentos
 
-El descubrimiento de los THREAD del proyecto se realiza a partir de sus **MANIFEST consolidados en `knowledge`**, que constituyen el índice del proyecto: **derivado y no autoritativo** (ver `THREAD_ARCHITECTURE.md` §15.2). Si un índice materializado y un MANIFEST discrepan, prevalece el MANIFEST.
+El descubrimiento de los THREAD del proyecto se realiza a partir de sus **MANIFEST consolidados en `knowledge`**, que constituyen el índice del proyecto: **derivado y no autoritativo** (ver `docs/core/THREAD_ARCHITECTURE.md` §15.2). Si un índice materializado y un MANIFEST discrepan, prevalece el MANIFEST.
 
 No se mantiene un inventario manual como fuente de verdad: un inventario copiado a mano se desincroniza. Los documentos de referencia (reglas, arquitectura, contexto, informes) y los artefactos de cada THREAD (MANIFEST, HANDOFF, registro) se descubren leyendo la rama `knowledge` vigente.
 
 ## 17. Cómo iniciar un hilo nuevo
 
-La instrucción de arranque y su versión compacta son canónicas en `THREAD_CONTEXT_BOOTSTRAP.md` (§2 y §12). No se mantiene aquí una copia.
+La instrucción de arranque y su versión compacta son canónicas en `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` (§2 y §12). No se mantiene aquí una copia.
 
 ## 18. Cómo cerrar un hilo
 
-El cierre sigue el protocolo de §9 de este documento y el formato de finalización de `THREAD_CONTEXT_BOOTSTRAP.md` §11. No se duplica aquí el checklist.
+El cierre sigue el protocolo de §9 de este documento y el formato de finalización de `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` §11. No se duplica aquí el checklist.
 
 ## 19. Historial de versiones
 

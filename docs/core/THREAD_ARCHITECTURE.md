@@ -8,7 +8,7 @@
 
 ## 1. Propósito
 
-Este documento formaliza el modelo operativo de los hilos de trabajo de ClimaScope. Complementa `docs/PROJECT_WORKING_RULES.md` y `docs/PROJECT_AGENT_CONTEXT.md`; no los sustituye.
+Este documento formaliza el modelo operativo de los hilos de trabajo de ClimaScope. Complementa `docs/core/PROJECT_WORKING_RULES.md` y `docs/core/PROJECT_AGENT_CONTEXT.md`; no los sustituye.
 
 La unidad persistente de trabajo es el **THREAD de proyecto**, no la conversación de ChatGPT. GitHub es la fuente duradera de verdad. Una conversación es una instancia operativa de IA que se conecta a un THREAD.
 
@@ -69,9 +69,9 @@ Toda nueva instancia de conversación debe entrar conceptualmente por `knowledge
 
 Como mínimo, desde `knowledge` deben poder descubrirse:
 
-- `docs/PROJECT_AGENT_CONTEXT.md`;
-- `docs/PROJECT_WORKING_RULES.md`;
-- `docs/THREAD_ARCHITECTURE.md`;
+- `docs/core/PROJECT_AGENT_CONTEXT.md`;
+- `docs/core/PROJECT_WORKING_RULES.md`;
+- `docs/core/THREAD_ARCHITECTURE.md`;
 - informes de proyecto vigentes;
 - THREADs y sus MANIFESTs;
 - HANDOFFs vigentes e históricos;
@@ -271,7 +271,7 @@ El estado debe reflejar el repositorio, no una impresión temporal de la convers
 
 ## 9. THREAD BOOTSTRAP
 
-> **Fuente canónica del modelo de bootstrap.** Esta sección define el modelo: entrada por HANDOFF / THREAD existente / responsabilidad nueva, alta vía MANIFEST y reincorporación. La secuencia operativa reutilizable vive en `THREAD_CONTEXT_BOOTSTRAP.md`, que aplica este modelo sin redefinirlo. `PROJECT_WORKING_RULES.md` y `PROJECT_AGENT_CONTEXT.md` referencian estas dos fuentes en lugar de reproducir el protocolo.
+> **Fuente canónica del modelo de bootstrap.** Esta sección define el modelo: entrada por HANDOFF / THREAD existente / responsabilidad nueva, alta vía MANIFEST y reincorporación. La secuencia operativa reutilizable vive en `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`, que aplica este modelo sin redefinirlo. `docs/core/PROJECT_WORKING_RULES.md` y `docs/core/PROJECT_AGENT_CONTEXT.md` referencian estas dos fuentes en lugar de reproducir el protocolo.
 
 El THREAD BOOTSTRAP es el protocolo universal de incorporación de una nueva instancia de conversación.
 
@@ -407,7 +407,7 @@ Las dependencias relevantes deben poder fijarse a una versión:
 
 ```yaml
 dependency:
-  document: docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md
+  document: docs/threads/station-location-evidence/MODEL.md
   version: 0.1.1
   status: current
 ```
@@ -460,9 +460,9 @@ Es **derivado y no autoritativo**: debe poder reconstruirse a partir del conjunt
 
 | Información | Fuente principal |
 |---|---|
-| Reglas permanentes | `PROJECT_WORKING_RULES.md` en `knowledge` |
-| Integración agente ↔ repositorio | `PROJECT_AGENT_CONTEXT.md` en `knowledge` |
-| Arquitectura de hilos | `THREAD_ARCHITECTURE.md` en `knowledge` |
+| Reglas permanentes | `docs/core/PROJECT_WORKING_RULES.md` en `knowledge` |
+| Integración agente ↔ repositorio | `docs/core/PROJECT_AGENT_CONTEXT.md` en `knowledge` |
+| Arquitectura de hilos | `docs/core/THREAD_ARCHITECTURE.md` en `knowledge` |
 | Estado/metodología validada | documentos de conocimiento vigentes en `knowledge` |
 | Identidad, estado y alta de THREAD | MANIFEST en `knowledge` |
 | Transferencia de estado operativo | HANDOFF en `knowledge` |

@@ -64,14 +64,14 @@ manteniendo separadas las observaciones directas de estación de los valores rel
 
 ## 5. Documentos autoritativos
 
-- `docs/THREAD_STATION_LOCATION_EVIDENCE_MODEL.md` — requisitos y contexto detallado del modelo de dominio (v0.1.4).
+- `docs/threads/station-location-evidence/MODEL.md` — requisitos y contexto detallado del modelo de dominio (v0.1.4).
 
 ## 6. Dependencias
 
-- `docs/WATER_PIPELINE_AUDIT_REPORT.md` — estado científico/técnico del pipeline W2.
-- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos.
-- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes.
-- `docs/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio.
+- `docs/threads/water-pipeline/AUDIT_REPORT.md` — estado científico/técnico del pipeline W2.
+- `docs/core/THREAD_ARCHITECTURE.md` — arquitectura de hilos.
+- `docs/core/PROJECT_WORKING_RULES.md` — reglas permanentes.
+- `docs/core/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio.
 
 ## 7. Decisiones consolidadas (no reabrir sin evidencia nueva)
 
@@ -106,7 +106,7 @@ current_handoff: none
 handoff_history: []
 ```
 
-Nota: este THREAD se da de alta directamente por consolidación de coherencia estructural (Lote 2A). El HANDOFF de creación previo (`THREAD_HANDOFF_STATION_LOCATION_EVIDENCE`) se retiró en ese proceso; el contexto que transfería queda incorporado en este MANIFEST y en `THREAD_STATION_LOCATION_EVIDENCE_MODEL.md`.
+Nota: este THREAD se da de alta directamente por consolidación de coherencia estructural (Lote 2A). El HANDOFF de creación previo (`THREAD_HANDOFF_STATION_LOCATION_EVIDENCE`) se retiró en ese proceso; el contexto que transfería queda incorporado en este MANIFEST y en `docs/threads/station-location-evidence/MODEL.md`.
 
 ## 10. Validación
 

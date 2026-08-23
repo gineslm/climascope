@@ -10,7 +10,7 @@
 
 Este documento es el bootstrap estándar para una nueva conversación que trabaje en ClimaScope.
 
-> **Fuente canónica del bloque operativo de bootstrap.** El modelo subyacente (definiciones de entrada, alta y reincorporación) es `THREAD_ARCHITECTURE.md` §9; este documento proporciona la secuencia operativa reutilizable y no lo redefine. `PROJECT_WORKING_RULES.md` referencia este documento, y `PROJECT_AGENT_CONTEXT.md` conserva un espejo de su §12 como única duplicación tolerada.
+> **Fuente canónica del bloque operativo de bootstrap.** El modelo subyacente (definiciones de entrada, alta y reincorporación) es `docs/core/THREAD_ARCHITECTURE.md` §9; este documento proporciona la secuencia operativa reutilizable y no lo redefine. `docs/core/PROJECT_WORKING_RULES.md` referencia este documento, y `docs/core/PROJECT_AGENT_CONTEXT.md` conserva un espejo de su §12 como única duplicación tolerada.
 
 Su propósito es hacer que cada conversación:
 
@@ -30,7 +30,7 @@ Cuando este documento forme parte del contexto del proyecto, la conversación de
 >
 > Trabaja contra el repositorio central de GitHub `gineslm/climascope`.
 >
-> **Primero entra conceptualmente en la rama `knowledge` como raíz de conocimiento y estructura consolidada.** Después lee `docs/PROJECT_WORKING_RULES.md`, `docs/THREAD_ARCHITECTURE.md` y el contexto de proyecto vigente. A continuación inspecciona el informe relevante y cualquier HANDOFF o MANIFEST aplicable.
+> **Primero entra conceptualmente en la rama `knowledge` como raíz de conocimiento y estructura consolidada.** Después lee `docs/core/PROJECT_WORKING_RULES.md`, `docs/core/THREAD_ARCHITECTURE.md` y el contexto de proyecto vigente. A continuación inspecciona el informe relevante y cualquier HANDOFF o MANIFEST aplicable.
 >
 > GitHub es el registro autoritativo del proyecto. No asumas que una información existe porque apareciera en otra conversación. Si falta un documento referenciado en el repositorio, informa de ello y solicítalo en lugar de inventarlo.
 >
@@ -114,8 +114,8 @@ La inspección inicial debe cubrir normalmente:
 
 ```text
 1. knowledge
-2. docs/PROJECT_WORKING_RULES.md
-3. docs/THREAD_ARCHITECTURE.md
+2. docs/core/PROJECT_WORKING_RULES.md
+3. docs/core/THREAD_ARCHITECTURE.md
 4. informe de proyecto relevante
 5. MANIFEST/HANDOFF específico, si existe
 6. README.md cuando proceda
@@ -129,13 +129,13 @@ No inspeccionar todo el repositorio indiscriminadamente. Comenzar con el context
 
 ### Reglas maestras
 
-`docs/PROJECT_WORKING_RULES.md`
+`docs/core/PROJECT_WORKING_RULES.md`
 
 Reglas operativas permanentes.
 
 ### Arquitectura de hilos
 
-`docs/THREAD_ARCHITECTURE.md`
+`docs/core/THREAD_ARCHITECTURE.md`
 
 Especificación del modelo operativo de THREADs: identidad, responsabilidad, estados, ciclos, dependencias, HANDOFF, MANIFEST, autoridad documental y bootstrap.
 
@@ -240,7 +240,7 @@ El estado final debe poder reproducirse desde GitHub sin necesitar el histórico
 > Fuente de verdad: GitHub  
 > Raíz de conocimiento: `knowledge`
 >
-> Antes de trabajar, entra conceptualmente en `knowledge`, lee `docs/PROJECT_WORKING_RULES.md` y `docs/THREAD_ARCHITECTURE.md`, y después el informe, MANIFEST o HANDOFF aplicable. No inventes documentos ausentes.
+> Antes de trabajar, entra conceptualmente en `knowledge`, lee `docs/core/PROJECT_WORKING_RULES.md` y `docs/core/THREAD_ARCHITECTURE.md`, y después el informe, MANIFEST o HANDOFF aplicable. No inventes documentos ausentes.
 >
 > Si se identifica una responsabilidad nueva y no existe THREAD compatible, da de alta el THREAD creando su MANIFEST con `origin.type: USER_DECLARED` (no hay un artefacto de declaración aparte). El MANIFEST debe registrar `created_from_knowledge_commit` con el commit de `knowledge` desde el que se da de alta el THREAD; es histórico e inmutable y el estado vigente se resuelve siempre desde `knowledge`.
 >

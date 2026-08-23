@@ -61,17 +61,17 @@ controlada; no sustituye ni resuelve el trabajo técnico de los THREAD especiali
 
 ## 5. Documentos autoritativos
 
-- `docs/THREAD_ARCHITECTURE_METHODOLOGY_EVOLUTION.md` — declaración del THREAD.
-- `docs/THREAD_ARCHITECTURE_METHODOLOGY_EVOLUTION_HANDOFF.md` — HANDOFF de creación.
-- `docs/THREAD_ARCHITECTURE_METHODOLOGY_EVOLUTION_IMPROVEMENTS.md` — registro de
+- Este MANIFEST — identidad y estado vigente del THREAD (el fichero de declaración independiente se retiró en el Lote 2C; su identidad vive aquí).
+- `docs/core/threads/architecture-methodology-evolution/HANDOFF.md` — HANDOFF de creación.
+- `docs/core/threads/architecture-methodology-evolution/IMPROVEMENTS.md` — registro de
   mejoras (borrador propuesto en este ciclo).
 
 ## 6. Dependencias
 
-- `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos.
-- `docs/THREAD_CONTEXT_BOOTSTRAP.md` — protocolo de bootstrap.
-- `docs/PROJECT_WORKING_RULES.md` — reglas permanentes.
-- `docs/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio.
+- `docs/core/THREAD_ARCHITECTURE.md` — arquitectura de hilos.
+- `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` — protocolo de bootstrap.
+- `docs/core/PROJECT_WORKING_RULES.md` — reglas permanentes.
+- `docs/core/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio.
 - MANIFESTs y HANDOFFs de los THREAD que aporten propuestas.
 
 ## 7. Entregables y validación
@@ -82,7 +82,7 @@ Entregables de este ciclo (en curso):
 2. registro de mejoras con formato mínimo de *improvement record*;
 3. IMP-002 registrada (ausencia de MANIFEST) con decisión y evidencia.
 
-Validación: coherencia con `THREAD_ARCHITECTURE.md` §7; consolidación en `knowledge`.
+Validación: coherencia con `docs/core/THREAD_ARCHITECTURE.md` §7; consolidación en `knowledge`.
 
 ## 8. HANDOFF actual e histórico
 
