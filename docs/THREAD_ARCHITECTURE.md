@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.5.0  
+**Versión:** 0.5.1  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -270,6 +270,8 @@ ARCHIVED
 El estado debe reflejar el repositorio, no una impresión temporal de la conversación.
 
 ## 9. THREAD BOOTSTRAP
+
+> **Fuente canónica del modelo de bootstrap.** Esta sección define el modelo: entrada por HANDOFF / THREAD existente / responsabilidad nueva, alta vía MANIFEST y reincorporación. La secuencia operativa reutilizable vive en `THREAD_CONTEXT_BOOTSTRAP.md`, que aplica este modelo sin redefinirlo. `PROJECT_WORKING_RULES.md` y `PROJECT_AGENT_CONTEXT.md` referencian estas dos fuentes en lugar de reproducir el protocolo.
 
 El THREAD BOOTSTRAP es el protocolo universal de incorporación de una nueva instancia de conversación.
 
