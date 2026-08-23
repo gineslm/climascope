@@ -90,8 +90,8 @@ IMP-003 se integra en IMP-007.
 
 ### IMP-003
 
-- `status`: `under_review`
-- `consolidation`: `none`
+- `status`: `accepted`
+- `consolidation`: `done` (`3527999`)
 - `type`: `methodology / spec-ambiguity`
 - `origin_thread`: `thread-architecture-methodology-evolution`
 - `summary`: la referencia de conocimiento de un MANIFEST está definida de forma
@@ -126,8 +126,8 @@ IMP-003 se integra en IMP-007.
 - `impact`: reconexiones no deterministas; MANIFESTs no comparables; regla IMP-001
   incumplida en al menos un manifest; imposibilidad de automatizar comprobaciones de
   coherencia mientras haya cuatro formas.
-- `decision`: **pendiente de consolidación** — semántica de campo único adoptada en
-  los borradores de cambio; IMP-003 permanece `under_review` hasta consolidar.
+- `decision`: «Aceptada. Forma canónica única de created_from_knowledge_commit consolidada en THREAD_ARCHITECTURE.md §7.1 (3527999); retiradas knowledge_commit y la forma anidada.»
+- `resolution`: «Bajo Alt 1, declarar ≡ crear el MANIFEST ⇒ A = B; la ambigüedad de anclaje no reaparece en THREAD futuros. La reconciliación legacy de este hilo se traslada a IMP-007.»
 - `next_action`: revisar los borradores de edición de `THREAD_ARCHITECTURE.md`,
   `THREAD_CONTEXT_BOOTSTRAP.md` y `PROJECT_WORKING_RULES.md` (opcional), y la
   `MIGRATION_PROPOSAL_knowledge_reference_fields.md` para los manifests ajenos. Al
@@ -193,8 +193,8 @@ conservar `knowledge_basis` solo para C.
 
 ### IMP-004
 
-- `status`: `under_review`
-- `consolidation`: `none`
+- `status`: `accepted`
+- `consolidation`: `done` (serie 83407b4..db35fcf, cierre db35fcf)
 - `type`: `architecture / ontology / terminology`
 - `origin_thread`: `thread-architecture-methodology-evolution` (hipótesis del usuario)
 - `summary`: clarificación ontológica y terminológica del modelo THREAD. La
@@ -235,16 +235,14 @@ conservar `knowledge_basis` solo para C.
 - `relations`: IMP-002 es instancia de IMP-005; IMP-003 es consecuencia ya alineada
   (su parte legacy → IMP-007). Descomposición IMP-004→IMP-008 registrada en este
   documento (árbol causal arriba).
-- `decision`: **pendiente** (no resolver por inferencia). Alt 1 adoptada como hipótesis
-  de trabajo; taxonomía de origen confirmada; ambas pendientes de consolidar en la
-  revisión 0.5.0.
+- `decision`: «Aceptada e implementada en la revisión 0.5.0: alta = crear el MANIFEST, tabla de autoridad §16 (alta→MANIFEST, HANDOFF solo transfiere) y origin.type sin HANDOFF. No requirió tocar manifests de otras líneas.»
 - `next_action`: ejecutar la revisión 0.5.0 por bloques (arquitectura, bootstrap,
   reglas, contexto ChatGPT) como cambio de modelo, no como parche.
 
 ### IMP-005
 
-- `status`: `under_review`
-- `consolidation`: `none`
+- `status`: `accepted`
+- `consolidation`: `done` (83407b4)
 - `type`: `architecture / lifecycle`
 - `depends_on`: IMP-004
 - `origin_thread`: `thread-architecture-methodology-evolution`
@@ -256,12 +254,12 @@ conservar `knowledge_basis` solo para C.
   MANIFEST; contraste con §6/§9.4 (que separan DECLARATION y MANIFEST) y §5 (identidad
   en el MANIFEST). Caso real: este hilo estuvo en estado limbo hasta `4ab71c6`.
 - `relations`: **absorbe IMP-002** como instancia (THREAD sin MANIFEST).
-- `decision`: **pendiente** (se materializa en la revisión 0.5.0).
+- `decision`: «Aceptada. Alta = crear y consolidar el MANIFEST; regla anti-limbo y retirada del artefacto DECLARATION consolidadas (§6, §10). Absorbe IMP-002 como instancia.»
 
 ### IMP-006
 
-- `status`: `under_review`
-- `consolidation`: `none`
+- `status`: `accepted`
+- `consolidation`: `done` (d0324c5)
 - `type`: `architecture / operations`
 - `depends_on`: IMP-004
 - `origin_thread`: `thread-architecture-methodology-evolution`
@@ -273,12 +271,12 @@ conservar `knowledge_basis` solo para C.
   instancia de conversación a un THREAD existente»; «no crea un nuevo THREAD»), pero
   desalineado en creación/transferencia (§9.4 doble paso; §10/§13 permiten al HANDOFF
   "declarar"). Anomalía observada en este ciclo: "conectar con THREAD" sin MANIFEST.
-- `decision`: **pendiente**.
+- `decision`: «Aceptada. Distinción explícita CREAR / CONECTAR / TRANSFERIR consolidada (§10), incluida la anomalía "conectar sin MANIFEST".»
 
 ### IMP-007
 
-- `status`: `under_review`
-- `consolidation`: `none`
+- `status`: `accepted`
+- `consolidation`: `done` (bb9370f, 3527999)
 - `type`: `architecture / provenance`
 - `depends_on`: IMP-004
 - `origin_thread`: `thread-architecture-methodology-evolution`
@@ -293,12 +291,12 @@ conservar `knowledge_basis` solo para C.
   MIGRATED; recepción por handoff = THREAD_DERIVED).
 - `relations`: integra la **parte legacy de IMP-003** (interpretación del campo para
   THREAD creados bajo el modelo previo).
-- `decision`: **pendiente**.
+- `decision`: «Aceptada. origin.type = {USER_DECLARED, THREAD_DERIVED, MIGRATED} con HANDOFF retirado del enum, y semántica uniforme de created_from_knowledge_commit, consolidadas (§5.1, §7.1). Integra la parte legacy de IMP-003.»
 
 ### IMP-008
 
-- `status`: `under_review`
-- `consolidation`: `none`
+- `status`: `accepted`
+- `consolidation`: `partial`
 - `type`: `architecture / registry-index`
 - `depends_on`: IMP-004
 - `origin_thread`: `thread-architecture-methodology-evolution`
@@ -310,4 +308,5 @@ conservar `knowledge_basis` solo para C.
   §16 ("Inventario documental conocido") manual y desactualizado (declara
   `THREAD_ARCHITECTURE.md` 0.3.0 y omite THREAD), síntoma de que falta un índice
   derivable.
-- `decision`: **pendiente**. Puede aplazarse respecto al resto de la 0.5.0.
+- `decision`: «Aceptada parcialmente. Especificación de REGISTRO (Activity Log) e ÍNDICE derivado consolidada en 4cab525 (§15) y reflejada en PROJECT_WORKING_RULES 1.3.0 (§316, retirada del inventario manual). Pendiente: materializar el artefacto índice derivado de los MANIFEST.»
+- `next_action`: «Materializar PROJECT_INDEX (o equivalente) reconstruible desde los MANIFEST consolidados; se aborda en la fase siguiente (Lote 2 / E4).»
