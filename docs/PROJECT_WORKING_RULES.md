@@ -321,7 +321,7 @@ No se mantiene un inventario manual como fuente de verdad: un inventario copiado
 
 Un hilo nuevo debe recibir una instrucción breve como:
 
-> Trabaja en ClimaScope desde el repositorio central de GitHub. Primero entra en `knowledge` y lee `docs/CHATGPT_PROJECT_CONTEXT.md`, `docs/PROJECT_WORKING_RULES.md` y `docs/THREAD_ARCHITECTURE.md`, después el informe de proyecto más reciente y el handoff específico de la tarea. Trata `knowledge` como fuente de verdad para el estado consolidado de conocimiento y estructura; conserva la trazabilidad; no inventes documentos de proyecto que falten; y sigue el protocolo de cierre. Informa de las versiones documentales actuales, la rama y la responsabilidad antes de realizar cambios sustantivos.
+> Trabaja en ClimaScope desde el repositorio central de GitHub. Primero entra en `knowledge` y lee `docs/PROJECT_AGENT_CONTEXT.md`, `docs/PROJECT_WORKING_RULES.md` y `docs/THREAD_ARCHITECTURE.md`, después el informe de proyecto más reciente y el handoff específico de la tarea. Trata `knowledge` como fuente de verdad para el estado consolidado de conocimiento y estructura; conserva la trazabilidad; no inventes documentos de proyecto que falten; y sigue el protocolo de cierre. Informa de las versiones documentales actuales, la rama y la responsabilidad antes de realizar cambios sustantivos.
 
 El handoff específico define el objetivo real y puede apuntar a una rama de trabajo distinta.
 

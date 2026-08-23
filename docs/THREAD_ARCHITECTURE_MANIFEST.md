@@ -64,14 +64,14 @@ Diseñar y consolidar el modelo operativo que permite a ClimaScope organizar con
 
 - `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos, versión 0.5.0.
 - `docs/PROJECT_WORKING_RULES.md` — reglas permanentes del proyecto, versión 1.3.0.
-- `docs/CHATGPT_PROJECT_CONTEXT.md` — integración ChatGPT ↔ repositorio, versión 1.3.0.
+- `docs/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio, versión 1.3.0.
 
 Todos estos documentos son autoritativos desde `knowledge` y su estado vigente se resuelve leyendo la rama, no esta lista histórica.
 
 ## 6. Dependencias
 
 - `docs/PROJECT_WORKING_RULES.md` — reglas permanentes.
-- `docs/CHATGPT_PROJECT_CONTEXT.md` — protocolo de incorporación y reincorporación.
+- `docs/PROJECT_AGENT_CONTEXT.md` — protocolo de incorporación y reincorporación.
 
 ## 7. Entregables completados
 

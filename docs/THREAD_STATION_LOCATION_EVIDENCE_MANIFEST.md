@@ -71,7 +71,7 @@ manteniendo separadas las observaciones directas de estación de los valores rel
 - `docs/WATER_PIPELINE_AUDIT_REPORT.md` — estado científico/técnico del pipeline W2.
 - `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos.
 - `docs/PROJECT_WORKING_RULES.md` — reglas permanentes.
-- `docs/CHATGPT_PROJECT_CONTEXT.md` — integración ChatGPT ↔ repositorio.
+- `docs/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio.
 
 ## 7. Decisiones consolidadas (no reabrir sin evidencia nueva)
 

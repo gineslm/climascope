@@ -8,7 +8,7 @@
 
 ## 1. Propósito
 
-Este documento formaliza el modelo operativo de los hilos de trabajo de ClimaScope. Complementa `docs/PROJECT_WORKING_RULES.md` y `docs/CHATGPT_PROJECT_CONTEXT.md`; no los sustituye.
+Este documento formaliza el modelo operativo de los hilos de trabajo de ClimaScope. Complementa `docs/PROJECT_WORKING_RULES.md` y `docs/PROJECT_AGENT_CONTEXT.md`; no los sustituye.
 
 La unidad persistente de trabajo es el **THREAD de proyecto**, no la conversación de ChatGPT. GitHub es la fuente duradera de verdad. Una conversación es una instancia operativa de IA que se conecta a un THREAD.
 
@@ -69,7 +69,7 @@ Toda nueva instancia de conversación debe entrar conceptualmente por `knowledge
 
 Como mínimo, desde `knowledge` deben poder descubrirse:
 
-- `docs/CHATGPT_PROJECT_CONTEXT.md`;
+- `docs/PROJECT_AGENT_CONTEXT.md`;
 - `docs/PROJECT_WORKING_RULES.md`;
 - `docs/THREAD_ARCHITECTURE.md`;
 - informes de proyecto vigentes;
@@ -459,7 +459,7 @@ Es **derivado y no autoritativo**: debe poder reconstruirse a partir del conjunt
 | Información | Fuente principal |
 |---|---|
 | Reglas permanentes | `PROJECT_WORKING_RULES.md` en `knowledge` |
-| Integración ChatGPT ↔ proyecto | `CHATGPT_PROJECT_CONTEXT.md` en `knowledge` |
+| Integración agente ↔ repositorio | `PROJECT_AGENT_CONTEXT.md` en `knowledge` |
 | Arquitectura de hilos | `THREAD_ARCHITECTURE.md` en `knowledge` |
 | Estado/metodología validada | documentos de conocimiento vigentes en `knowledge` |
 | Identidad, estado y alta de THREAD | MANIFEST en `knowledge` |

@@ -286,8 +286,8 @@ Todo documento de handoff para un hilo nuevo debe contener:
 
 ### Documentos de contexto y reglas
 
-**`docs/CHATGPT_PROJECT_CONTEXT.md` — versión 1.0.1**  
-Puente entre el Proyecto de ChatGPT y el repositorio; define el arranque de conversaciones nuevas y la reincorporación de conversaciones existentes.
+**`docs/PROJECT_AGENT_CONTEXT.md` — versión 1.0.1**  
+Puente entre el agente asistente y el repositorio; define el arranque de conversaciones nuevas y la reincorporación de conversaciones existentes.
 
 **`docs/PROJECT_WORKING_RULES.md` — versión 1.0.1**  
 Reglas operativas permanentes del proyecto e idioma oficial: español (España).

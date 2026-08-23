@@ -81,7 +81,7 @@ Fuera de alcance inmediato: ampliación indiscriminada de adquisición, interpol
 Al recibir este HANDOFF:
 
 1. entrar en `knowledge`;
-2. leer `docs/CHATGPT_PROJECT_CONTEXT.md`;
+2. leer `docs/PROJECT_AGENT_CONTEXT.md`;
 3. leer `docs/PROJECT_WORKING_RULES.md`;
 4. leer `docs/THREAD_ARCHITECTURE.md`;
 5. localizar el MANIFEST y reconstruir el estado consolidado del THREAD;

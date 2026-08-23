@@ -71,7 +71,7 @@ controlada; no sustituye ni resuelve el trabajo técnico de los THREAD especiali
 - `docs/THREAD_ARCHITECTURE.md` — arquitectura de hilos.
 - `docs/THREAD_CONTEXT_BOOTSTRAP.md` — protocolo de bootstrap.
 - `docs/PROJECT_WORKING_RULES.md` — reglas permanentes.
-- `docs/CHATGPT_PROJECT_CONTEXT.md` — integración ChatGPT ↔ repositorio.
+- `docs/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio.
 - MANIFESTs y HANDOFFs de los THREAD que aporten propuestas.
 
 ## 7. Entregables y validación
