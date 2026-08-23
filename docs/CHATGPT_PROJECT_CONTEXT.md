@@ -1,6 +1,6 @@
 # ClimaScope — Contexto del proyecto para ChatGPT
 
-**Versión:** 1.2.0  
+**Versión:** 1.3.0  
 **Estado:** Activo  
 **Repositorio:** `gineslm/climascope`  
 **Rama de consolidación documental:** `knowledge`
@@ -49,7 +49,7 @@ No asumir que la memoria de esta conversación es más autoritativa que el repos
 
 ### Entrada por HANDOFF
 
-Si el usuario indica **«Parte del handoff `<id>`»**, primero se localiza el HANDOFF en `knowledge`. Si declara un THREAD receptor todavía inexistente, la primera responsabilidad operativa es crear/inicializar ese THREAD y su MANIFEST, registrando el origen como `HANDOFF`.
+Si el usuario indica **«Parte del handoff `<id>`»**, primero se localiza el HANDOFF en `knowledge`. Si declara un THREAD receptor todavía inexistente, la primera responsabilidad operativa es dar de alta ese THREAD creando su MANIFEST a partir del contexto transferido, registrando `origin.type` según el origen de la responsabilidad (normalmente `THREAD_DERIVED` cuando procede de otro THREAD). El HANDOFF es el vehículo de transferencia, no el origen.
 
 El HANDOFF transmite contexto y responsabilidad; el MANIFEST determina posteriormente el estado vigente. Un HANDOFF histórico no debe utilizarse para sustituir el estado actual del MANIFEST.
 
@@ -59,7 +59,7 @@ Si el usuario indica **«Conecta con el hilo `<thread_id>`»**, se localiza prim
 
 ### Entrada desde responsabilidad nueva
 
-Si una conversación nueva declara una responsabilidad sin HANDOFF previo, debe comprobar primero en `knowledge` si ya existe un THREAD compatible. Si no existe, se crea una declaración de THREAD de tipo `USER_DECLARED` y su MANIFEST, y se consolida en `knowledge` cuando constituya estado persistente.
+Si una conversación nueva declara una responsabilidad sin HANDOFF previo, debe comprobar primero en `knowledge` si ya existe un THREAD compatible. Si no existe, se da de alta el THREAD creando su MANIFEST con `origin.type: USER_DECLARED`, y se consolida en `knowledge` cuando constituya estado persistente. No existe un artefacto de «declaración» independiente del MANIFEST: dar de alta un THREAD es crear su MANIFEST.
 
 ## Reincorporación obligatoria de una conversación existente
 
@@ -179,7 +179,7 @@ El siguiente bloque puede copiarse en las instrucciones/contexto permanente del 
 >
 > Toda conversación debe tener una responsabilidad delimitada. Establece `thread_id`, responsabilidad, estado/ciclo, dentro de alcance, fuera de alcance, documentos principales, entregables, validación, dependencias y siguiente handoff. No absorbas silenciosamente trabajo de otra línea.
 >
-> Si el usuario indica «Parte del handoff `<id>`», localiza primero el HANDOFF en `knowledge`; si declara un THREAD receptor inexistente, créalo e inicialízalo como primera tarea. Si indica «Conecta con el hilo `<thread_id>`», localiza el MANIFEST en `knowledge` y utiliza su estado vigente. Si declara una responsabilidad nueva, comprueba primero si existe un THREAD compatible y, si no, créalo como `USER_DECLARED`.
+> Si el usuario indica «Parte del handoff `<id>`», localiza primero el HANDOFF en `knowledge`; si declara un THREAD receptor inexistente, dalo de alta creando su MANIFEST como primera tarea (con `origin.type: THREAD_DERIVED`). Si indica «Conecta con el hilo `<thread_id>`», localiza el MANIFEST en `knowledge` y utiliza su estado vigente. Si declara una responsabilidad nueva, comprueba primero si existe un THREAD compatible y, si no, dalo de alta creando su MANIFEST con `origin.type: USER_DECLARED`.
 >
 > Las conversaciones existentes pueden reincorporarse mediante la instrucción: **«Reincorpórate al contexto del proyecto.»** Después compara el trabajo realizado en la conversación con el repositorio, identifica información nueva/obsoleta/duplicada/en conflicto/fuera de alcance y propone su sincronización. Nunca sobrescribas silenciosamente el repositorio cuando exista un conflicto.
 >
@@ -188,3 +188,9 @@ El siguiente bloque puede copiarse en las instrucciones/contexto permanente del 
 ## Mantenimiento
 
 Cuando cambie el método de trabajo del proyecto, actualizar este documento y `docs/PROJECT_WORKING_RULES.md` cuando corresponda, incrementar la versión relevante y registrar el cambio en el informe del proyecto. La copia colocada en las instrucciones/contexto del Proyecto de ChatGPT debe actualizarse entonces a partir de este documento del repositorio.
+
+## Historial de versiones
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.3.0 | 2026-08-23 | Alineación con Arquitectura 0.5.0 (Alt 1): alta = crear el MANIFEST; retirada de la «declaración» de THREAD; `origin.type` sin `HANDOFF` (la recepción por handoff es `THREAD_DERIVED`). |
