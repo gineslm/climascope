@@ -1,6 +1,6 @@
 # ClimaScope — Reglas de trabajo del proyecto
 
-**Versión del documento:** 1.6.0  
+**Versión del documento:** 1.7.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama de consolidación documental:** `knowledge`
@@ -9,11 +9,11 @@
 
 ## 1. Propósito
 
-Este documento es el contrato operativo permanente para el trabajo de ClimaScope entre conversaciones independientes. Existe para que el método del proyecto, la trazabilidad, la práctica documental y las reglas de transferencia no dependan de la memoria de una conversación concreta.
+Este documento es el contrato operativo permanente para el trabajo de ClimaScope entre conversaciones independientes. Existe para que el método del proyecto, la trazabilidad, la práctica documental y las reglas de coordinación entre THREADs no dependan de la memoria de una conversación concreta.
 
 El repositorio Git es la fuente central de verdad. El estado consolidado de conocimiento y estructura se mantiene en `knowledge`; el ciclo de software utiliza `develop` y `main`. Un hilo nuevo debe recuperar el estado del proyecto desde `knowledge` antes de tomar decisiones o realizar cambios.
 
-La arquitectura operativa de los hilos está especificada en `docs/core/THREAD_ARCHITECTURE.md`. Este documento establece las reglas permanentes; la especificación de hilos define el modelo de identidad, estados, ciclos, dependencias y transferencias.
+La arquitectura operativa de los hilos está especificada en `docs/core/THREAD_ARCHITECTURE.md`. Este documento establece las reglas permanentes; la especificación de hilos define el modelo de identidad, estados, ciclos, dependencias, propuestas y HANDOFFs.
 
 ## 2. Primer paso obligatorio en cada hilo nuevo
 
@@ -152,15 +152,17 @@ Por ejemplo:
 
 Los informes registran lo que realmente se ha implementado, probado, medido, decidido y cambiado a lo largo del tiempo.
 
-### Handoffs de hilo
+### HANDOFF de hilo
 
 Por ejemplo:
 
-`docs/threads/station-location-evidence/MODEL.md`
+`docs/threads/<thread>/HANDOFF.md`
 
-Los handoffs definen el alcance y el contexto de partida para un hilo especializado siguiente. Deben contener repositorio, rama de trabajo, ruta local cuando se conozca, requisitos de acceso, objetivo, estado actual, restricciones, entregables, validación y protocolo de cierre.
+Cada THREAD dispone, como regla general, de un único HANDOFF persistente. El HANDOFF **no transfiere una sesión ni una responsabilidad entre agentes**: contiene únicamente propuestas, revisiones, necesidades y tareas inter-THREAD que todavía están pendientes de resolución.
 
-Un handoff debe entenderse como transferencia de responsabilidad, no como simple lista de tareas. El HANDOFF se consolida en `knowledge`; su referencia a una rama de trabajo puede continuar apuntando a una rama distinta.
+Cualquier THREAD puede registrar una entrada dirigida al receptor, con contexto y evidencia suficientes. Sólo el THREAD propietario del HANDOFF puede gestionar y resolver esa entrada.
+
+Cuando una entrada se resuelve, **sale del HANDOFF en el mismo commit que aplica la decisión o registra su rechazo**. El HANDOFF representa lo pendiente; Git conserva el historial de lo resuelto y el mensaje del commit conserva el porqué. No se mantiene en el HANDOFF un segundo historial de decisiones terminadas.
 
 ## 8. Protocolo de responsabilidad y alcance
 
@@ -175,9 +177,11 @@ Toda conversación sustantiva debe poder identificar:
 - entregables;
 - validación;
 - dependencias;
-- siguiente handoff.
+- HANDOFF asociado y entradas pendientes relevantes.
 
 Un hilo no debe absorber silenciosamente trabajo perteneciente a otra línea. Una dependencia entre dominios no transfiere responsabilidad.
+
+Cuando un THREAD detecte una necesidad fuera de su autoridad de edición, debe registrar una propuesta en el HANDOFF del THREAD responsable en lugar de modificar directamente su conocimiento.
 
 Las propuestas, hipótesis y alternativas deben distinguirse de las decisiones validadas. El historial del chat no convierte por sí mismo una propuesta en conocimiento autoritativo.
 
@@ -189,14 +193,15 @@ Antes de declarar completada una tarea:
 2. inspeccionar los resultados generados cuando proceda;
 3. actualizar el informe correspondiente;
 4. incrementar la versión documental cuando haya cambios sustantivos de documentación;
-5. crear/actualizar el siguiente handoff si se necesita otro hilo;
-6. hacer commit con un mensaje intencionado;
-7. hacer push de la rama de trabajo acordada;
-8. consolidar en `knowledge` los cambios que modifiquen conocimiento o estructura autoritativos;
-9. registrar el SHA de consolidación y, cuando exista, el SHA de trabajo;
-10. indicar cualquier incertidumbre o evidencia que falte.
+5. revisar las entradas abiertas del HANDOFF propio y registrar en otros HANDOFFs cualquier propuesta fuera de alcance descubierta;
+6. si una entrada se resuelve, retirarla en el mismo commit que aplica la decisión o registra su rechazo;
+7. hacer commit con un mensaje intencionado conforme a `docs/core/GIT_COMMIT_RULES.md`;
+8. hacer push de la rama de trabajo acordada;
+9. consolidar en `knowledge` los cambios que modifiquen conocimiento o estructura autoritativos;
+10. registrar referencias Git sólo cuando tengan significado semántico o sean necesarias para reproducibilidad;
+11. indicar cualquier incertidumbre o evidencia que falte.
 
-El cierre termina un ciclo de trabajo; no elimina el conocimiento persistente. Una responsabilidad puede iniciar un ciclo posterior sin reescribir retrospectivamente el anterior.
+El cierre termina un ciclo de trabajo; no elimina el conocimiento persistente. El HANDOFF no conserva un archivo de entradas terminadas: Git conserva ese historial.
 
 ## 10. Reglas de trazabilidad y evidencia
 
@@ -298,7 +303,7 @@ En la versión 1.0.0 de estas reglas:
 - la suite de tests alcanzó 13 tests después de los últimos cambios de agregación;
 - la siguiente tarea especializada prevista es el modelo de dominio Station / Location / Scope / Evidence.
 
-Para el estado detallado actual, leer el último `docs/threads/water-pipeline/AUDIT_REPORT.md` y el handoff específico de la tarea.
+Para el estado detallado actual, leer el último `docs/threads/water-pipeline/AUDIT_REPORT.md` y el MANIFEST/HANDOFF específico de la tarea.
 
 ## 16. Descubrimiento de THREAD y documentos
 
@@ -321,3 +326,4 @@ El cierre sigue el protocolo de §9 de este documento y el formato de finalizaci
 | 1.4.0 | 2026-08-23 | Consolidación del bootstrap (M1): §2/§17/§18 remiten a los canónicos; retirada de la redundancia interna de cierre. |
 | 1.5.0 | 2026-08-23 | Reorganización 2C: todas las rutas de remisión actualizadas a `docs/core/…`. |
 | 1.6.0 | 2026-09-08 | Se delega en `GIT_COMMIT_RULES.md` la estrategia de commits como registro histórico de decisiones. |
+| 1.7.0 | 2026-09-08 | HANDOFF alineado como cola de entradas pendientes; las resoluciones terminales salen del HANDOFF y su historial queda en Git. |

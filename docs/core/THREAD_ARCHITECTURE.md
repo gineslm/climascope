@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.7.1  
+**Versión:** 0.8.0  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -27,19 +27,20 @@ SOFTWARE  → desarrollo, integración y publicación del software
 4. Una conversación no es fuente autoritativa del proyecto.
 5. El conocimiento duradero debe sincronizarse con el repositorio.
 6. El MANIFEST es la autoridad sobre la identidad y el estado operativo actual del THREAD.
-7. Un HANDOFF **no es un documento de transición entre sesiones ni un mecanismo de reincorporación de agentes**. Es el registro persistente de eventos de entrada del THREAD: propuestas, revisiones y tareas pendientes que el THREAD receptor debe evaluar.
+7. Un HANDOFF **no es un documento de transición entre sesiones ni un mecanismo de reincorporación de agentes**. Es la cola persistente de eventos de entrada todavía no resueltos del THREAD: propuestas, revisiones, necesidades y tareas que el THREAD receptor debe evaluar.
 8. Un agente se incorpora a un THREAD resolviendo y leyendo su MANIFEST. Puede llegar al MANIFEST a partir de una referencia a un HANDOFF, pero el HANDOFF no sustituye al MANIFEST como mecanismo de incorporación.
 9. Ningún THREAD modifica directamente el conocimiento cuya evolución corresponde a otro THREAD. Puede leerlo y puede registrar una propuesta en el HANDOFF del THREAD responsable.
 10. Una propuesta registrada en un HANDOFF no constituye por sí misma una dependencia, una decisión ni un cambio del conocimiento vigente.
-11. Los conflictos entre conversación y repositorio se hacen explícitos.
-12. Una rama de trabajo no es autoritativa por el mero hecho de existir.
-13. El conocimiento consolidado y la implementación del software son dimensiones distintas.
-14. La nomenclatura prioriza nombres completos y legibles; no se introducen prefijos compactos mientras no exista necesidad demostrada.
-15. Los identificadores Git que fijan un estado histórico deben expresar su función temporal y no presentarse como si fueran referencias dinámicas al estado actual.
-16. Crear un THREAD es crear y consolidar su MANIFEST; un THREAD existe si y solo si existe su MANIFEST.
-17. No existe un artefacto de «declaración» de THREAD independiente del MANIFEST: «declarar» es la operación de crear el MANIFEST.
-18. El corpus de conocimiento del proyecto es común para lectura: un THREAD puede consultar cualquier documento necesario para razonar dentro de su responsabilidad. La autoridad de **edición** se restringe por responsabilidad, no por visibilidad.
-19. Un THREAD custodia el **estado de un problema o línea de investigación/trabajo** y es responsable de la evolución del conocimiento dentro de ese alcance; no debe interpretarse como propietario exclusivo de todo conocimiento al que accede.
+11. Una entrada resuelta **sale del HANDOFF** en el mismo commit que aplica la decisión o registra su rechazo. El historial de Git conserva la entrada retirada, la decisión y su motivo; el HANDOFF no duplica ese historial.
+12. Los conflictos entre conversación y repositorio se hacen explícitos.
+13. Una rama de trabajo no es autoritativa por el mero hecho de existir.
+14. El conocimiento consolidado y la implementación del software son dimensiones distintas.
+15. La nomenclatura prioriza nombres completos y legibles; no se introducen prefijos compactos mientras no exista necesidad demostrada.
+16. Los identificadores Git que fijan un estado histórico deben expresar su función temporal y no presentarse como si fueran referencias dinámicas al estado actual.
+17. Crear un THREAD es crear y consolidar su MANIFEST; un THREAD existe si y solo si existe su MANIFEST.
+18. No existe un artefacto de «declaración» de THREAD independiente del MANIFEST: «declarar» es la operación de crear el MANIFEST.
+19. El corpus de conocimiento del proyecto es común para lectura: un THREAD puede consultar cualquier documento necesario para razonar dentro de su responsabilidad. La autoridad de **edición** se restringe por responsabilidad, no por visibilidad.
+20. Un THREAD custodia el **estado de un problema o línea de investigación/trabajo** y es responsable de la evolución del conocimiento dentro de ese alcance; no debe interpretarse como propietario exclusivo de todo conocimiento al que accede.
 
 ## 3. Modelo de ramas y raíz del proyecto
 
@@ -265,9 +266,9 @@ handoff:
   status: ACTIVE
 ```
 
-El HANDOFF no representa una sesión ni una transferencia entre agentes. Es el buzón/registro estructurado de entradas pendientes del THREAD (§13). Su historial se conserva dentro del propio registro mediante las entradas y sus cambios de estado, no mediante una sucesión conceptual de HANDOFFs de sesión.
+El HANDOFF no representa una sesión ni una transferencia entre agentes. Es la cola estructurada de entradas todavía pendientes del THREAD (§13). **No conserva dentro de sí un historial paralelo de entradas ya resueltas**: cuando una decisión termina la deliberación, la entrada se retira en el mismo commit que aplica el cambio correspondiente o registra el rechazo. El historial de Git permite reconstruir la entrada, la decisión y el motivo.
 
-Para conectar con un THREAD se consulta primero el MANIFEST. Después se lee su HANDOFF para conocer propuestas y revisiones pendientes.
+Para conectar con un THREAD se consulta primero el MANIFEST. Después se lee su HANDOFF para conocer únicamente las propuestas, revisiones, necesidades y tareas todavía abiertas.
 
 ## 8. Estados del THREAD
 
@@ -329,7 +330,7 @@ la frase se interpreta como una **referencia de descubrimiento**, no como un mec
 5. si el MANIFEST existe, incorporarse al THREAD a través de él;
 6. si el MANIFEST no existe y el HANDOFF es una propuesta provisional de nueva responsabilidad, dar de alta el THREAD creando su MANIFEST antes de operar como ese THREAD;
 7. resolver desde el MANIFEST responsabilidad, autoridad documental, dependencias y referencias Git;
-8. leer el HANDOFF como registro de entradas pendientes;
+8. leer el HANDOFF como cola de entradas no resueltas;
 9. resolver el corpus documental relevante desde `knowledge`;
 10. informar del diagnóstico y comenzar el trabajo dentro de la responsabilidad.
 
@@ -346,7 +347,7 @@ el agente debe:
 1. entrar en `knowledge`;
 2. localizar el MANIFEST;
 3. verificar identidad y estado;
-4. leer el HANDOFF asociado;
+4. leer el HANDOFF asociado para identificar entradas todavía abiertas;
 5. resolver dependencias y corpus relevante;
 6. resolver `work_branch`/`work_commit` desde el MANIFEST;
 7. informar del diagnóstico;
@@ -398,7 +399,7 @@ Cuando un THREAD descubre una necesidad que afecta a conocimiento cuya evolució
 4. adjunta contexto, evidencia y referencias suficientes;
 5. continúa dentro de su propia responsabilidad salvo que la propuesta sea un bloqueo explícito.
 
-El THREAD receptor es el único que evalúa la propuesta y modifica su estado (`accepted`, `rejected`, `deferred`, `superseded` u otro estado canónico futuro), registra la decisión y, si procede, actualiza el conocimiento bajo su responsabilidad.
+El THREAD receptor es el único que evalúa la propuesta. Mientras permanezca abierta puede actualizar su estado operativo dentro del HANDOFF (`proposed`, `in_review`, `deferred`, `ready_to_apply` u otros estados no terminales). Cuando adopta una decisión terminal, retira la entrada del HANDOFF en el mismo commit que aplica la decisión o registra el rechazo; Git conserva la decisión y su motivo.
 
 ## 11. Contrato de responsabilidad
 
@@ -444,22 +445,24 @@ Una propuesta puede convertirse en dependencia sólo como consecuencia de una de
 
 El **HANDOFF no es un documento de transición de sesiones**, no resume una conversación para que otra la continúe y no es el mecanismo por el que un agente se incorpora al THREAD.
 
-El HANDOFF es el **registro persistente de eventos de entrada** de una responsabilidad: una cola deliberativa de propuestas, revisiones, necesidades y tareas que otros THREADs —o el propio ecosistema— remiten al THREAD receptor para que éste las evalúe.
+El HANDOFF es la **cola persistente de eventos de entrada todavía no resueltos** de una responsabilidad: propuestas, revisiones, necesidades y tareas que otros THREADs —o el propio ecosistema— remiten al THREAD receptor para que éste las evalúe.
 
 Como regla general existe **un único HANDOFF por THREAD**. Pertenece a la responsabilidad del THREAD y persiste aunque cambien los agentes o no exista ninguna conversación activa.
+
+El HANDOFF describe **el presente pendiente**, no el pasado resuelto. El historial de las entradas que abandonan el HANDOFF pertenece a Git conforme a `docs/core/GIT_COMMIT_RULES.md`.
 
 ### 13.2 Autoría y soberanía
 
 El HANDOFF distingue dos autoridades:
 
 - **Entrada/propuesta**: cualquier THREAD puede registrar una propuesta dirigida al receptor, siempre con origen y evidencia suficientes.
-- **Estado/resolución**: sólo el THREAD propietario del HANDOFF evalúa la entrada, cambia su estado, registra la decisión y modifica, si procede, el conocimiento dentro de su responsabilidad.
+- **Gestión de la entrada**: sólo el THREAD propietario del HANDOFF evalúa la entrada, cambia su estado operativo y decide cómo resolverla.
 
-Esta separación preserva la soberanía de responsabilidad: otros THREADs pueden escribir **propuestas** en el HANDOFF, pero no pueden escribir la **resolución** ni modificar directamente el conocimiento del receptor.
+Esta separación preserva la soberanía de responsabilidad: otros THREADs pueden escribir **propuestas** en el HANDOFF, pero no pueden resolverlas ni modificar directamente el conocimiento del receptor.
 
 ### 13.3 Estructura mínima de una entrada
 
-Cada entrada es conceptualmente cercana a un **Architecture Decision Record (ADR)**: conserva el contexto de una decisión potencial y su resolución, aunque no todo evento tenga naturaleza estrictamente arquitectónica.
+Cada entrada es conceptualmente cercana a un **Architecture Decision Record (ADR)** durante su vida activa: conserva el contexto de una decisión potencial, aunque no todo evento tenga naturaleza estrictamente arquitectónica.
 
 Formato mínimo provisional:
 
@@ -472,22 +475,19 @@ summary:
 context:
 evidence:
 target_scope:
-
-resolution:
-  status: proposed | accepted | rejected | deferred | superseded
-  decided_by:
-  decided_at:
-  rationale:
-  resulting_changes:
+status: proposed | in_review | deferred | ready_to_apply
+working_notes:
 ```
 
 La estructura puede representarse físicamente como dos columnas o dos zonas lógicas:
 
-| Entrada / propuesta | Estado / resolución del THREAD receptor |
+| Entrada / propuesta | Estado / trabajo del THREAD receptor |
 |---|---|
-| Escribible por el THREAD emisor; conserva origen, necesidad, contexto y evidencia. | Escribible por el THREAD propietario; conserva estado, deliberación, decisión y cambios resultantes. |
+| Escribible por el THREAD emisor; conserva origen, necesidad, contexto y evidencia. | Escribible por el THREAD propietario; conserva sólo el estado y notas necesarias mientras la entrada siga abierta. |
 
 La implementación física definitiva del formato queda abierta; la separación de autoridad entre ambas partes es normativa.
+
+No deben conservarse en el HANDOFF campos terminales como `accepted`, `rejected`, `superseded`, `decided_at`, `rationale` o `resulting_changes` **una vez concluida la decisión**. Esa información se reconstruye desde el commit que retira la entrada y, cuando exista, desde los documentos de conocimiento modificados.
 
 ### 13.4 Ciclo de una entrada
 
@@ -495,11 +495,22 @@ La implementación física definitiva del formato queda abierta; la separación 
 propuesta registrada
         ↓
 evaluación por THREAD receptor
-        ├── accepted   → actualiza conocimiento / tareas si procede
-        ├── rejected   → conserva razón
-        ├── deferred   → permanece pendiente
-        └── superseded → referencia a la entrada que la sustituye
+        ├── continúa abierta → actualiza estado/notas en HANDOFF
+        │
+        └── decisión terminal
+                ↓
+       cambio real o rechazo
+                ↓
+   retirar entrada del HANDOFF
+                ↓
+       MISMO COMMIT en Git
 ```
+
+Una decisión terminal puede ser aceptación, rechazo, sustitución por otra propuesta o cualquier resolución que haga innecesario mantener la entrada como trabajo pendiente.
+
+La regla crítica es: **la retirada del pendiente y la decisión real pertenecen al mismo commit**. Si la entrada se acepta, ese commit debe incluir los cambios documentales/operativos correspondientes. Si se rechaza sin otros cambios, el commit retira la entrada y explica el motivo del rechazo en su mensaje.
+
+Las entradas `deferred` siguen abiertas y, por tanto, permanecen en el HANDOFF.
 
 La existencia de entradas no resueltas es parte del estado operativo del THREAD y debe revisarse antes de cerrar, archivar o redefinir su responsabilidad.
 
@@ -516,12 +527,20 @@ HANDOFF del receptor
       ↓
 evaluación soberana del THREAD
       ↓
-accepted / rejected / deferred / superseded
-      ↓ (si accepted)
-documentación → implementación/validación → consolidación
+continúa pendiente ─────────→ permanece en HANDOFF
+      │
+      └── decisión terminal
+              ↓
+     aplicar cambio / rechazo
+              ↓
+   retirar entrada del HANDOFF
+              ↓
+        mismo COMMIT
+              ↓
+      historial en Git
 ```
 
-El chat no convierte por sí mismo una propuesta en conocimiento autoritativo. El HANDOFF tampoco: sólo registra la propuesta y su resolución. El conocimiento vigente se modifica en sus documentos autoritativos cuando el THREAD responsable acepta y consolida el cambio.
+El chat no convierte por sí mismo una propuesta en conocimiento autoritativo. El HANDOFF tampoco: registra exclusivamente el trabajo pendiente. El conocimiento vigente se modifica en sus documentos autoritativos cuando el THREAD responsable acepta y consolida el cambio; Git conserva el historial de la decisión y la retirada de la entrada.
 
 ## 15. Registro e índice del proyecto
 
@@ -529,9 +548,9 @@ El chat no convierte por sí mismo una propuesta en conocimiento autoritativo. E
 
 Cada THREAD puede mantener un **registro** de su actividad operativa significativa: eventos, decisiones y cambios de estado, con su origen y evidencia. No debe ser una copia íntegra de conversaciones.
 
-El Activity Log no debe confundirse con el HANDOFF: el HANDOFF organiza **inputs deliberables** dirigidos al THREAD; el Activity Log conserva, cuando exista, la historia operativa general del THREAD.
+El Activity Log no debe confundirse con el HANDOFF: el HANDOFF organiza **inputs deliberables todavía abiertos** dirigidos al THREAD; el Activity Log conserva, cuando exista y se justifique, otra historia operativa que no quede suficientemente expresada por Git y los documentos autoritativos.
 
-El registro es historial: conserva lo ocurrido, pero **no es autoritativo sobre el estado actual** (esa autoridad es del MANIFEST y de los documentos de conocimiento vigentes). Cuando una entrada del registro modifica estado autoritativo, debe consolidarse en `knowledge` junto con los artefactos afectados.
+La introducción de `GIT_COMMIT_RULES.md` obliga a evitar que un Activity Log duplique automáticamente el historial que Git ya conserva. Su necesidad y alcance deberán justificarse cuando se utilice.
 
 ### 15.2 Índice del proyecto
 
@@ -551,8 +570,9 @@ La arquitectura deja abierta la extensión del índice —o la creación de un �
 | Arquitectura de hilos | `docs/core/THREAD_ARCHITECTURE.md` en `knowledge` |
 | Estado/metodología validada | documentos de conocimiento vigentes en `knowledge` |
 | Identidad, estado y alta de THREAD | MANIFEST en `knowledge` |
-| Entradas/propuestas dirigidas al THREAD y sus resoluciones | HANDOFF del THREAD en `knowledge` |
-| Historial de actividad general del THREAD | Registro (Activity Log), cuando exista |
+| Entradas/propuestas todavía pendientes dirigidas al THREAD | HANDOFF del THREAD en `knowledge` |
+| Historial de decisiones resueltas y entradas retiradas | historial Git + mensaje del commit |
+| Historial de actividad no cubierto por Git, cuando exista | Registro (Activity Log) justificado |
 | Descubrimiento de THREAD | Índice del proyecto (derivado, no autoritativo) |
 | Implementación en curso | rama/commit de trabajo |
 | Software integrado | `develop` / `main` |
@@ -565,17 +585,17 @@ Si fuentes comparables discrepan, se expone el conflicto y se determina cuál pr
 
 Antes de cerrar un THREAD sustantivo:
 
-1. revisar y resolver o clasificar las entradas abiertas de su HANDOFF;
-2. validar/tests cuando proceda;
-3. documentar resultados y decisiones;
-4. actualizar versiones y MANIFEST;
-5. actualizar el HANDOFF con el estado de las propuestas tratadas;
-6. hacer commit en la rama de trabajo cuando exista;
-7. consolidar en `knowledge` los cambios autoritativos de conocimiento/estructura;
-8. registrar los SHAs relevantes;
+1. revisar las entradas abiertas de su HANDOFF;
+2. resolver las que deban cerrarse, retirándolas en el mismo commit que aplica o registra cada decisión;
+3. clasificar las entradas que sigan legítimamente abiertas (`deferred`, bloqueadas u otro estado no terminal) y decidir si son compatibles con el cierre/archivo del THREAD;
+4. validar/tests cuando proceda;
+5. documentar resultados y decisiones;
+6. actualizar versiones y MANIFEST;
+7. hacer commit en la rama de trabajo cuando exista;
+8. consolidar en `knowledge` los cambios autoritativos de conocimiento/estructura;
 9. indicar incertidumbres restantes.
 
-Cerrar un THREAD no elimina su conocimiento ni el historial de su HANDOFF.
+Cerrar un THREAD no elimina su conocimiento. El HANDOFF conserva únicamente los pendientes que deban seguir abiertos; el historial de lo resuelto permanece en Git.
 
 ## 18. Disposición física de `docs/`
 
@@ -635,3 +655,4 @@ Estas preguntas deben contrastarse con el estado del arte antes de introducir nu
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 0.7.1 | 2026-09-08 | Se incorpora `GIT_COMMIT_RULES.md` como fuente autoritativa para el registro histórico de decisiones mediante commits. |
+| 0.8.0 | 2026-09-08 | HANDOFF pasa a representar exclusivamente inputs pendientes; las entradas resueltas se retiran en el mismo commit que aplica o registra la decisión y su historial queda en Git. |

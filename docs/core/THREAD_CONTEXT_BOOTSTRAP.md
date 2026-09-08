@@ -1,6 +1,6 @@
 # ClimaScope — Bootstrap de contexto de nuevos hilos
 
-**Versión del documento:** 1.5.0  
+**Versión del documento:** 1.6.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama raíz de conocimiento:** `knowledge`  
@@ -20,7 +20,7 @@ Su propósito es hacer que cada conversación:
 - se incorpore a un THREAD mediante su MANIFEST cuando exista;
 - quede explícitamente acotada a una responsabilidad;
 - no absorba silenciosamente responsabilidades de otras líneas;
-- consulte el HANDOFF del THREAD como registro de entradas pendientes, no como memoria de sesión.
+- consulte el HANDOFF del THREAD como cola de entradas pendientes, no como memoria de sesión ni como historial de decisiones terminadas.
 
 El repositorio es la fuente de verdad. La conversación es una sesión de trabajo, no la memoria permanente del proyecto.
 
@@ -32,7 +32,7 @@ Cuando este documento forme parte del contexto del proyecto, la conversación de
 >
 > Trabaja contra el repositorio central de GitHub `gineslm/climascope`.
 >
-> **Primero entra conceptualmente en la rama `knowledge` como raíz de conocimiento y estructura consolidada.** Después lee `docs/core/PROJECT_WORKING_RULES.md`, `docs/core/THREAD_ARCHITECTURE.md` y el contexto de proyecto vigente. Resuelve el THREAD objetivo y su MANIFEST. Una vez incorporado al THREAD, consulta su HANDOFF como registro de propuestas/revisiones pendientes y el corpus documental relevante.
+> **Primero entra conceptualmente en la rama `knowledge` como raíz de conocimiento y estructura consolidada.** Después lee `docs/core/PROJECT_WORKING_RULES.md`, `docs/core/THREAD_ARCHITECTURE.md` y el contexto de proyecto vigente. Resuelve el THREAD objetivo y su MANIFEST. Una vez incorporado al THREAD, consulta su HANDOFF como cola de propuestas/revisiones todavía pendientes y el corpus documental relevante.
 >
 > GitHub es el registro autoritativo del proyecto. No asumas que una información existe porque apareciera en otra conversación. Si falta un documento referenciado en el repositorio, informa de ello y solicítalo en lugar de inventarlo.
 >
@@ -42,13 +42,13 @@ Cuando este documento forme parte del contexto del proyecto, la conversación de
 
 Una rama de trabajo indicada por un MANIFEST es una referencia al trabajo operativo, no una fuente alternativa de verdad global. Las reglas, arquitectura, identidad de THREAD, MANIFEST, HANDOFF y decisiones consolidadas deben resolverse desde `knowledge`.
 
-**El HANDOFF no es un documento de transición entre sesiones ni el mecanismo de incorporación de agentes.** La incorporación se realiza mediante el MANIFEST; el HANDOFF es el registro persistente de entradas pendientes del THREAD.
+**El HANDOFF no es un documento de transición entre sesiones ni el mecanismo de incorporación de agentes.** La incorporación se realiza mediante el MANIFEST; el HANDOFF contiene únicamente entradas todavía pendientes del THREAD. Las entradas resueltas se retiran y su historial permanece en Git conforme a `docs/core/GIT_COMMIT_RULES.md`.
 
 ## 3. Alta de THREAD (crear su MANIFEST y HANDOFF)
 
 Dar de alta un THREAD es **crear y consolidar su MANIFEST**. Un THREAD existe si y solo si existe su MANIFEST.
 
-En el flujo normal se crea también, en la misma inicialización, su **HANDOFF persistente**. El HANDOFF puede estar vacío o contener las propuestas que motivaron la nueva responsabilidad.
+En el flujo normal se crea también, en la misma inicialización, su **HANDOFF persistente**. El HANDOFF puede estar vacío o contener las propuestas pendientes que motivaron la nueva responsabilidad.
 
 Cuando una conversación nueva identifica una responsabilidad y no existe un THREAD compatible:
 
@@ -128,7 +128,7 @@ La inspección inicial debe cubrir normalmente:
 3. docs/core/THREAD_ARCHITECTURE.md
 4. docs/core/PROJECT_INDEX.md
 5. MANIFEST del THREAD
-6. HANDOFF asociado
+6. HANDOFF asociado (sólo pendientes abiertos)
 7. informe y corpus documental relevante
 8. README.md cuando proceda
 9. código y tests relevantes
@@ -161,9 +161,11 @@ Registra la identidad y el estado operativo actual del THREAD y es el mecanismo 
 
 ### HANDOFF
 
-Cada THREAD dispone, como regla general, de un HANDOFF persistente que actúa como **registro de eventos de entrada**: propuestas, revisiones, necesidades o tareas pendientes. No es un documento de transición de conversación.
+Cada THREAD dispone, como regla general, de un HANDOFF persistente que actúa como **cola de eventos de entrada no resueltos**: propuestas, revisiones, necesidades o tareas pendientes. No es un documento de transición de conversación ni un archivo histórico de decisiones.
 
-Cualquier THREAD puede registrar una propuesta en el HANDOFF receptor; sólo el THREAD propietario evalúa la propuesta, cambia su estado y registra la resolución.
+Cualquier THREAD puede registrar una propuesta en el HANDOFF receptor; sólo el THREAD propietario la evalúa y gestiona mientras permanezca abierta.
+
+Cuando una entrada alcanza una decisión terminal, se retira del HANDOFF **en el mismo commit** que aplica la decisión o registra su rechazo. Git conserva el historial y el mensaje del commit conserva el motivo.
 
 ## 7. Aislamiento de responsabilidades
 
@@ -199,7 +201,7 @@ THREAD responsable recomendado:
 Entrada de HANDOFF creada:
 ```
 
-Si existe un THREAD responsable, registrar la propuesta en su HANDOFF. La propuesta no implica aceptación, dependencia ni modificación automática. El THREAD receptor debe evaluarla y registrar su resolución.
+Si existe un THREAD responsable, registrar la propuesta en su HANDOFF. La propuesta no implica aceptación, dependencia ni modificación automática. El THREAD receptor debe evaluarla mientras permanezca abierta; al resolverla, la entrada sale del HANDOFF en el mismo commit que aplica o registra la decisión.
 
 Sólo ampliar el alcance cuando el propietario lo autorice o la definición actual ya lo incluya.
 
@@ -213,12 +215,13 @@ Debe:
 2. comprobar que su modificación entra dentro de la autoridad del THREAD;
 3. si no entra, registrar una propuesta en el HANDOFF del THREAD responsable;
 4. si entra, actualizar versión y contenido;
-5. registrar decisión y justificación;
-6. hacer commit en GitHub;
-7. consolidar en `knowledge` cuando modifique conocimiento o estructura autoritativos;
-8. registrar los SHAs relevantes.
+5. si la decisión resuelve una entrada de HANDOFF, retirar esa entrada en el mismo cambio;
+6. registrar el motivo mediante el mensaje de commit conforme a `docs/core/GIT_COMMIT_RULES.md`;
+7. hacer commit en GitHub;
+8. consolidar en `knowledge` cuando modifique conocimiento o estructura autoritativos;
+9. conservar referencias Git explícitas sólo cuando tengan función semántica o de reproducibilidad.
 
-Las reglas maestras sólo cambian cuando cambia una regla operativa global. Las decisiones específicas pertenecen al documento, informe, MANIFEST o resolución correspondiente.
+Las reglas maestras sólo cambian cuando cambia una regla operativa global. Las decisiones específicas pertenecen al documento o estado autoritativo correspondiente; Git conserva su historial.
 
 ## 10. Seguridad de datos
 
@@ -241,20 +244,20 @@ RESPONSABILIDAD CERRADA / SESIÓN FINALIZADA
 
 Trabajo dentro de alcance completado:
 Propuestas fuera de alcance registradas:
-Entradas de HANDOFF evaluadas:
+Entradas de HANDOFF todavía abiertas:
 Archivos modificados:
 Datos modificados:
 Tests/validación:
 Versiones documentales:
 Rama:
-Commit SHA:
-SHA de consolidación en knowledge:
+Commit SHA (si tiene función operativa/reproducible):
+SHA de consolidación en knowledge (si procede):
 Incertidumbre restante:
 ```
 
 El estado final debe poder reproducirse desde GitHub sin necesitar el histórico de la conversación.
 
-Finalizar una conversación **no crea un HANDOFF de sesión**. El HANDOFF del THREAD continúa existiendo como registro persistente de inputs pendientes y resueltos.
+Finalizar una conversación **no crea un HANDOFF de sesión**. El HANDOFF del THREAD continúa existiendo únicamente como cola persistente de inputs todavía pendientes; las entradas resueltas viven en el historial Git.
 
 ## 12. Versión compacta para nuevas conversaciones
 
@@ -264,9 +267,9 @@ Finalizar una conversación **no crea un HANDOFF de sesión**. El HANDOFF del TH
 > Fuente de verdad: GitHub  
 > Raíz de conocimiento: `knowledge`
 >
-> Antes de trabajar, entra conceptualmente en `knowledge`, lee `docs/core/PROJECT_WORKING_RULES.md` y `docs/core/THREAD_ARCHITECTURE.md`, localiza el THREAD objetivo y **conéctate mediante su MANIFEST**. Después consulta su HANDOFF como registro persistente de propuestas/revisiones pendientes y lee el corpus documental relevante.
+> Antes de trabajar, entra conceptualmente en `knowledge`, lee `docs/core/PROJECT_WORKING_RULES.md` y `docs/core/THREAD_ARCHITECTURE.md`, localiza el THREAD objetivo y **conéctate mediante su MANIFEST**. Después consulta su HANDOFF únicamente como cola persistente de propuestas/revisiones todavía pendientes y lee el corpus documental relevante.
 >
-> El HANDOFF no es memoria ni transición entre sesiones. Si otro THREAD detecta una necesidad que afecta a esta responsabilidad, puede registrar una propuesta en el HANDOFF; sólo el THREAD receptor la evalúa y registra la resolución.
+> El HANDOFF no es memoria ni transición entre sesiones y no conserva el historial de decisiones terminadas. Si otro THREAD detecta una necesidad que afecta a esta responsabilidad, puede registrar una propuesta en el HANDOFF; sólo el THREAD receptor la gestiona. Cuando la resuelve, retira la entrada en el mismo commit que aplica o registra la decisión; Git conserva el historial y su porqué.
 >
 > El corpus es común para lectura, pero la autoridad de edición está delimitada por responsabilidad. Si necesitas cambiar conocimiento fuera de tu autoridad, registra una propuesta en el HANDOFF del THREAD responsable en lugar de modificarlo directamente.
 >
@@ -282,3 +285,4 @@ Finalizar una conversación **no crea un HANDOFF de sesión**. El HANDOFF del TH
 | 1.3.0 | 2026-08-23 | Declaración de canonicidad del bloque operativo. |
 | 1.4.0 | 2026-08-23 | Reorganización 2C: rutas actualizadas a `docs/core/…`. |
 | 1.5.0 | 2026-09-08 | Alineación con Arquitectura 0.7.0: incorporación exclusivamente mediante MANIFEST; HANDOFF redefinido como registro persistente de eventos de entrada; corpus común para lectura y edición delimitada por responsabilidad. |
+| 1.6.0 | 2026-09-08 | HANDOFF pasa a contener exclusivamente entradas pendientes; las entradas resueltas se retiran en el mismo commit que aplica o registra la decisión y su historial queda en Git. |
