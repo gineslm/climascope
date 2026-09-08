@@ -1,37 +1,48 @@
-# W1 — AEMET precipitation QC
+# ClimaScope — W1 · QC de precipitación AEMET
 
-## Scope
+**Versión:** 1.0.0  
+**Estado:** Activo  
+**Idioma:** español (España)  
+**THREAD responsable:** `thread-water-pipeline`
 
-Target period: 2011-01-01 to 2025-12-31 (5,479 calendar days).
+## 1. Alcance
 
-Benchmark stations: Valencia `8416`, Cartagena `7012D`, Madrid-Retiro `3195`.
+Periodo objetivo: 2011-01-01 a 2025-12-31 (5.479 días naturales).
 
-## Data semantics
+Estaciones benchmark: Valencia `8416`, Cartagena `7012D`, Madrid-Retiro `3195`.
 
-AEMET daily precipitation is supplied in the raw payload as `prec`. The normalized field is `prcp`.
+## 2. Semántica de datos
 
-- Explicit `0,0` is a real zero and is never treated as missing.
-- Decimal commas are normalized to numeric decimals.
-- Missing precipitation values within an observed daily record remain missing.
-- A date with no AEMET record is a missing date and is distinct from a record whose precipitation is missing.
-- AEMET `.NO_DATA` blocks are retained as acquisition provenance and are not converted to zeros.
+La precipitación diaria de AEMET llega en el payload raw como `prec`. El campo normalizado es `prcp`.
 
-## Initial QC result
+- `0,0` explícito es un cero real y nunca se trata como missing.
+- Las comas decimales se normalizan a valores numéricos.
+- Los valores de precipitación missing dentro de un registro diario observado permanecen missing.
+- Una fecha sin registro AEMET es una fecha missing y se distingue de un registro cuya precipitación sea missing.
+- Los bloques `.NO_DATA` se conservan como procedencia de adquisición y no se convierten en ceros.
 
-| Station | First data | Last data | Observed days | Missing dates | Coverage |
+## 3. Resultado inicial de QC
+
+| Estación | Primer dato | Último dato | Días observados | Fechas missing | Cobertura |
 |---|---|---|---:|---:|---:|
-| Valencia `8416` | 2011-01-01 | 2025-12-31 | 5,479 | 0 | 100.000% |
-| Cartagena `7012D` | 2016-02-22 | 2025-12-31 | 3,572 | 1,907 | 65.194% |
-| Madrid-Retiro `3195` | 2011-01-01 | 2025-12-31 | 5,478 | 1 | 99.982% |
+| Valencia `8416` | 2011-01-01 | 2025-12-31 | 5.479 | 0 | 100.000% |
+| Cartagena `7012D` | 2016-02-22 | 2025-12-31 | 3.572 | 1.907 | 65.194% |
+| Madrid-Retiro `3195` | 2011-01-01 | 2025-12-31 | 5.478 | 1 | 99.982% |
 
-The Cartagena gap is supported by ten consecutive AEMET `.NO_DATA` blocks covering 2011-01-01 through 2015-12-05. It is therefore an observed source-availability gap, not a precipitation value of zero.
+La laguna de Cartagena está respaldada por diez bloques consecutivos `.NO_DATA` de AEMET que cubren desde 2011-01-01 hasta 2015-12-05. Por tanto, es una ausencia observada de disponibilidad de la fuente, no un valor de precipitación cero.
 
-The single Madrid missing date and the precipitation-missing records must be identified separately in the next QC pass.
+La única fecha missing de Madrid y los registros con precipitación missing deben identificarse por separado en el siguiente pase de QC.
 
-## Decision status
+## 4. Estado de decisión
 
-- Valencia: suitable for the full target period, subject to precipitation-missing handling.
-- Madrid-Retiro: suitable for the full target period with one missing date to document.
-- Cartagena: partial temporal coverage; do not impute the pre-2016 gap. Final benchmark window remains pending annual/monthly coverage review.
+- Valencia: apta para el periodo objetivo completo, sujeta al tratamiento explícito de precipitación missing.
+- Madrid-Retiro: apta para el periodo completo con una fecha missing que debe documentarse.
+- Cartagena: cobertura temporal parcial; no imputar la laguna anterior a 2016. La ventana benchmark final queda pendiente de revisión mensual/anual de cobertura.
 
-No Water Score or interpolation is calculated from this QC result.
+No se calcula ningún Water Score ni interpolación a partir de este resultado de QC.
+
+## 5. Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.0 | 2026-09-08 | Normalización al castellano y al formato documental vigente, sin cambiar resultados ni decisiones de QC. |
