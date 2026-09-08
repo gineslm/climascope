@@ -1,6 +1,6 @@
 # ClimaScope — Bootstrap de contexto de nuevos hilos
 
-**Versión del documento:** 1.6.0  
+**Versión del documento:** 1.6.1  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama raíz de conocimiento:** `knowledge`  
@@ -127,13 +127,17 @@ La inspección inicial debe cubrir normalmente:
 2. docs/core/PROJECT_WORKING_RULES.md
 3. docs/core/THREAD_ARCHITECTURE.md
 4. docs/core/PROJECT_INDEX.md
-5. MANIFEST del THREAD
-6. HANDOFF asociado (sólo pendientes abiertos)
-7. informe y corpus documental relevante
-8. README.md cuando proceda
-9. código y tests relevantes
-10. rama/commit de trabajo resueltos desde el MANIFEST
+5. docs/core/THREAD_INDEX_TEMPLATE.md (para interpretar/regenerar índices de THREADs)
+6. docs/core/DOCUMENT_INDEX_TEMPLATE.md (para interpretar/regenerar índices documentales)
+7. MANIFEST del THREAD
+8. HANDOFF asociado (sólo pendientes abiertos)
+9. informe y corpus documental relevante
+10. README.md cuando proceda
+11. código y tests relevantes
+12. rama/commit de trabajo resueltos desde el MANIFEST
 ```
+
+Las plantillas de índices no sustituyen a los índices materializados ni a sus fuentes autoritativas: definen su forma y reglas de validación.
 
 No inspeccionar todo el repositorio indiscriminadamente. Comenzar con el contexto mínimo necesario y ampliar según la responsabilidad. El corpus es común para lectura: el hecho de que un documento no pertenezca al ámbito de edición del THREAD no impide consultarlo.
 
@@ -150,6 +154,14 @@ Reglas operativas permanentes.
 `docs/core/THREAD_ARCHITECTURE.md`
 
 Especificación del modelo operativo de THREADs: identidad, responsabilidad, estados, ciclos, dependencias, HANDOFF, MANIFEST, autoridad documental y bootstrap.
+
+### Plantillas de índices
+
+`docs/core/THREAD_INDEX_TEMPLATE.md` define la forma canónica del índice materializado de THREADs.
+
+`docs/core/DOCUMENT_INDEX_TEMPLATE.md` define la forma canónica del índice materializado del corpus documental y de su autoridad de evolución.
+
+Ambas plantillas describen artefactos derivados de descubrimiento; no sustituyen a los MANIFEST ni a los documentos autoritativos.
 
 ### Informes y documentos de conocimiento
 
@@ -286,3 +298,4 @@ Finalizar una conversación **no crea un HANDOFF de sesión**. El HANDOFF del TH
 | 1.4.0 | 2026-08-23 | Reorganización 2C: rutas actualizadas a `docs/core/…`. |
 | 1.5.0 | 2026-09-08 | Alineación con Arquitectura 0.7.0: incorporación exclusivamente mediante MANIFEST; HANDOFF redefinido como registro persistente de eventos de entrada; corpus común para lectura y edición delimitada por responsabilidad. |
 | 1.6.0 | 2026-09-08 | HANDOFF pasa a contener exclusivamente entradas pendientes; las entradas resueltas se retiran en el mismo commit que aplica o registra la decisión y su historial queda en Git. |
+| 1.6.1 | 2026-09-08 | Se incorporan las plantillas canónicas de índices de THREADs y documentos a la orientación y jerarquía del bootstrap. |

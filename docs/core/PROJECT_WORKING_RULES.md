@@ -1,6 +1,6 @@
 # ClimaScope — Reglas de trabajo del proyecto
 
-**Versión del documento:** 1.7.0  
+**Versión del documento:** 1.7.1  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama de consolidación documental:** `knowledge`
@@ -309,6 +309,8 @@ Para el estado detallado actual, leer el último `docs/threads/water-pipeline/AU
 
 El descubrimiento de los THREAD del proyecto se realiza a partir de sus **MANIFEST consolidados en `knowledge`**, que constituyen el índice del proyecto: **derivado y no autoritativo** (ver `docs/core/THREAD_ARCHITECTURE.md` §15.2). Si un índice materializado y un MANIFEST discrepan, prevalece el MANIFEST.
 
+La forma canónica de cualquier índice materializado de THREADs está definida en `docs/core/THREAD_INDEX_TEMPLATE.md`. La forma canónica del índice materializado del corpus documental está definida en `docs/core/DOCUMENT_INDEX_TEMPLATE.md`. Ambos índices son mecanismos de descubrimiento derivados y no sustituyen a los MANIFEST ni a los documentos autoritativos que referencian.
+
 No se mantiene un inventario manual como fuente de verdad: un inventario copiado a mano se desincroniza. Los documentos de referencia (reglas, arquitectura, contexto, informes) y los artefactos de cada THREAD (MANIFEST, HANDOFF, registro) se descubren leyendo la rama `knowledge` vigente.
 
 ## 17. Cómo iniciar un hilo nuevo
@@ -327,3 +329,4 @@ El cierre sigue el protocolo de §9 de este documento y el formato de finalizaci
 | 1.5.0 | 2026-08-23 | Reorganización 2C: todas las rutas de remisión actualizadas a `docs/core/…`. |
 | 1.6.0 | 2026-09-08 | Se delega en `GIT_COMMIT_RULES.md` la estrategia de commits como registro histórico de decisiones. |
 | 1.7.0 | 2026-09-08 | HANDOFF alineado como cola de entradas pendientes; las resoluciones terminales salen del HANDOFF y su historial queda en Git. |
+| 1.7.1 | 2026-09-08 | Se incorporan referencias canónicas a las plantillas de índice de THREADs y de corpus documental. |

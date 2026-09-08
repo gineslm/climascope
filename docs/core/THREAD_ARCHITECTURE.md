@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.8.0  
+**Versión:** 0.8.1  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -79,6 +79,8 @@ Como mínimo, desde `knowledge` deben poder descubrirse:
 - `docs/core/PROJECT_WORKING_RULES.md`;
 - `docs/core/THREAD_ARCHITECTURE.md`;
 - `docs/core/PROJECT_INDEX.md`;
+- `docs/core/THREAD_INDEX_TEMPLATE.md` como forma canónica del índice materializado de THREADs;
+- `docs/core/DOCUMENT_INDEX_TEMPLATE.md` como forma canónica del índice materializado del corpus documental;
 - informes de proyecto vigentes;
 - THREADs y sus MANIFESTs;
 - HANDOFFs de los THREADs;
@@ -88,7 +90,7 @@ Como mínimo, desde `knowledge` deben poder descubrirse:
 
 La rama `knowledge` no es una rama temporal ni una copia de trabajo. Es la línea donde se fija el estado autoritativo de conocimiento/estructura.
 
-La arquitectura requiere mecanismos de descubrimiento suficientes para que un agente conectado a un THREAD pueda reconstruir el corpus relevante sin conocerlo de antemano. `PROJECT_INDEX.md` cubre actualmente el descubrimiento de THREADs; queda abierta (§19) la necesidad de un índice específico del corpus documental y de las autoridades de edición.
+La arquitectura requiere mecanismos de descubrimiento suficientes para que un agente conectado a un THREAD pueda reconstruir el corpus relevante sin conocerlo de antemano. `PROJECT_INDEX.md` cubre actualmente el descubrimiento materializado de THREADs; las formas canónicas de los índices derivados se definen en `docs/core/THREAD_INDEX_TEMPLATE.md` y `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
 
 ### 3.2 `develop`
 
@@ -552,13 +554,16 @@ El Activity Log no debe confundirse con el HANDOFF: el HANDOFF organiza **inputs
 
 La introducción de `GIT_COMMIT_RULES.md` obliga a evitar que un Activity Log duplique automáticamente el historial que Git ya conserva. Su necesidad y alcance deberán justificarse cuando se utilice.
 
-### 15.2 Índice del proyecto
+### 15.2 Índices derivados de descubrimiento
 
-El **índice del proyecto** es un artefacto de **descubrimiento**: permite localizar qué THREAD existen y dónde están sus artefactos.
+El proyecto distingue dos índices materializables de descubrimiento:
 
-Es **derivado y no autoritativo**: debe poder reconstruirse a partir del conjunto de MANIFEST consolidados en `knowledge`. No es una segunda fuente de verdad; si el índice y un MANIFEST discrepan, **prevalece el MANIFEST**. El índice no da de alta THREAD: refleja los que ya existen (§6).
+- **Índice de THREADs**: permite localizar qué THREADs existen y dónde están sus artefactos. Su forma canónica está definida en `docs/core/THREAD_INDEX_TEMPLATE.md`.
+- **Índice documental**: permite localizar documentos del corpus, su ámbito y el THREAD con autoridad de evolución. Su forma canónica está definida en `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
 
-La arquitectura deja abierta la extensión del índice —o la creación de un índice documental separado— para descubrir el corpus de conocimiento, sus documentos, relaciones y autoridades de edición (§19).
+Ambos índices son **derivados y no autoritativos**. El índice de THREADs debe poder reconstruirse a partir de los MANIFEST consolidados en `knowledge`; si una fila contradice al MANIFEST correspondiente, prevalece el MANIFEST. Los índices no crean THREADs ni sustituyen a los documentos de conocimiento o contratos autoritativos que referencian.
+
+La existencia de las plantillas no obliga todavía a migrar los índices materializados ni a reorganizar físicamente el corpus actual; esa adaptación se realizará como decisión separada.
 
 ## 16. Autoridad documental
 
@@ -568,12 +573,15 @@ La arquitectura deja abierta la extensión del índice —o la creación de un �
 | Registro de decisiones vía commits | `docs/core/GIT_COMMIT_RULES.md` en `knowledge` |
 | Integración agente ↔ repositorio | `docs/core/PROJECT_AGENT_CONTEXT.md` en `knowledge` |
 | Arquitectura de hilos | `docs/core/THREAD_ARCHITECTURE.md` en `knowledge` |
+| Forma canónica del índice de THREADs | `docs/core/THREAD_INDEX_TEMPLATE.md` en `knowledge` |
+| Forma canónica del índice documental | `docs/core/DOCUMENT_INDEX_TEMPLATE.md` en `knowledge` |
 | Estado/metodología validada | documentos de conocimiento vigentes en `knowledge` |
 | Identidad, estado y alta de THREAD | MANIFEST en `knowledge` |
 | Entradas/propuestas todavía pendientes dirigidas al THREAD | HANDOFF del THREAD en `knowledge` |
 | Historial de decisiones resueltas y entradas retiradas | historial Git + mensaje del commit |
 | Historial de actividad no cubierto por Git, cuando exista | Registro (Activity Log) justificado |
-| Descubrimiento de THREAD | Índice del proyecto (derivado, no autoritativo) |
+| Descubrimiento de THREAD | Índice materializado de THREADs (derivado, no autoritativo) |
+| Descubrimiento del corpus documental | Índice documental materializado (derivado, no autoritativo), cuando exista |
 | Implementación en curso | rama/commit de trabajo |
 | Software integrado | `develop` / `main` |
 | Datos fuente | fuente + procedencia |
@@ -656,3 +664,4 @@ Estas preguntas deben contrastarse con el estado del arte antes de introducir nu
 |---|---|---|
 | 0.7.1 | 2026-09-08 | Se incorpora `GIT_COMMIT_RULES.md` como fuente autoritativa para el registro histórico de decisiones mediante commits. |
 | 0.8.0 | 2026-09-08 | HANDOFF pasa a representar exclusivamente inputs pendientes; las entradas resueltas se retiran en el mismo commit que aplica o registra la decisión y su historial queda en Git. |
+| 0.8.1 | 2026-09-08 | Se incorporan referencias canónicas a `THREAD_INDEX_TEMPLATE.md` y `DOCUMENT_INDEX_TEMPLATE.md` como formas de los índices derivados de descubrimiento. |
