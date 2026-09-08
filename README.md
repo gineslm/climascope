@@ -1,57 +1,107 @@
-# Climate Refuge — AEMET benchmark pipeline v0.4
+# ClimaScope
 
-## Cambio principal de esta versión
+**Versión del README:** 1.0.0  
+**Idioma:** español (España)  
+**Rama raíz de conocimiento:** `knowledge`
 
-La descarga ahora es **reanudable por bloques**.
+ClimaScope es un proyecto híbrido de producción y validación de conocimiento apoyado por agentes de IA. El repositorio conserva el conocimiento vigente, la estructura de trabajo y el historial de decisiones; las conversaciones son instancias temporales que se conectan a líneas persistentes de trabajo llamadas **THREADs**.
 
-Cada bloque de hasta 180 días se guarda inmediatamente en:
+## 1. Punto de entrada
 
-`data/raw/aemet/`
+Para reconstruir el estado del proyecto desde `knowledge`:
 
-Ejemplo:
+1. `docs/core/PROJECT_WORKING_RULES.md`
+2. `docs/core/THREAD_ARCHITECTURE.md`
+3. `docs/core/THREAD_INDEX.md`
+4. `docs/core/DOCUMENT_INDEX.md`
 
-`8416_2015-12-06_2016-06-02.json`
+Después, localizar el THREAD relevante y leer su `MANIFEST.md` y su único `HANDOFF.md` persistente.
 
-Si vuelves a ejecutar el programa y ese archivo ya existe y contiene datos, el programa muestra:
+## 2. Arquitectura documental
 
-`[YA DESCARGADO, reutilizando]`
+```text
+THREAD_INDEX.md
+  → descubre THREADs, responsabilidades, MANIFESTs y HANDOFFs
 
-y NO hace ninguna petición a AEMET para ese periodo.
+DOCUMENT_INDEX.md
+  → descubre el corpus documental y el THREAD con autoridad de evolución
+```
 
-Al final se genera además un archivo consolidado:
+El corpus es común para lectura. Cada documento tiene una única autoridad de evolución. Si un THREAD necesita cambiar conocimiento gobernado por otro, registra una propuesta en el HANDOFF del THREAD responsable.
 
-`8416_2011-01-01_2025-12-31.json`
+El HANDOFF no es una transición de sesión: contiene únicamente inputs todavía no resueltos. Git conserva el historial de lo resuelto.
 
-## Importante sobre las descargas anteriores
+## 3. Ramas principales
 
-Las versiones anteriores del programa no guardaban cada bloque individual inmediatamente.
-Guardaban el consolidado solamente cuando terminaba toda la estación.
+```text
+knowledge → conocimiento y estructura consolidados
+develop   → integración del software
+main      → software estable/desplegable
+```
 
-Por eso, los bloques que viste en pantalla durante una ejecución anterior **pueden no existir como archivos recuperables** si el proceso se interrumpió antes de finalizar.
+Las ramas de trabajo (`agent/*`, `feature/*`, etc.) no son fuentes alternativas de verdad global.
 
-La v0.4 evita precisamente ese problema.
+## 4. Estado técnico actual relevante
 
-## Ejecución
+El repositorio contiene un pipeline AEMET de adquisición y procesamiento de datos climáticos/precipitación y una línea de trabajo de agua con QC y agregación W2.
 
-1. Copia `.env.example` a `.env`.
-2. Añade una NUEVA API key de AEMET.
-3. `pip install -r requirements.txt`
-4. `python src/pipeline.py`
+La documentación vigente del pipeline de agua se encuentra en:
 
-Puedes interrumpir y volver a ejecutar. Los bloques ya descargados se reutilizarán.
+- `docs/threads/water-pipeline/AUDIT_REPORT.md`
+- `docs/threads/water-pipeline/SOURCE_AUDIT.md`
+- `docs/threads/water-pipeline/W1_PRECIPITATION_QC.md`
 
-## Ubicación de los datos
+El modelo conceptual Station / Location / Scope / Evidence se documenta en:
 
-Desde la carpeta raíz del proyecto:
+- `docs/threads/station-location-evidence/MODEL.md`
 
-`data/raw/aemet/`
+## 5. Ejecución del pipeline AEMET existente
 
-La ruta completa en Windows será aproximadamente:
+1. Copiar `.env.example` a `.env`.
+2. Configurar una API key válida de AEMET fuera del repositorio.
+3. Instalar dependencias:
 
-`C:\Users\User\Downloads\climate_refuge_aemet_v0_1\data\raw\aemet\`
+```bash
+pip install -r requirements.txt
+```
 
-o la carpeta equivalente donde hayas descomprimido el proyecto.
+4. Ejecutar:
 
-## Seguridad
+```bash
+python src/pipeline.py
+```
 
-La clave API compartida anteriormente debe considerarse expuesta. Revócala/regénérala y usa la nueva solamente en `.env`.
+La descarga histórica es reanudable por bloques: los bloques existentes en `data/raw/aemet/` se reutilizan cuando son válidos.
+
+## 6. Datos y seguridad
+
+- Los datos AEMET actuales viven principalmente en `data/raw/aemet/`.
+- No convertir missing en cero.
+- Preservar `.NO_DATA` como evidencia de disponibilidad de fuente.
+- No guardar API keys, tokens ni secretos en el repositorio.
+- Los datos raw y su procedencia no deben moverse o regenerarse sin una decisión explícita.
+
+## 7. Tests
+
+Para validar el código Python:
+
+```bash
+python -m pytest
+```
+
+Las cifras de validación histórica concretas se documentan en los informes de cada THREAD y no se tratan como garantía permanente del estado actual de la suite.
+
+## 8. Trabajo con agentes de IA
+
+Una conversación nueva debe entrar por `knowledge`, localizar el THREAD en `THREAD_INDEX.md`, incorporarse mediante su MANIFEST y consultar después su HANDOFF y el corpus relevante.
+
+El detalle operativo se define en:
+
+- `docs/core/PROJECT_AGENT_CONTEXT.md`
+- `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`
+
+## 9. Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.0 | 2026-09-08 | README convertido en punto de entrada general de ClimaScope; la documentación histórica del downloader queda subordinada al estado actual del proyecto. |

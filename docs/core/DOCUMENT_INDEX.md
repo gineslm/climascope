@@ -1,6 +1,6 @@
 # ClimaScope — Índice documental
 
-**Versión:** 1.0.0  
+**Versión:** 1.1.0  
 **Estado:** Activo  
 **Rama raíz de conocimiento:** `knowledge`
 
@@ -14,6 +14,7 @@ MANIFESTs, HANDOFFs e índices derivados no forman parte de este corpus document
 
 | path | purpose / scope | authority_thread | authority_manifest |
 |---|---|---|---|
+| `README.md` | punto de entrada general al proyecto, estructura vigente y ejecución básica | `thread-architecture-methodology-evolution` | `docs/core/threads/architecture-methodology-evolution/MANIFEST.md` |
 | `docs/core/THREAD_ARCHITECTURE.md` | arquitectura operativa de THREADs, MANIFEST, HANDOFF y gobernanza documental | `thread-architecture-methodology-evolution` | `docs/core/threads/architecture-methodology-evolution/MANIFEST.md` |
 | `docs/core/PROJECT_WORKING_RULES.md` | reglas operativas permanentes del proyecto | `thread-architecture-methodology-evolution` | `docs/core/threads/architecture-methodology-evolution/MANIFEST.md` |
 | `docs/core/PROJECT_AGENT_CONTEXT.md` | integración entre agente y repositorio | `thread-architecture-methodology-evolution` | `docs/core/threads/architecture-methodology-evolution/MANIFEST.md` |
@@ -29,3 +30,10 @@ MANIFESTs, HANDOFFs e índices derivados no forman parte de este corpus document
 ## Mantenimiento
 
 Regenerar cuando se cree, elimine o mueva un documento del corpus, cambie sustancialmente su ámbito o se transfiera su autoridad de evolución a otro THREAD.
+
+## Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.0 | 2026-09-08 | Primera materialización del índice documental. |
+| 1.1.0 | 2026-09-08 | Se incorpora `README.md` como documento de entrada general bajo autoridad de metodología/arquitectura. |

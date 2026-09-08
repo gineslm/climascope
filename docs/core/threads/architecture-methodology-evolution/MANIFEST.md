@@ -1,6 +1,6 @@
 # ClimaScope — MANIFEST · thread-architecture-methodology-evolution
 
-**Versión:** 1.0.0  
+**Versión:** 1.1.0  
 **Estado del THREAD:** ACTIVE  
 **Ciclo:** 1  
 **Idioma:** español (España)
@@ -36,7 +36,8 @@ Custodiar el estado de los problemas de arquitectura, metodología y reglas oper
 - estrategia Git para conocimiento/decisiones;
 - plantillas e índices de descubrimiento;
 - coherencia de artefactos operativos entre THREADs;
-- evolución de la gobernanza documental.
+- evolución de la gobernanza documental;
+- punto de entrada general y documentación transversal de proyecto.
 
 ## Fuera de alcance
 
@@ -47,6 +48,7 @@ Custodiar el estado de los problemas de arquitectura, metodología y reglas oper
 
 ## Autoridad documental vigente
 
+- `README.md`
 - `docs/core/THREAD_ARCHITECTURE.md`
 - `docs/core/PROJECT_WORKING_RULES.md`
 - `docs/core/PROJECT_AGENT_CONTEXT.md`
@@ -54,8 +56,8 @@ Custodiar el estado de los problemas de arquitectura, metodología y reglas oper
 - `docs/core/GIT_COMMIT_RULES.md`
 - `docs/core/THREAD_INDEX_TEMPLATE.md`
 - `docs/core/DOCUMENT_INDEX_TEMPLATE.md`
-- `docs/core/THREAD_INDEX.md` cuando exista
-- `docs/core/DOCUMENT_INDEX.md` cuando exista
+- `docs/core/THREAD_INDEX.md`
+- `docs/core/DOCUMENT_INDEX.md`
 
 ## Dependencias
 
@@ -71,3 +73,10 @@ Custodiar el estado de los problemas de arquitectura, metodología y reglas oper
 - posible futura taxonomía de tipos de THREAD;
 - organización física futura del corpus;
 - automatización de validaciones de coherencia entre índices, MANIFESTs y documentos.
+
+## Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.0 | 2026-09-08 | Migración al modelo persistente de HANDOFF y autoridad documental vigente. |
+| 1.1.0 | 2026-09-08 | Se incorpora `README.md` a la autoridad documental del THREAD y se materializan los índices derivados. |
