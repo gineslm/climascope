@@ -1,112 +1,153 @@
-# Handoff de nuevo hilo: modelo Station / Location / Evidence
+# ClimaScope — Modelo Station / Location / Scope / Evidence
 
-**Versión del documento:** 0.1.4  
-**Proyecto:** ClimaScope  
-**Repositorio:** `gineslm/climascope`  
-**Rama raíz de conocimiento:** `knowledge`  
-**Rama de trabajo asociada:** `agent/water-pipeline-audit`
+**Versión:** 1.0.0  
+**Estado:** En definición  
+**Idioma:** español (España)  
+**THREAD responsable:** `thread-station-location-evidence`
 
-## Fuente de verdad y precedencia
+## 1. Propósito
 
-El repositorio es la fuente central de verdad. Para este HANDOFF, `knowledge` es la raíz de conocimiento y el punto de entrada para reconstruir el estado consolidado del proyecto.
+Definir el modelo de dominio que permite relacionar observaciones de estaciones con ubicaciones evaluadas, su representatividad espacial y la evidencia utilizada por ClimaScope.
 
-La rama `agent/water-pipeline-audit` es únicamente la **rama de trabajo asociada**. No constituye una fuente alternativa de verdad global y no debe utilizarse para reconstruir por sí sola el estado actual del THREAD.
-
-El orden obligatorio es:
+El núcleo conceptual es:
 
 ```text
-knowledge
-   ↓
-reglas + contexto + arquitectura
-   ↓
-MANIFEST / HANDOFF vigente
-   ↓
-estado consolidado
-   ↓
-agent/water-pipeline-audit (solo trabajo asociado)
+Station → Location → Scope/Representativeness → Evidence
 ```
 
-Si una instancia entra inicialmente por una rama de trabajo, debe tratar esa rama como potencialmente obsoleta y volver a `knowledge` antes de utilizar sus documentos como estado vigente. Las versiones de `knowledge` prevalecen sobre versiones encontradas en la rama de trabajo para reglas, arquitectura, identidad de THREAD, MANIFEST, HANDOFF, decisiones y estado global.
+Este documento describe conocimiento vigente del dominio. El estado operativo del THREAD vive en su MANIFEST y sus propuestas pendientes en su HANDOFF.
 
-**Base histórica de conocimiento:**
+## 2. Principios consolidados
 
-```yaml
-knowledge_basis:
-  branch: knowledge
-  commit: 33757848176c6d8e3f53b5e2c35b7048b657b286
-```
-
-Este commit identifica la base que originó el HANDOFF; el MANIFEST puede registrar posteriormente una base más reciente.
-
-## Objetivo
-
-Diseñar y documentar el modelo de dominio:
-
-```text
-Station -> Location -> Scope/Representativeness -> Evidence
-```
-
-Esta es primero una tarea de diseño. No implementar prematuramente interpolación ni Water Score definitivo.
-
-## Decisiones ya consolidadas
-
-1. Una observación de estación no es automáticamente el valor de una ubicación cercana.
-2. El mapa debe distinguir estaciones físicas y alcance/representatividad espacial.
-3. Deben distinguirse semánticamente: observado en estación, relevante para ubicación y modelado/interpolado para ubicación.
-4. La interpolación queda aplazada y, si se introduce, debe conservar método, trazabilidad e incertidumbre.
-5. La adquisición e investigación son progresivas.
+1. Una observación de estación no equivale automáticamente al valor de una ubicación cercana.
+2. La representatividad espacial debe ser explícita.
+3. Deben distinguirse semánticamente:
+   - observado en estación;
+   - relevante para una ubicación;
+   - modelado/interpolado para una ubicación.
+4. La interpolación queda aplazada hasta disponer de método, trazabilidad e incertidumbre explícitos.
+5. La adquisición y la investigación son progresivas.
 6. `not_assessed` nunca significa ausencia de riesgo.
-7. Datos cuantitativos de estaciones y evidencia cualitativa/documental son tipos de evidencia diferentes que pueden asociarse a una ubicación.
-8. Deben preservarse AEMET raw/W2 y su trazabilidad salvo migración deliberada.
+7. Los datos cuantitativos de estaciones y la evidencia cualitativa/documental son tipos de evidencia diferentes que pueden asociarse a una ubicación.
+8. Los datos AEMET raw/W2 y su trazabilidad deben preservarse salvo migración deliberada.
 
-## Alcance
+## 3. Entidades conceptuales
 
-Resolver:
+### Station
 
-- modelo canónico `Station`;
-- modelo `Location`;
-- `Scope / Representativeness`;
-- abstracción `Evidence`;
-- cardinalidades y relaciones;
-- trazabilidad;
-- estados de adquisición/investigación progresivos;
-- requisitos del mapa;
-- prerrequisitos de futura interpolación;
-- estrategia de implementación/migración compatible con AEMET/W2.
+Representa una estación física de observación y constituye el origen de observaciones cuantitativas directas.
 
-Fuera de alcance inmediato: ampliación indiscriminada de adquisición, interpolación de producción, Water Score definitivo y reinterpretación silenciosa de datos existentes.
+Debe preservar, como mínimo, identidad, localización, procedencia, periodo disponible y estado/calidad de sus observaciones cuando esa información exista.
 
-## Protocolo de inicio
+### Location
 
-Al recibir este HANDOFF:
+Representa el lugar o sitio que se desea evaluar. No debe confundirse con una estación ni heredar automáticamente sus valores.
 
-1. entrar en `knowledge`;
-2. leer `docs/core/PROJECT_AGENT_CONTEXT.md`;
-3. leer `docs/core/PROJECT_WORKING_RULES.md`;
-4. leer `docs/core/THREAD_ARCHITECTURE.md`;
-5. localizar el MANIFEST y reconstruir el estado consolidado del THREAD;
-6. validar la versión vigente del HANDOFF desde `knowledge`;
-7. solo después resolver `work_branch` y consultar `agent/water-pipeline-audit` para trabajo operativo;
-8. si las versiones de la rama de trabajo difieren, tratar las de `knowledge` como autoritativas y señalar la discrepancia;
-9. nunca reconstruir el estado global exclusivamente desde la rama de trabajo.
+Una Location puede relacionarse con varias fuentes de evidencia y con una o más estaciones cuya relevancia debe justificarse.
 
-## Entregables
+### Scope / Representativeness
 
-1. modelo de dominio documentado;
-2. estructuras propuestas para `Station`, `Location`, `Scope/Representativeness` y `Evidence`;
-3. relaciones/cardinalidades;
-4. trazabilidad;
-5. máquina de estados de adquisición/investigación;
-6. requisitos orientados al mapa;
-7. decisión explícita sobre interpolación y prerrequisitos;
-8. plan de migración sin alterar innecesariamente AEMET raw/W2;
-9. validaciones/tests cuando exista implementación;
-10. actualización versionada del informe correspondiente.
+Expresa la relación de relevancia espacial entre una Station y una Location.
 
-## Protocolo de cierre
+No afirma que las condiciones sean idénticas dentro de un área. Debe permitir distinguir entre observación directa y uso de esa observación como evidencia relevante para otro lugar.
 
-Al terminar: validar, documentar, actualizar MANIFEST/HANDOFF cuando proceda, hacer commit, registrar SHA y consolidar en `knowledge` cualquier cambio que modifique conocimiento o estructura autoritativos.
+### Evidence
 
-## Instrucción de inicio
+Abstracción para el soporte utilizado en la evaluación de una Location.
 
-> Trabaja desde este HANDOFF. Antes de utilizar cualquier documento de una rama de trabajo, entra en `knowledge`, reconstruye el estado consolidado y resuelve desde el MANIFEST el estado vigente y la rama de trabajo asociada. La rama de trabajo nunca sustituye a `knowledge` como fuente de verdad global. Después continúa con el diseño `Station / Location / Scope / Evidence` sin escribir código de producción hasta cerrar el modelo.
+Puede incluir, al menos:
+
+- observaciones cuantitativas de estaciones;
+- indicadores derivados;
+- evidencia documental/cualitativa;
+- en el futuro, valores modelados explícitamente etiquetados como tales.
+
+La procedencia y el tipo de evidencia deben permanecer visibles.
+
+## 4. Relaciones y restricciones
+
+```text
+Station
+   │
+   │ observaciones
+   ▼
+Evidence cuantitativa
+   │
+   ├──────────────► Location
+   │                  ▲
+   │                  │
+   └─ Scope / Representativeness
+
+Evidence documental ───────────► Location
+```
+
+Restricciones vigentes:
+
+- ninguna Station representa automáticamente una Location;
+- toda relación de representatividad debe ser explícita;
+- un valor modelado no puede presentarse como observado;
+- la falta de evidencia no puede convertirse en evidencia negativa;
+- cualquier transformación debe conservar trazabilidad suficiente para reconstruir fuente y método.
+
+## 5. Estados de investigación/adquisición
+
+La investigación es progresiva. Para evidencia documental se consideran útiles estados como:
+
+```text
+not_assessed
+in_research
+assessed
+insufficient_evidence
+```
+
+La nomenclatura final puede evolucionar, pero debe conservar la diferencia entre “no investigado” y “investigado sin evidencia suficiente”.
+
+## 6. Relación con el mapa
+
+El mapa debe ser una capa de navegación sobre la evidencia, no un sustituto de ella.
+
+Debe poder distinguir visual y semánticamente:
+
+- estaciones físicas;
+- ubicaciones evaluadas;
+- relaciones de Scope/Representativeness;
+- observaciones directas;
+- indicadores derivados;
+- valores modelados/interpolados;
+- evidencia documental;
+- calidad y trazabilidad.
+
+## 7. Interpolación
+
+No existe todavía una interpolación de producción aprobada.
+
+Antes de introducirla deben definirse, como mínimo:
+
+- método;
+- variables de entrada;
+- criterios de aplicabilidad espacial;
+- incertidumbre;
+- procedencia;
+- forma de distinguir el resultado modelado de una observación directa.
+
+## 8. Compatibilidad con el pipeline existente
+
+El modelo debe ser compatible con los datos AEMET/W2 existentes y no exige reinterpretarlos ni moverlos de forma prematura.
+
+El pipeline de agua conserva su propia autoridad sobre adquisición, QC y agregación. Este modelo consume ese conocimiento como dependencia y gobierna únicamente la semántica de Station/Location/Scope/Evidence.
+
+## 9. Cuestiones abiertas de dominio
+
+- cardinalidades finales entre Station, Location y Evidence;
+- esquema de datos concreto para Scope/Representativeness;
+- metadatos mínimos obligatorios de Evidence;
+- máquina de estados final de adquisición/investigación;
+- estrategia de implementación/migración cuando el modelo conceptual esté suficientemente cerrado.
+
+Estas cuestiones pertenecen al estado actual del problema y no deben resolverse mediante supuestos silenciosos.
+
+## 10. Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.0 | 2026-09-08 | `MODEL.md` deja de actuar como handoff/bootstrap y pasa a contener exclusivamente conocimiento vigente del dominio Station/Location/Scope/Evidence. |
