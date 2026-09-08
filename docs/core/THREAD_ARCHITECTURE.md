@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de THREADs y conocimiento
 
-**Versión:** 2.0.0  
+**Versión:** 2.0.1  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -20,7 +20,7 @@ El sistema está diseñado para potenciar trabajo y validación humana, no para 
 2. Un THREAD existe si y sólo si existe su MANIFEST en `knowledge`.
 3. El agente se incorpora a un THREAD mediante su MANIFEST.
 4. Todo THREAD existente tiene exactamente un HANDOFF persistente.
-5. El HANDOFF no es transición de sesión: contiene únicamente inputs todavía no resueltos.
+5. El HANDOFF no es transición de sesión: contiene únicamente inputs todavía no resueltos procedentes de otros THREADs.
 6. Git conserva la evolución histórica; los documentos representan el conocimiento vigente.
 7. El corpus documental es común para lectura.
 8. Cada documento tiene un único THREAD con autoridad de evolución.
@@ -163,6 +163,8 @@ El HANDOFF es la **cola de inputs pendientes** dirigidos a la responsabilidad de
 - necesidades;
 - tareas inter-THREAD.
 
+El HANDOFF recoge exclusivamente inputs procedentes de otros THREADs. El trabajo propio de un THREAD no se encola aquí: se resuelve y se escribe directamente en los documentos bajo su autoridad.
+
 No es:
 
 - resumen de conversación;
@@ -173,7 +175,7 @@ No es:
 
 ### 7.2 Autoridad
 
-Cualquier THREAD puede registrar una entrada en el HANDOFF receptor con contexto y evidencia suficientes.
+Cualquier THREAD distinto del receptor puede registrar una entrada en el HANDOFF receptor con contexto y evidencia suficientes.
 
 Sólo el THREAD propietario del HANDOFF puede:
 
@@ -420,3 +422,4 @@ La arquitectura considera abiertas únicamente cuestiones que no alteran las inv
 | Versión | Fecha | Cambio |
 |---|---|---|
 | 2.0.0 | 2026-09-08 | Consolidación posterior a la migración: MANIFEST como entrada, HANDOFF único y pendiente, índices separados, corpus común y autoridad documental única. |
+| 2.0.1 | 2026-09-08 | Se aclara que el HANDOFF recoge exclusivamente inputs procedentes de otros THREADs; el trabajo propio no se encola. |
