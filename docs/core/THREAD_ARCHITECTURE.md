@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.7.0  
+**Versión:** 0.7.1  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -198,7 +198,7 @@ Cuando un THREAD existente detecta una nueva área de responsabilidad, puede pre
 
 ## 6. Alta del THREAD
 
-Dar de alta un THREAD es **crear y consolidar su MANIFEST**. No existe un artefacto de «declaración» independiente del MANIFEST: «declarar» un THREAD es precisamente la operación que crea su MANIFEST.
+Dar de alta un THREAD es **crear y consolidar su MANIFEST**. No existe un artefacto de «declaración» independiente del MANIFEST: «declarar» un THREAD es precisamente la operación que crea el MANIFEST.
 
 Regla de existencia (anti-limbo): un THREAD existe **si y solo si** existe su MANIFEST en `knowledge`. Si existe un HANDOFF provisional para una responsabilidad sin MANIFEST, debe tratarse como propuesta de alta, no como THREAD existente.
 
@@ -376,7 +376,7 @@ Ante:
 
 > **«Reincorpórate al contexto del proyecto.»**
 
-se debe entrar en `knowledge`, reconstruir la responsabilidad y comparar la conversación con el estado consolidado. Las discrepancias se clasifican como `NUEVO`, `OBSOLETO`, `CONFLICTO`, `DUPLICADO` o `FUERA DE ALCANCE`.
+se debe entrar en `knowledge`, reconstruir la responsabilidad y comparar la conversación con el estado consolidado. Las discrepancias se clasifican como `NUEVO`, `OBSOLETO`, `CONFLICTO`, `DUPLICADO` o `FUERA_DE_ALCANCE`.
 
 ## 10. Crear, conectar y proponer
 
@@ -546,6 +546,7 @@ La arquitectura deja abierta la extensión del índice —o la creación de un �
 | Información | Fuente principal |
 |---|---|
 | Reglas permanentes | `docs/core/PROJECT_WORKING_RULES.md` en `knowledge` |
+| Registro de decisiones vía commits | `docs/core/GIT_COMMIT_RULES.md` en `knowledge` |
 | Integración agente ↔ repositorio | `docs/core/PROJECT_AGENT_CONTEXT.md` en `knowledge` |
 | Arquitectura de hilos | `docs/core/THREAD_ARCHITECTURE.md` en `knowledge` |
 | Estado/metodología validada | documentos de conocimiento vigentes en `knowledge` |
@@ -628,3 +629,9 @@ Los documentos pertenecen a un dominio de conocimiento común y los THREADs reci
 - ¿Puede un documento ser producto histórico de un THREAD cerrado pero quedar bajo responsabilidad de un THREAD posterior sin moverlo físicamente?
 
 Estas preguntas deben contrastarse con el estado del arte antes de introducir nuevas entidades o capas de gobernanza.
+
+## 20. Historial de versiones
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 0.7.1 | 2026-09-08 | Se incorpora `GIT_COMMIT_RULES.md` como fuente autoritativa para el registro histórico de decisiones mediante commits. |

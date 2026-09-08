@@ -1,6 +1,6 @@
 # ClimaScope — Reglas de trabajo del proyecto
 
-**Versión del documento:** 1.5.0  
+**Versión del documento:** 1.6.0  
 **Creado:** 2026-08-15  
 **Repositorio:** `gineslm/climascope`  
 **Rama de consolidación documental:** `knowledge`
@@ -111,6 +111,8 @@ consolidar en `knowledge`
 ```
 
 No todo pensamiento, borrador o experimento requiere consolidación. El criterio es si modifica una fuente autoritativa o el estado persistente del proyecto.
+
+Cómo se redacta y organiza cada commit de consolidación (un commit = una decisión; qué incluir y qué no) está en `docs/core/GIT_COMMIT_RULES.md`. No se duplica aquí.
 
 ## 6. La documentación es estado versionado del proyecto
 
@@ -318,3 +320,4 @@ El cierre sigue el protocolo de §9 de este documento y el formato de finalizaci
 |---|---|---|
 | 1.4.0 | 2026-08-23 | Consolidación del bootstrap (M1): §2/§17/§18 remiten a los canónicos; retirada de la redundancia interna de cierre. |
 | 1.5.0 | 2026-08-23 | Reorganización 2C: todas las rutas de remisión actualizadas a `docs/core/…`. |
+| 1.6.0 | 2026-09-08 | Se delega en `GIT_COMMIT_RULES.md` la estrategia de commits como registro histórico de decisiones. |
