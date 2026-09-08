@@ -1,121 +1,63 @@
-# ClimaScope — MANIFEST del THREAD de diseño de aplicación Scope
+# ClimaScope — MANIFEST · thread-app-scope-ux
 
-**Versión:** 0.1.2  
-**THREAD:** `thread-app-scope-ux`  
-**Estado:** ACTIVE  
-**Origen:** `USER_DECLARED`  
-**Repositorio:** `gineslm/climascope`  
-**Rama de conocimiento:** `knowledge`  
+**Versión:** 1.0.0  
+**Estado del THREAD:** ACTIVE  
 **Idioma:** español (España)
 
-## 1. Responsabilidad
-
-Diseñar la experiencia de usuario y la arquitectura conceptual de la aplicación que presenta y permite explorar los resultados del Scope de ClimaScope.
-
-La aplicación debe permitir pasar de una visión territorial/global a una ubicación concreta y, desde ella, explorar estaciones relevantes, representatividad, indicadores y evidencia, manteniendo la distinción entre observación directa, resultado derivado y evidencia documental.
-
-## 2. Dentro de alcance
-
-- experiencia de usuario;
-- objetivo y flujo principal de navegación;
-- mapa principal;
-- visualización de Locations;
-- visualización de Stations y Scope/Representativeness;
-- presentación de Evidence;
-- presentación de indicadores y resultados del Scope;
-- estados de evaluación y evidencia;
-- arquitectura conceptual de pantallas y componentes;
-- jerarquía de información;
-- requisitos de datos para la interfaz;
-- trazabilidad visible para el usuario.
-
-## 3. Fuera de alcance
-
-- definición del Water Score definitivo;
-- implementación de interpolación;
-- ampliación de adquisición AEMET;
-- modificación del pipeline W2;
-- implementación de producción de la aplicación;
-- reinterpretación de observaciones de estación como valores de ubicación.
-
-## 4. Dependencias
-
-### Conocimiento
-
-- `docs/core/PROJECT_WORKING_RULES.md` — reglas permanentes;
-- `docs/core/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio;
-- `docs/core/THREAD_ARCHITECTURE.md` — arquitectura de THREADs;
-- `docs/threads/station-location-evidence/MODEL.md` — modelo Station / Location / Scope / Evidence;
-- `docs/threads/water-pipeline/AUDIT_REPORT.md` — estado del pipeline y requisitos de presentación.
-
-### Modelo de dominio
-
-El diseño depende conceptualmente de:
-
-```text
-Station -> Location -> Scope/Representativeness -> Evidence
-```
-
-La aplicación debe respetar que una estación no representa automáticamente cualquier ubicación cercana y que observado, relevante para una ubicación y modelado/interpolado son estados semánticamente distintos.
-
-## 5. Entregables
-
-1. objetivo de usuario y propuesta de valor de la aplicación;
-2. flujo principal de navegación;
-3. arquitectura conceptual de la aplicación;
-4. definición de pantallas y componentes principales;
-5. comportamiento conceptual del mapa;
-6. forma de presentar resultados y evidencia;
-7. requisitos de datos y metadatos expuestos por la interfaz;
-8. decisiones de diseño documentadas;
-9. handoff posterior si se requiere implementación especializada.
-
-## 6. Validación
-
-Las propuestas deberán comprobarse frente a:
-
-- reglas permanentes de ClimaScope;
-- modelo Station / Location / Scope / Evidence vigente;
-- trazabilidad de resultados;
-- distinción entre observado, derivado, modelado e investigación documental;
-- estados explícitos de evaluación, incluyendo `not_assessed` cuando corresponda;
-- principio de que el mapa es una capa de navegación sobre la evidencia y no un sustituto de ella.
-
-## 7. Ciclo actual
-
-**Ciclo:** diseño conceptual de producto/UX.  
-**Estado:** ACTIVE.
-
-Primer objetivo del ciclo: responder qué decisión o comprensión debe poder alcanzar un usuario tras utilizar ClimaScope durante una sesión breve y, a partir de ello, definir el flujo de usuario antes de diseñar pantallas concretas.
-
-## 8. Dependencias y coordinación
-
-Este THREAD consume el modelo Station / Location / Scope / Evidence y los resultados derivados del pipeline, pero no modifica por sí mismo esas líneas de trabajo.
-
-Si durante el diseño aparece una necesidad que requiere cambiar el modelo de dominio, el pipeline o la metodología de scoring, deberá registrarse como dependencia/propuesta y transferirse a la línea responsable en lugar de absorberla silenciosamente.
-
-## 9. Estado de conocimiento de arranque
-
-Base de conocimiento utilizada para inicializar este THREAD:
+## Identidad
 
 ```yaml
+thread_id: thread-app-scope-ux
+domain: UX / aplicación de exploración del Scope
+status: ACTIVE
+owner: línea de producto/UX
+created: 2026-08-16
+current_cycle: 1
+origin:
+  type: USER_DECLARED
+  source_id: conversation
 repository:
   knowledge_branch: knowledge
   created_from_knowledge_commit: 33757848176c6d8e3f53b5e2c35b7048b657b286
+handoff:
+  path: docs/threads/app-scope-ux/HANDOFF.md
+  status: ACTIVE
 ```
 
-El campo anterior es **histórico e inmutable**: identifica exactamente el estado de `knowledge` utilizado como base para crear este THREAD. No debe interpretarse como el estado vigente de la rama.
+## Responsabilidad
 
-El estado consolidado actual de `knowledge` se resuelve siempre consultando la rama `knowledge` y prevalece sobre esta base histórica cuando el THREAD se reconecta posteriormente.
+Diseñar la experiencia de usuario y la arquitectura conceptual de la aplicación que presenta y permite explorar los resultados del Scope de ClimaScope.
 
-## 10. Handoff
+## Dentro de alcance
 
-No existe todavía un handoff de salida. Se creará cuando el ciclo de diseño alcance un resultado suficientemente consolidado para transferir responsabilidad a otra línea.
+- flujo de usuario y navegación;
+- mapa principal y jerarquía de información;
+- visualización de Locations, Stations, Scope/Representativeness y Evidence;
+- presentación de indicadores, estados de evaluación y trazabilidad;
+- requisitos de datos para la interfaz.
 
-## 11. Historial
+## Fuera de alcance
 
-| Versión | Fecha | Cambio |
-|---|---|---|
-| 0.1.0 | 2026-08-16 | Creación del THREAD y MANIFEST para el diseño de la aplicación que presenta los resultados del Scope. |
-| 0.1.1 | 2026-08-16 | Se sustituye la semántica ambigua de `knowledge_basis` por `created_from_knowledge`, diferenciando la base histórica de creación del estado vigente de `knowledge`. |
-| 0.1.2 | 2026-08-23 | Migración del campo de referencia de conocimiento a la forma canónica plana `created_from_knowledge_commit` (retirada de la forma anidada), conforme a `THREAD_ARCHITECTURE.md` §7.1. |
+- Water Score definitivo;
+- interpolación;
+- adquisición AEMET/W2;
+- implementación de producción;
+- modificación del modelo Station/Location/Evidence.
+
+## Autoridad documental vigente
+
+Ningún documento de conocimiento materializado todavía. Los futuros documentos de UX producidos por este THREAD quedarán bajo su autoridad salvo decisión distinta.
+
+## Dependencias
+
+- `docs/threads/station-location-evidence/MODEL.md`
+- `docs/threads/water-pipeline/AUDIT_REPORT.md`
+- documentos core de reglas y arquitectura.
+
+## HANDOFF
+
+`docs/threads/app-scope-ux/HANDOFF.md` es la única cola persistente de inputs pendientes de este THREAD.
+
+## Estado actual
+
+Ciclo activo de diseño conceptual de producto/UX. El primer objetivo es definir qué decisión o comprensión debe poder alcanzar un usuario en una sesión breve y, a partir de ello, el flujo principal antes de diseñar pantallas concretas.

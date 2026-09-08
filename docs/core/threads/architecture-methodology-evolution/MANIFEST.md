@@ -1,15 +1,11 @@
-# ClimaScope — Manifest del hilo de evolución de arquitectura y metodología
+# ClimaScope — MANIFEST · thread-architecture-methodology-evolution
 
-**Versión:** 0.1.0
-**Estado:** Activo
-**Estado del THREAD:** ACTIVE
-**Ciclo:** 1
+**Versión:** 1.0.0  
+**Estado del THREAD:** ACTIVE  
+**Ciclo:** 1  
 **Idioma:** español (España)
-**Repositorio:** `gineslm/climascope`
-**Rama raíz de conocimiento:** `knowledge`
-**Rama de trabajo:** ninguna (THREAD documental)
 
-## 1. Identidad
+## Identidad
 
 ```yaml
 thread_id: thread-architecture-methodology-evolution
@@ -24,105 +20,54 @@ origin:
 repository:
   knowledge_branch: knowledge
   created_from_knowledge_commit: 1cb593d73820c90d9f6886673a46ae787a2846f4
-  # THREAD documental: sin work_branch/work_commit
+handoff:
+  path: docs/core/threads/architecture-methodology-evolution/HANDOFF.md
+  status: ACTIVE
 ```
 
-`created_from_knowledge_commit` es el commit de `knowledge` desde el que se da de alta
-el THREAD mediante la creación de su MANIFEST (referencia inmutable; no se actualiza
-cuando `knowledge` avanza). El estado vigente del conocimiento se resuelve siempre desde
-la rama `knowledge`.
+## Responsabilidad
 
-## 2. Responsabilidad
+Custodiar el estado de los problemas de arquitectura, metodología y reglas operativas de ClimaScope, evaluar propuestas procedentes de otros THREADs y gobernar la evolución del conocimiento de sistema dentro de ese alcance.
 
-Detectar, analizar, evaluar y consolidar propuestas de mejora de la arquitectura,
-metodología y reglas operativas de ClimaScope originadas durante el trabajo de otros
-THREAD, conservando origen y evidencia. Responsabilidad transversal de evolución
-controlada; no sustituye ni resuelve el trabajo técnico de los THREAD especializados.
+## Dentro de alcance
 
-## 3. Dentro de alcance
+- arquitectura de THREADs, MANIFEST y HANDOFF;
+- reglas permanentes y bootstrap;
+- estrategia Git para conocimiento/decisiones;
+- plantillas e índices de descubrimiento;
+- coherencia de artefactos operativos entre THREADs;
+- evolución de la gobernanza documental.
 
-- detectar y registrar mejoras de arquitectura, metodología y reglas operativas;
-- recibir propuestas de otros THREAD y conservar origen/evidencia;
-- contrastar cada propuesta con el conocimiento consolidado y los THREAD afectados;
-- evaluar impacto, coherencia, prioridad y necesidad de consolidación;
-- aceptar, rechazar o aplazar propuestas;
-- consolidar las aceptadas en `knowledge`;
-- detectar incoherencias entre declaraciones, MANIFESTs, HANDOFFs y reglas;
-- mejorar bootstrap, trazabilidad y coordinación.
+## Fuera de alcance
 
-## 4. Fuera de alcance
+- conocimiento científico de Station/Location/Evidence;
+- adquisición, QC y agregación de agua/clima;
+- UX de producto;
+- cambios técnicos en otros dominios salvo propuestas dirigidas a sus HANDOFFs.
 
-- resolver el trabajo técnico de otros THREAD (Station/Location/Evidence, W2,
-  pipeline, interpolación, mapa/UI, adquisición de datos);
-- modificar la arquitectura por una observación aislada sin análisis;
-- actuar como backlog genérico de tareas;
-- sustituir la responsabilidad de los THREAD especializados;
-- consolidar automáticamente toda propuesta recibida.
+## Autoridad documental vigente
 
-## 5. Documentos autoritativos
+- `docs/core/THREAD_ARCHITECTURE.md`
+- `docs/core/PROJECT_WORKING_RULES.md`
+- `docs/core/PROJECT_AGENT_CONTEXT.md`
+- `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`
+- `docs/core/GIT_COMMIT_RULES.md`
+- `docs/core/THREAD_INDEX_TEMPLATE.md`
+- `docs/core/DOCUMENT_INDEX_TEMPLATE.md`
+- `docs/core/THREAD_INDEX.md` cuando exista
+- `docs/core/DOCUMENT_INDEX.md` cuando exista
 
-- Este MANIFEST — identidad y estado vigente del THREAD (el fichero de declaración independiente se retiró en el Lote 2C; su identidad vive aquí).
-- `docs/core/threads/architecture-methodology-evolution/HANDOFF.md` — HANDOFF de creación.
-- `docs/core/threads/architecture-methodology-evolution/IMPROVEMENTS.md` — registro de
-  mejoras (borrador propuesto en este ciclo).
+## Dependencias
 
-## 6. Dependencias
+- MANIFESTs y HANDOFFs de todos los THREADs cuando una propuesta afecte a su coherencia.
+- Documentos del corpus relevantes para evaluar cambios transversales.
 
-- `docs/core/THREAD_ARCHITECTURE.md` — arquitectura de hilos.
-- `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` — protocolo de bootstrap.
-- `docs/core/PROJECT_WORKING_RULES.md` — reglas permanentes.
-- `docs/core/PROJECT_AGENT_CONTEXT.md` — integración agente ↔ repositorio.
-- MANIFESTs y HANDOFFs de los THREAD que aporten propuestas.
+## HANDOFF
 
-## 7. Entregables y validación
+`docs/core/threads/architecture-methodology-evolution/HANDOFF.md` es la única cola persistente de inputs pendientes de este THREAD. Las decisiones ya resueltas pertenecen al historial Git, no a este MANIFEST ni a un registro paralelo.
 
-Entregables de este ciclo (en curso):
+## Cuestiones abiertas
 
-1. este MANIFEST;
-2. registro de mejoras con formato mínimo de *improvement record*;
-3. IMP-002 registrada (ausencia de MANIFEST) con decisión y evidencia.
-
-Validación: coherencia con `docs/core/THREAD_ARCHITECTURE.md` §7; consolidación en `knowledge`.
-
-## 8. HANDOFF actual e histórico
-
-```yaml
-current_handoff: none
-
-handoff_history:
-  - handoff_id: THREAD_ARCHITECTURE_METHODOLOGY_EVOLUTION_HANDOFF
-    version: 1        # el HANDOFF no declara versión; asumido (ver Cuestiones abiertas)
-    role: CREATION
-    status: CLOSED
-    file: docs/core/threads/architecture-methodology-evolution/HANDOFF.md
-```
-
-Reclasificado en el Lote 2C: era un handoff de **creación** (transfirió la responsabilidad inicial de este THREAD), no un handoff de salida vigente. No hay handoff activo en este momento.
-
-## 9. Registro de mejoras vigente
-
-- IMP-001 — `accepted` / consolidada.
-- IMP-002 — `accepted` / consolidación `pending` (ausencia de MANIFEST; este documento
-  es su remedio). Instancia de IMP-004.
-- IMP-003 — `under_review` (semántica/nomenclatura de la referencia de conocimiento
-  del MANIFEST; propuesta presentada, sin decidir).
-- IMP-004 — `under_review` (ontología del modelo THREAD y taxonomía de `origin.type`;
-  Alt 1 como hipótesis de trabajo; sin consolidar).
-
-## 10. Cuestiones abiertas
-
-- Versionado del HANDOFF: no declara `version`; se asume `1`. Convendría fijar campo.
-- Observación (no abre mejora independiente): la convención de *nombre de fichero* de
-  MANIFEST diverge (`THREAD_MANIFEST_ARCHITECTURE_THREAD.md` vs el patrón
-  `..._MANIFEST.md` de este hilo). Queda vinculada a la futura revisión de estructura
-  documental, no como mejora propia.
-- Semántica/nomenclatura de la referencia de conocimiento del MANIFEST: tratada en
-  **IMP-003** (`under_review`).
-- `origin.type = USER_DECLARED` confirmado: el origen de la responsabilidad es una
-  declaración del usuario, no una importación externa (no es `MIGRATED`) ni una
-  derivación de otro hilo (no es `THREAD_DERIVED`). Ver `ORIGIN_TYPE_SEMANTICS.md` e
-  IMP-004.
-
-## 11. Referencias Git
-
-- Commit de alta (creación del MANIFEST) = `created_from_knowledge_commit`: `1cb593d`.
+- posible futura taxonomía de tipos de THREAD;
+- organización física futura del corpus;
+- automatización de validaciones de coherencia entre índices, MANIFESTs y documentos.
