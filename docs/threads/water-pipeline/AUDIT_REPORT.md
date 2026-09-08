@@ -1,14 +1,11 @@
-# Climate Refuge / ClimaScope — Informe de auditoría del pipeline de agua
+# ClimaScope — Informe de auditoría del pipeline de agua
 
-**Versión del informe:** 0.3.1  
-**Rama:** `agent/water-pipeline-audit`  
-**Alcance:** adquisición AEMET de clima y precipitación, QC, agregación W2, almacenamiento de datos, alcance del mapa, adquisición progresiva, futuras capas cualitativas y documentación entre hilos.  
+**Versión del informe:** 0.4.0  
+**THREAD responsable:** `thread-water-pipeline`  
+**Rama de trabajo histórica:** `agent/water-pipeline-audit`  
+**Alcance:** adquisición AEMET de clima y precipitación, QC, agregación W2, almacenamiento de datos, alcance del mapa, adquisición progresiva y futuras capas cualitativas.  
 **Estado:** W2 implementado y validado localmente con 13 tests superados tras el último cambio de agregación.  
-**Última actualización:** 2026-08-15
-
-> **Idioma del proyecto: español (España).** Este informe y la documentación asociada se mantienen en castellano.
-
----
+**Última actualización:** 2026-09-08
 
 ## 1. Propósito y objetivo inicial
 
@@ -90,8 +87,6 @@ La última ejecución local de tests informa:
 
 La cobertura incluye carga del registro de fuentes, parsing de precipitación, coma decimal, cero explícito, precipitación missing, QC de precipitación, agregación mensual/anual, periodos incompletos y conservación de totales observados.
 
----
-
 ## 3. Cambios respecto al objetivo inicial
 
 La arquitectura ya no trata las observaciones raw de una estación como datos automáticamente aptos para scoring.
@@ -118,8 +113,6 @@ El Water Score todavía no está definido intencionadamente.
 
 El alcance también ha pasado de un pipeline centrado en estaciones a una arquitectura centrada en ubicaciones en la que estaciones, ubicaciones, representatividad espacial, indicadores cuantitativos y evidencia documental permanecen diferenciados.
 
----
-
 ## 4. Dirección Station, Location e interpolación
 
 Una estación es un punto físico de observación. Una ubicación es el lugar/sitio que el usuario evalúa. Una observación de estación no debe convertirse automáticamente en el valor de cualquier ubicación cercana.
@@ -138,8 +131,6 @@ Un futuro modelo de influencia puede utilizar un radio, áreas tipo Thiessen/Vor
 
 Recomendación: mantener las observaciones raw de estación como autoridad y convertir la interpolación en una capa derivada opcional únicamente después de validar sus supuestos.
 
----
-
 ## 5. Estrategia de adquisición progresiva
 
 No se considera preferible descargar todo el histórico de todas las estaciones. La adquisición debe ser progresiva:
@@ -157,8 +148,6 @@ catálogo de estaciones
 La prioridad debería considerar cobertura histórica, completitud, variables disponibles, relevancia geográfica y estabilidad de la fuente. Deben conservarse el comportamiento de reutilización existente y la evidencia `.NO_DATA`.
 
 Una estación debe pasar por estados explícitos de adquisición/calidad en lugar de considerarse analíticamente válida simplemente porque sus datos se hayan descargado.
-
----
 
 ## 6. Almacenamiento de datos
 
@@ -188,8 +177,6 @@ data/
 ```
 
 La migración debe ser deliberada y no debe alterar innecesariamente el rastro actual de auditoría.
-
----
 
 ## 7. Evidencia cuantitativa frente a documental
 
@@ -223,8 +210,6 @@ La evidencia documental debe conservar título de la fuente, organización emiso
 La investigación documental debe ser progresiva y no exhaustiva. El cribado cuantitativo amplio debe identificar candidatas prometedoras antes de realizar una investigación cualitativa más profunda. `not_assessed` nunca debe significar `no_risk`.
 
 Los estados documentales sugeridos son `not_assessed`, `in_research`, `assessed` e `insufficient_evidence`.
-
----
 
 ## 8. Dirección de la arquitectura del mapa
 
@@ -264,51 +249,24 @@ análisis final de idoneidad
 
 Por tanto, el mapa es una capa de visualización y navegación sobre la evidencia, no un sustituto de la evidencia.
 
----
+## 9. Relación documental con otros THREADs
 
-## 9. Protocolo documental y entre hilos
+Este informe forma parte del corpus común y está bajo autoridad de `thread-water-pipeline`. Otros THREADs pueden consultarlo libremente, pero cualquier propuesta de modificación debe registrarse en `docs/threads/water-pipeline/HANDOFF.md`.
 
-El repositorio es la fuente central de verdad del proyecto. Los artefactos documentales deben versionarse en GitHub y referenciarse desde el informe correspondiente para que diferentes hilos puedan recuperar el estado más reciente.
+Para descubrir el estado operativo del proyecto:
 
-Todo documento de handoff para un hilo nuevo debe contener:
+- THREADs: `docs/core/THREAD_INDEX.md`;
+- corpus y autoridad documental: `docs/core/DOCUMENT_INDEX.md`;
+- identidad/estado de esta línea: `docs/threads/water-pipeline/MANIFEST.md`;
+- inputs pendientes de esta línea: `docs/threads/water-pipeline/HANDOFF.md`.
 
-- ubicación del proyecto y repositorio;
-- rama de trabajo;
-- requisitos de acceso;
-- versión actual del informe/documentación;
-- objetivo y alcance;
-- decisiones y restricciones establecidas;
-- entregables;
-- validaciones/tests requeridos;
-- archivos/datos que no deberían regenerarse innecesariamente;
-- protocolo de cierre;
-- requisitos del siguiente handoff cuando proceda.
+El modelo `Station → Location → Scope/Representativeness → Evidence` es responsabilidad de `thread-station-location-evidence` y su conocimiento vigente se mantiene en `docs/threads/station-location-evidence/MODEL.md`. Esta relación es una dependencia entre responsabilidades, no una transferencia mediante HANDOFF.
 
-### Documentos de contexto y reglas
+## 10. Relación con el siguiente trabajo de dominio
 
-**`docs/core/PROJECT_AGENT_CONTEXT.md` — versión 1.0.1**  
-Puente entre el agente asistente y el repositorio; define el arranque de conversaciones nuevas y la reincorporación de conversaciones existentes.
+El diseño Station / Location / Scope / Evidence se mantiene separado del pipeline de agua. El pipeline aporta observaciones, QC y productos W2 como evidencia cuantitativa; el THREAD de modelo decide cómo esa evidencia se relaciona con Locations y Scope sin reinterpretar los datos raw.
 
-**`docs/core/PROJECT_WORKING_RULES.md` — versión 1.0.1**  
-Reglas operativas permanentes del proyecto e idioma oficial: español (España).
-
-### Handoff actual
-
-**Versión:** 0.1.1  
-**Archivo:** `docs/threads/station-location-evidence/MODEL.md`  
-**Propósito:** diseñar el modelo `Station → Location → Scope/Representativeness → Evidence` antes de ampliar la adquisición o implementar el Water Score.
-
-El handoff exige explícitamente trabajo centralizado contra `gineslm/climascope`, validación local con `python -m pytest`, conservación de los datos AEMET/W2 existentes y actualización de documentación versionada.
-
----
-
-## 10. Siguiente paso inmediato
-
-El siguiente hilo de ingeniería/diseño es responsable de diseñar y documentar el modelo `Station`, `Location`, `Scope/Representativeness` y `Evidence`, incluyendo trazabilidad, relaciones, estados de adquisición/investigación progresivos y requisitos orientados al mapa.
-
-Esto debe hacerse antes de ampliar la adquisición de estaciones, implementar interpolación o definir el Water Score definitivo.
-
----
+Antes de ampliar adquisición, implementar interpolación o definir un Water Score definitivo deben respetarse las decisiones vigentes del modelo de dominio y las responsabilidades de los THREADs correspondientes.
 
 ## 11. Historial de versiones
 
@@ -318,3 +276,4 @@ Esto debe hacerse antes de ampliar la adquisición de estaciones, implementar in
 | 0.2.0 | 2026-08-15 | Añadida la semántica de totales observados W2, estrategia de adquisición progresiva, arquitectura espacial/evidencial y protocolo documental entre hilos. |
 | 0.3.0 | 2026-08-15 | Añadido el handoff versionado Station/Location/Evidence y explicitado el protocolo central de documentación/versionado. |
 | 0.3.1 | 2026-08-15 | Traducción y normalización de la documentación del proyecto al castellano (España); incorporado el contexto ChatGPT y las reglas maestras al inventario documental. |
+| 0.4.0 | 2026-09-08 | Se retira la semántica de HANDOFF de creación del informe y se alinea la coordinación documental con MANIFEST, HANDOFF persistente e índices separados. |
