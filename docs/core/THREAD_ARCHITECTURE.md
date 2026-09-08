@@ -198,7 +198,7 @@ Cuando un THREAD existente detecta una nueva área de responsabilidad, puede pre
 
 ## 6. Alta del THREAD
 
-Dar de alta un THREAD es **crear y consolidar su MANIFEST**. No existe un artefacto de «declaración» independiente del MANIFEST: «declarar» un THREAD es precisamente la operación que crea el MANIFEST.
+Dar de alta un THREAD es **crear y consolidar su MANIFEST**. No existe un artefacto de «declaración» independiente del MANIFEST: «declarar» un THREAD es precisamente la operación que crea su MANIFEST.
 
 Regla de existencia (anti-limbo): un THREAD existe **si y solo si** existe su MANIFEST en `knowledge`. Si existe un HANDOFF provisional para una responsabilidad sin MANIFEST, debe tratarse como propuesta de alta, no como THREAD existente.
 
@@ -376,7 +376,7 @@ Ante:
 
 > **«Reincorpórate al contexto del proyecto.»**
 
-se debe entrar en `knowledge`, reconstruir la responsabilidad y comparar la conversación con el estado consolidado. Las discrepancias se clasifican como `NUEVO`, `OBSOLETO`, `CONFLICTO`, `DUPLICADO` o `FUERA_DE_ALCANCE`.
+se debe entrar en `knowledge`, reconstruir la responsabilidad y comparar la conversación con el estado consolidado. Las discrepancias se clasifican como `NUEVO`, `OBSOLETO`, `CONFLICTO`, `DUPLICADO` o `FUERA DE ALCANCE`.
 
 ## 10. Crear, conectar y proponer
 
