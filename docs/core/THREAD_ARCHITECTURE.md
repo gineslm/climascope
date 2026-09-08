@@ -1,6 +1,6 @@
-# ClimaScope — Arquitectura de hilos de trabajo
+# ClimaScope — Arquitectura de THREADs y conocimiento
 
-**Versión:** 1.0.0  
+**Versión:** 2.0.0  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -8,181 +8,76 @@
 
 ## 1. Propósito
 
-Este documento formaliza el modelo operativo de los hilos de trabajo de ClimaScope. Complementa `docs/core/PROJECT_WORKING_RULES.md` y `docs/core/PROJECT_AGENT_CONTEXT.md`; no los sustituye.
+ClimaScope organiza la producción y validación de conocimiento apoyada por agentes de IA mediante **THREADs persistentes**.
 
-La unidad persistente de trabajo es el **THREAD de proyecto**, no la conversación de ChatGPT. GitHub es la fuente duradera de verdad. Una conversación es una instancia operativa de IA que se conecta a un THREAD.
+Un THREAD no es un chat. Es una línea de trabajo, investigación o gestión que conserva una responsabilidad definida y puede ser atendida por distintas conversaciones o agentes a lo largo del tiempo.
 
-La arquitectura distingue dos ciclos relacionados pero diferentes:
+El sistema está diseñado para potenciar trabajo y validación humana, no para automatizar de forma autónoma todas las decisiones.
 
-```text
-KNOWLEDGE → consolidación del conocimiento y del estado estructural
-SOFTWARE  → desarrollo, integración y publicación del software
-```
+## 2. Principios fundamentales
 
-## 2. Principios
+1. La conversación/agente es temporal; el repositorio es la memoria duradera.
+2. Un THREAD existe si y sólo si existe su MANIFEST en `knowledge`.
+3. El agente se incorpora a un THREAD mediante su MANIFEST.
+4. Todo THREAD existente tiene exactamente un HANDOFF persistente.
+5. El HANDOFF no es transición de sesión: contiene únicamente inputs todavía no resueltos.
+6. Git conserva la evolución histórica; los documentos representan el conocimiento vigente.
+7. El corpus documental es común para lectura.
+8. Cada documento tiene un único THREAD con autoridad de evolución.
+9. Un THREAD no modifica directamente conocimiento bajo autoridad de otro THREAD; registra una propuesta en su HANDOFF.
+10. Si un documento requiere una gobernanza transversal estable, se crea un THREAD gestor en vez de compartir la autoridad de edición.
+11. Una propuesta no es una decisión ni una dependencia por el mero hecho de existir.
+12. El proyecto es un sistema híbrido: el agente ayuda a investigar, estructurar, contrastar y registrar; la validación y las decisiones permanecen gobernadas por la responsabilidad correspondiente.
 
-1. Un THREAD es una entidad persistente de trabajo; no es un chat.
-2. Una conversación es una instancia operativa mediante la cual un agente se conecta a un THREAD y opera sobre él.
-3. Toda instancia debe tener una responsabilidad delimitada.
-4. Una conversación no es fuente autoritativa del proyecto.
-5. El conocimiento duradero debe sincronizarse con el repositorio.
-6. El MANIFEST es la autoridad sobre la identidad y el estado operativo actual del THREAD.
-7. Un HANDOFF **no es un documento de transición entre sesiones ni un mecanismo de reincorporación de agentes**. Es la cola persistente de eventos de entrada todavía no resueltos del THREAD: propuestas, revisiones, necesidades y tareas que el THREAD receptor debe evaluar.
-8. Un agente se incorpora a un THREAD resolviendo y leyendo su MANIFEST. Puede llegar al MANIFEST a partir de una referencia a un HANDOFF, pero el HANDOFF no sustituye al MANIFEST como mecanismo de incorporación.
-9. Ningún THREAD modifica directamente el conocimiento cuya evolución corresponde a otro THREAD. Puede leerlo y puede registrar una propuesta en el HANDOFF del THREAD responsable.
-10. Una propuesta registrada en un HANDOFF no constituye por sí misma una dependencia, una decisión ni un cambio del conocimiento vigente.
-11. Una entrada resuelta **sale del HANDOFF** en el mismo commit que aplica la decisión o registra su rechazo. El historial de Git conserva la entrada retirada, la decisión y su motivo; el HANDOFF no duplica ese historial.
-12. Los conflictos entre conversación y repositorio se hacen explícitos.
-13. Una rama de trabajo no es autoritativa por el mero hecho de existir.
-14. El conocimiento consolidado y la implementación del software son dimensiones distintas.
-15. La nomenclatura prioriza nombres completos y legibles; no se introducen prefijos compactos mientras no exista necesidad demostrada.
-16. Los identificadores Git que fijan un estado histórico deben expresar su función temporal y no presentarse como si fueran referencias dinámicas al estado actual.
-17. Crear un THREAD es crear y consolidar su MANIFEST; un THREAD existe si y solo si existe su MANIFEST.
-18. No existe un artefacto de «declaración» de THREAD independiente del MANIFEST: «declarar» es la operación de crear el MANIFEST.
-19. El corpus de conocimiento del proyecto es común para lectura: un THREAD puede consultar cualquier documento necesario para razonar dentro de su responsabilidad. La autoridad de **edición** se restringe por responsabilidad, no por visibilidad.
-20. Un THREAD custodia el **estado de un problema o línea de investigación/trabajo** y es responsable de la evolución del conocimiento dentro de ese alcance; no debe interpretarse como propietario exclusivo de todo conocimiento al que accede.
-21. Todo THREAD existente tiene **exactamente un HANDOFF persistente** asociado. Un HANDOFF provisional puede existir antes del MANIFEST para proponer una nueva responsabilidad, pero todavía no pertenece a un THREAD existente.
-
-## 3. Modelo de ramas y raíz del proyecto
-
-Git representa estados diferentes del proyecto:
+## 3. Ramas del proyecto
 
 ```text
-                         PROYECTO
-                            │
-              ┌─────────────┴─────────────┐
-              │                           │
-          KNOWLEDGE                    SOFTWARE
-              │                           │
-              ▼                           ▼
-          `knowledge`                  `develop`
-              │                           │
-              │                           ▼
-              │                         `main`
-              │
-              ├── reglas y contexto
-              ├── arquitectura
-              ├── THREADs / MANIFESTs
-              ├── HANDOFFs
-              ├── conocimiento validado
-              └── estado estructural consolidado
+knowledge → conocimiento y estructura consolidados
+develop   → integración del software
+main      → software estable/desplegable
 ```
 
-### 3.1 `knowledge` es la raíz de conocimiento y bootstrap
+### `knowledge`
 
-`knowledge` es la **referencia inicial y estable para descubrir el estado consolidado de conocimiento y estructura del proyecto**.
+Es la raíz de bootstrap y la referencia autoritativa para:
 
-Toda nueva instancia de conversación debe entrar conceptualmente por `knowledge` antes de resolver una responsabilidad o un THREAD. No debe empezar por `main` ni seleccionar arbitrariamente una rama de trabajo para reconstruir el estado global.
+- arquitectura y reglas;
+- THREADs, MANIFESTs y HANDOFFs;
+- índices derivados;
+- documentos de conocimiento;
+- decisiones consolidadas.
 
-Como mínimo, desde `knowledge` deben poder descubrirse:
+### `develop` y `main`
 
-- `docs/core/PROJECT_AGENT_CONTEXT.md`;
-- `docs/core/PROJECT_WORKING_RULES.md`;
-- `docs/core/THREAD_ARCHITECTURE.md`;
-- `docs/core/PROJECT_INDEX.md`;
-- `docs/core/THREAD_INDEX_TEMPLATE.md` como forma canónica del índice materializado de THREADs;
-- `docs/core/DOCUMENT_INDEX_TEMPLATE.md` como forma canónica del índice materializado del corpus documental;
-- informes de proyecto vigentes;
-- THREADs y sus MANIFESTs;
-- HANDOFFs de los THREADs;
-- conocimiento metodológico y decisiones consolidadas;
-- documentos del corpus de conocimiento;
-- referencias a las ramas/commits de trabajo cuando existan.
+Pertenecen al ciclo del software. Una implementación puede fijar explícitamente una base histórica de conocimiento mediante un SHA cuando sea necesario para reproducibilidad.
 
-La rama `knowledge` no es una rama temporal ni una copia de trabajo. Es la línea donde se fija el estado autoritativo de conocimiento/estructura.
+Las ramas de trabajo (`agent/*`, `feature/*`, etc.) son espacios operativos y nunca sustituyen a `knowledge` como fuente global de verdad.
 
-La arquitectura requiere mecanismos de descubrimiento suficientes para que un agente conectado a un THREAD pueda reconstruir el corpus relevante sin conocerlo de antemano. `PROJECT_INDEX.md` cubre actualmente el descubrimiento materializado de THREADs; las formas canónicas de los índices derivados se definen en `docs/core/THREAD_INDEX_TEMPLATE.md` y `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
+## 4. THREAD
 
-### 3.2 `develop`
+Un THREAD custodia el **estado de un problema o línea de trabajo** y gobierna la evolución del conocimiento dentro de su responsabilidad.
 
-`develop` representa la línea de integración del software.
+No es propietario de todo el conocimiento que consulta. Puede leer el corpus completo.
 
-Cuando una implementación dependa de conocimiento consolidado, el THREAD de software debe registrar el estado de `knowledge` utilizado como base:
+### 4.1 Identidad mínima
 
-```yaml
-knowledge_basis:
-  branch: knowledge
-  commit: <sha>
-```
-
-En este caso `knowledge_basis.commit` es una **base histórica de la implementación** y no debe interpretarse como el estado actual de `knowledge` una vez que la rama haya avanzado.
-
-No se establece que todo el contenido de `knowledge` deba fusionarse físicamente en `develop`. La implementación puede incorporar selectivamente la documentación técnica que necesite.
-
-### 3.3 `main`
-
-`main` representa el software estable/desplegable. No es la fuente global del conocimiento del proyecto.
-
-Un cambio consolidado en `knowledge` no tiene que llegar a `main` si todavía no existe implementación, queda fuera del producto o sigue un ciclo independiente.
-
-La documentación técnica necesaria para desarrollar, mantener, operar o utilizar el software puede permanecer en `develop` y/o `main`. No se adopta la regla `main = develop - docs`.
-
-### 3.4 Ramas de trabajo
-
-Las ramas `agent/*`, `feature/*` u otras ramas temporales representan trabajo en evolución.
-
-Una rama de trabajo puede producir dos tipos de resultado:
-
-```text
-resultado de conocimiento → consolidación en `knowledge`
-resultado de software     → integración en `develop` / `main`
-```
-
-Una rama de trabajo es una referencia de trabajo, no una fuente alternativa de verdad global.
-
-## 4. Evento de consolidación
-
-Un evento de consolidación ocurre cuando un cambio deja de ser exclusivamente trabajo de una conversación o rama temporal y pasa a formar parte del estado autoritativo del proyecto.
-
-Son ejemplos:
-
-- creación/modificación de documento autoritativo;
-- decisión persistente adoptada;
-- creación/actualización de MANIFEST;
-- creación/actualización de HANDOFF;
-- cierre de THREAD con estado persistente;
-- actividad operativa significativa;
-- conocimiento validado;
-- modificación relevante de arquitectura.
-
-Flujo:
-
-```text
-trabajo / análisis
-      ↓
-resultado persistente
-      ↓
-documentar / actualizar estado
-      ↓
-COMMIT
-      ↓
-consolidar en `knowledge`
-```
-
-No todo borrador o pensamiento requiere consolidación. El criterio es si modifica una fuente autoritativa o el estado persistente.
-
-## 5. THREAD como entidad persistente
-
-Un THREAD existe independientemente de que haya una conversación abierta. Su identidad se conserva mediante un MANIFEST.
-
-Un THREAD existe **si y solo si** existe su MANIFEST en `knowledge`: crear un THREAD es crear y consolidar su MANIFEST. Ningún otro artefacto —una responsabilidad enunciada, un HANDOFF, una conversación o una entrada de índice— da de alta un THREAD.
-
-Como mínimo:
+El MANIFEST debe poder expresar al menos:
 
 ```yaml
 thread_id:
 domain:
 status:
 owner:
-created:
 current_cycle:
 responsibility:
 origin:
+repository:
+handoff:
 ```
 
-El `thread_id` permanece estable durante la vida del THREAD. Si la responsabilidad deja de ser conceptualmente unitaria y necesita desacoplarse en nuevas responsabilidades, debe evaluarse el cierre/archivo del THREAD y el alta de nuevos THREADs, preservando la procedencia entre ellos.
+`thread_id` permanece estable durante la vida del THREAD.
 
-### 5.1 Origen del THREAD
+### 4.2 Origen
 
 ```yaml
 origin:
@@ -190,90 +85,13 @@ origin:
   source_id:
 ```
 
-`origin.type` representa el **origen de la responsabilidad**, no el mecanismo por el que se formalizó:
+- `USER_DECLARED`: responsabilidad identificada directamente por el usuario.
+- `THREAD_DERIVED`: responsabilidad nueva detectada durante el trabajo de otro THREAD.
+- `MIGRATED`: responsabilidad/conocimiento externo incorporado al sistema tras revisar compatibilidad.
 
-- `USER_DECLARED`: responsabilidad nueva identificada por el usuario.
-- `THREAD_DERIVED`: responsabilidad nueva identificada durante el trabajo de otro THREAD existente.
-- `MIGRATED`: importación de una conversación/responsabilidad externa —con su contexto y documentos— que se adopta como THREAD, extrayendo su responsabilidad y su corpus y revisando su compatibilidad con los THREAD preexistentes.
+El origen describe procedencia de la responsabilidad, no el mecanismo de incorporación de un agente.
 
-El origen es histórico y no cambia. `source_id` referencia la fuente del origen (la conversación, el THREAD de origen o la fuente importada, según el tipo).
-
-Cuando un THREAD existente detecta una nueva área de responsabilidad, puede preparar el MANIFEST y el HANDOFF del futuro THREAD con la propuesta inicial que motivó su creación. También puede existir provisionalmente un HANDOFF dirigido a una responsabilidad aún no formalizada; esa existencia provisional **no da de alta el THREAD**. El THREAD sólo existe cuando su MANIFEST queda creado y consolidado.
-
-## 6. Alta del THREAD
-
-Dar de alta un THREAD es **crear y consolidar su MANIFEST**. No existe un artefacto de «declaración» independiente del MANIFEST: «declarar» un THREAD es precisamente la operación que crea su MANIFEST.
-
-Regla de existencia (anti-limbo): un THREAD existe **si y solo si** existe su MANIFEST en `knowledge`. Si existe un HANDOFF provisional para una responsabilidad sin MANIFEST, debe tratarse como propuesta de alta, no como THREAD existente.
-
-El HANDOFF persistente del THREAD se crea a la vez que el MANIFEST. Si la responsabilidad nace de una propuesta previa, el HANDOFF provisional se convierte en el HANDOFF persistente del nuevo THREAD y puede conservar las entradas aún pendientes que motivaron su creación.
-
-El MANIFEST inicializa identidad, alcance, dependencias, origen, estado y autoridad documental (§7) antes de considerar completado cualquier trabajo técnico. El origen de la responsabilidad se registra en `origin.type` (§5.1).
-
-## 7. MANIFEST
-
-El MANIFEST es el **contrato persistente y fuente autoritativa del estado operativo actual del THREAD**.
-
-Debe resolver, cuando proceda:
-
-- identidad y responsabilidad;
-- propietario/línea;
-- estado y ciclo;
-- origen;
-- documentos cuya evolución está bajo responsabilidad directa del THREAD;
-- documentos/dependencias que debe consultar;
-- entregables y validación;
-- HANDOFF asociado;
-- cuestiones abiertas;
-- referencias Git relevantes.
-
-La lista de documentos del MANIFEST **no limita la lectura**. Un THREAD puede consultar cualquier parte del corpus necesaria para resolver su responsabilidad. Sí debe delimitar qué documentos puede modificar directamente en virtud de su responsabilidad y qué cambios debe proponer a otros THREADs mediante sus HANDOFFs.
-
-### 7.1 Referencia de conocimiento del MANIFEST
-
-El MANIFEST debe distinguir entre **el estado de conocimiento desde el que se dio de alta el THREAD** y **el estado vigente de `knowledge`**.
-
-Al dar de alta un THREAD (crear su MANIFEST), registrar el commit de `knowledge` leído como base:
-
-```yaml
-repository:
-  knowledge_branch: knowledge
-  created_from_knowledge_commit: <sha>
-  work_branch: <branch>
-  work_commit: <sha>
-```
-
-**Definición canónica.** `created_from_knowledge_commit` es el commit de `knowledge` desde el que se **da de alta** el THREAD mediante la creación de su MANIFEST. Tiene la **misma semántica para los tres orígenes** (`USER_DECLARED`, `THREAD_DERIVED`, `MIGRATED`): siempre el commit de alta vía MANIFEST. Es una referencia histórica **inmutable**: no se actualiza cuando `knowledge` avanza.
-
-No representa el **estado vigente** de `knowledge` (que se resuelve siempre leyendo la rama) ni la **prehistoria** de la responsabilidad. En un THREAD `MIGRATED`, la historia previa a la formalización se representa mediante `origin.source_id` y las referencias al corpus/documentación incorporados.
-
-**Forma canónica única**: el campo plano `created_from_knowledge_commit`. Quedan retiradas las variantes para el mismo concepto:
-
-- `knowledge_commit` sin calificador;
-- la forma anidada `created_from_knowledge` con `branch`/`commit`.
-
-Si un THREAD necesita fijar una base histórica para una implementación o dependencia reproducible de software, puede utilizar `knowledge_basis.commit` con esa función explícita; `knowledge_basis` no se emplea como base de alta de un THREAD.
-
-Un MANIFEST nuevo debe aplicar esta distinción desde su primera versión.
-
-Los campos se utilizan según el tipo de THREAD. Un THREAD exclusivamente documental puede no tener `work_branch`.
-
-### 7.2 HANDOFF asociado
-
-Cada THREAD dispone de **exactamente un HANDOFF persistente**, asociado de forma estable a su identidad:
-
-```yaml
-handoff:
-  handoff_id:
-  path:
-  status: ACTIVE
-```
-
-El HANDOFF no representa una sesión ni una transferencia entre agentes. Es la cola estructurada de entradas todavía pendientes del THREAD (§13). **No conserva dentro de sí un historial paralelo de entradas ya resueltas**: cuando una decisión termina la deliberación, la entrada se retira en el mismo commit que aplica el cambio correspondiente o registra el rechazo. El historial de Git permite reconstruir la entrada, la decisión y el motivo.
-
-Para conectar con un THREAD se consulta primero el MANIFEST. Después se lee su HANDOFF para conocer únicamente las propuestas, revisiones, necesidades y tareas todavía abiertas.
-
-## 8. Estados del THREAD
+### 4.3 Estados
 
 ```text
 PROPOSED
@@ -283,193 +101,95 @@ CLOSED
 ARCHIVED
 ```
 
-El estado debe reflejar el repositorio, no una impresión temporal de la conversación. La preparación para revisión, consolidación o cierre pertenece al ciclo de trabajo y a los pendientes del THREAD; no se expresa mediante un estado `READY_FOR_HANDOFF` porque el HANDOFF no representa una transferencia.
+No existe `READY_FOR_HANDOFF`: el HANDOFF no representa una transferencia.
 
-## 9. THREAD BOOTSTRAP
+## 5. Alta de un THREAD
 
-> **Fuente canónica del modelo de bootstrap.** Esta sección define el modelo: resolución de `knowledge`, conexión mediante MANIFEST, alta de responsabilidad nueva y reincorporación. La secuencia operativa reutilizable vive en `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`, que aplica este modelo sin redefinirlo.
+Crear un THREAD significa crear y consolidar su MANIFEST.
 
-El THREAD BOOTSTRAP es el protocolo universal de incorporación de una nueva instancia de conversación.
-
-### 9.1 Regla raíz
-
-**Toda ruta de entrada debe comenzar conceptualmente en `knowledge`.**
-
-El orden general es:
+El alta crea simultáneamente su único HANDOFF persistente.
 
 ```text
-NUEVA CONVERSACIÓN
-        ↓
-    `knowledge`
-        ↓
-reglas + contexto + arquitectura
-        ↓
-resolver THREAD objetivo
-        ↓
-MANIFEST
-        ↓
-HANDOFF + corpus relevante
-        ↓
-work_branch, si procede
+nueva responsabilidad
+       ↓
+MANIFEST + HANDOFF
+       ↓
+commit en knowledge
+       ↓
+THREAD existente
 ```
 
-La rama de trabajo nunca precede a la resolución del estado consolidado salvo que una comprobación explícita de integridad indique que `knowledge` está inaccesible.
+Puede existir un HANDOFF provisional antes del MANIFEST si otro THREAD detecta una responsabilidad todavía no formalizada. Ese artefacto no constituye todavía un THREAD. Al crear el MANIFEST, pasa a ser el HANDOFF persistente del nuevo THREAD.
 
-### 9.2 Referencia de entrada mediante HANDOFF
+## 6. MANIFEST
 
-Si el usuario indica:
+El MANIFEST es el contrato autoritativo del THREAD y el mecanismo de incorporación de nuevas instancias/agentes.
 
-> **«Parte del handoff `<id>`.»**
+Debe resolver, cuando proceda:
 
-la frase se interpreta como una **referencia de descubrimiento**, no como un mecanismo alternativo de incorporación. El agente debe:
+- identidad y estado;
+- responsabilidad;
+- dentro/fuera de alcance;
+- autoridad documental;
+- dependencias relevantes;
+- HANDOFF asociado;
+- rama de trabajo, si existe;
+- cuestiones abiertas.
 
-1. entrar en `knowledge`;
-2. localizar el HANDOFF por identificador;
-3. identificar el THREAD o responsabilidad receptora;
-4. localizar su MANIFEST;
-5. si el MANIFEST existe, incorporarse al THREAD a través de él;
-6. si el MANIFEST no existe y el HANDOFF es una propuesta provisional de nueva responsabilidad, dar de alta el THREAD creando su MANIFEST antes de operar como ese THREAD;
-7. resolver desde el MANIFEST responsabilidad, autoridad documental, dependencias y referencias Git;
-8. leer el HANDOFF como cola de entradas no resueltas;
-9. resolver el corpus documental relevante desde `knowledge`;
-10. informar del diagnóstico y comenzar el trabajo dentro de la responsabilidad.
+### Referencias Git con significado semántico
 
-El HANDOFF puede ayudar a **encontrar** la responsabilidad, pero nunca sustituye al MANIFEST como contrato de incorporación.
-
-### 9.3 Entrada directa por THREAD
-
-Si el usuario indica:
-
-> **«Conecta con el hilo `<thread_id>`.»**
-
-el agente debe:
-
-1. entrar en `knowledge`;
-2. localizar el MANIFEST;
-3. verificar identidad y estado;
-4. leer el HANDOFF asociado para identificar entradas todavía abiertas;
-5. resolver dependencias y corpus relevante;
-6. resolver `work_branch`/`work_commit` desde el MANIFEST;
-7. informar del diagnóstico;
-8. continuar dentro de la responsabilidad vigente.
-
-La conexión directa no crea un nuevo THREAD ni reinicia el ciclo. Si no existe MANIFEST para `<thread_id>`, no hay THREAD que conectar: debe formalizarse o declararse el estado como inconsistente (§6).
-
-### 9.4 Entrada desde responsabilidad nueva
-
-Si una conversación nueva declara una responsabilidad y no existe un THREAD compatible:
-
-1. entrar en `knowledge`;
-2. comprobar si existe THREAD compatible;
-3. si existe, conectar con él mediante su MANIFEST;
-4. si no existe, crear su MANIFEST (alta del THREAD) con `origin.type: USER_DECLARED`;
-5. crear simultáneamente su HANDOFF persistente, normalmente vacío salvo que ya existan propuestas de entrada;
-6. establecer en el MANIFEST identidad, alcance, autoridad documental, dependencias y estado;
-7. registrar `created_from_knowledge_commit` (§7.1);
-8. consolidar MANIFEST y HANDOFF juntos en `knowledge` como estado persistente del nuevo THREAD;
-9. comenzar el trabajo.
-
-El usuario no necesita conocer la estructura interna del MANIFEST.
-
-### 9.5 Reincorporación de conversación existente
-
-Ante:
-
-> **«Reincorpórate al contexto del proyecto.»**
-
-se debe entrar en `knowledge`, reconstruir la responsabilidad y comparar la conversación con el estado consolidado. Las discrepancias se clasifican como `NUEVO`, `OBSOLETO`, `CONFLICTO`, `DUPLICADO` o `FUERA DE ALCANCE`.
-
-## 10. Crear, conectar y proponer
-
-### Crear THREAD
-
-Da de alta una entidad nueva **creando y consolidando su MANIFEST** (§6). El MANIFEST fija identidad, alcance, dependencias, estado, `origin.type` (§5.1), autoridad documental y `created_from_knowledge_commit` (§7.1). Se crea y consolida simultáneamente su único HANDOFF persistente.
-
-### Conectar con THREAD
-
-Localiza el MANIFEST de un THREAD **existente**, resuelve su estado y asocia una nueva conversación/agente a esa responsabilidad. Después consulta su HANDOFF y el corpus documental necesario. No crea ni modifica la entidad.
-
-### Proponer revisión a otro THREAD
-
-Cuando un THREAD descubre una necesidad que afecta a conocimiento cuya evolución corresponde a otro THREAD:
-
-1. no modifica directamente esos documentos;
-2. identifica el THREAD responsable mediante el índice/los MANIFESTs;
-3. registra una entrada en el HANDOFF del THREAD receptor;
-4. adjunta contexto, evidencia y referencias suficientes;
-5. continúa dentro de su propia responsabilidad salvo que la propuesta sea un bloqueo explícito.
-
-El THREAD receptor es el único que evalúa la propuesta. Mientras permanezca abierta puede actualizar su estado operativo dentro del HANDOFF (`proposed`, `in_review`, `deferred`, `ready_to_apply` u otros estados no terminales). Cuando adopta una decisión terminal, retira la entrada del HANDOFF en el mismo commit que aplica la decisión o registra el rechazo; Git conserva la decisión y su motivo.
-
-## 11. Contrato de responsabilidad
-
-Toda conversación sustantiva conectada a un THREAD debe poder responder:
-
-```text
-THREAD:
-Responsabilidad:
-Propietario / línea:
-Estado / ciclo:
-Dentro de alcance:
-Fuera de alcance:
-Documentos que puede modificar directamente:
-Corpus/dependencias principales que debe consultar:
-Código / datos principales:
-Entregables:
-Validación:
-Handoff asociado:
-Base de conocimiento:
-Rama/commit de trabajo:
-```
-
-## 12. Dependencias, propuestas y versiones
-
-Una **propuesta** en un HANDOFF no es por sí misma una dependencia. Las dependencias representan conocimiento o artefactos cuya versión condiciona efectivamente el trabajo del THREAD.
-
-Las dependencias relevantes deben poder fijarse a una versión:
+Puede registrar un SHA cuando ese valor expresa una relación del modelo, por ejemplo:
 
 ```yaml
-dependency:
-  document: docs/threads/station-location-evidence/MODEL.md
-  version: 0.1.1
-  status: current
+repository:
+  knowledge_branch: knowledge
+  created_from_knowledge_commit: <sha>
 ```
 
-Si una dependencia cambia, el THREAD debe poder detectar posible obsolescencia antes de continuar.
+`created_from_knowledge_commit` fija el estado de `knowledge` utilizado al dar de alta el THREAD. Es histórico e inmutable.
 
-Una propuesta puede convertirse en dependencia sólo como consecuencia de una decisión explícita del THREAD receptor o de una modificación consolidada del conocimiento que afecte al THREAD emisor.
+Git ya conserva autor, fecha, diff e historial; no deben duplicarse sin una función semántica específica.
 
-## 13. HANDOFF
+## 7. HANDOFF
 
-### 13.1 Definición canónica
+### 7.1 Definición
 
-El **HANDOFF no es un documento de transición de sesiones**, no resume una conversación para que otra la continúe y no es el mecanismo por el que un agente se incorpora al THREAD.
+Cada THREAD tiene exactamente un HANDOFF persistente.
 
-El HANDOFF es la **cola persistente de eventos de entrada todavía no resueltos** de una responsabilidad: propuestas, revisiones, necesidades y tareas que otros THREADs —o el propio ecosistema— remiten al THREAD receptor para que éste las evalúe.
+El HANDOFF es la **cola de inputs pendientes** dirigidos a la responsabilidad del THREAD:
 
-Existe **exactamente un HANDOFF persistente por THREAD**. Pertenece a la responsabilidad del THREAD y persiste aunque cambien los agentes, no exista ninguna conversación activa o el THREAD se encuentre cerrado/archivado. Un HANDOFF provisional dirigido a una responsabilidad aún sin MANIFEST no constituye un segundo HANDOFF de un THREAD: es una propuesta previa al alta.
+- propuestas;
+- revisiones;
+- necesidades;
+- tareas inter-THREAD.
 
-El HANDOFF describe **el presente pendiente**, no el pasado resuelto. El historial de las entradas que abandonan el HANDOFF pertenece a Git conforme a `docs/core/GIT_COMMIT_RULES.md`.
+No es:
 
-### 13.2 Autoría y soberanía
+- resumen de conversación;
+- memoria de sesión;
+- documento de continuidad de agente;
+- archivo de decisiones terminadas;
+- mecanismo de transferencia de responsabilidad.
 
-El HANDOFF distingue dos autoridades:
+### 7.2 Autoridad
 
-- **Entrada/propuesta**: cualquier THREAD puede registrar una propuesta dirigida al receptor, siempre con origen y evidencia suficientes.
-- **Gestión de la entrada**: sólo el THREAD propietario del HANDOFF evalúa la entrada, cambia su estado operativo y decide cómo resolverla.
+Cualquier THREAD puede registrar una entrada en el HANDOFF receptor con contexto y evidencia suficientes.
 
-Esta separación preserva la soberanía de responsabilidad: otros THREADs pueden escribir **propuestas** en el HANDOFF, pero no pueden resolverlas ni modificar directamente el conocimiento del receptor.
+Sólo el THREAD propietario del HANDOFF puede:
 
-### 13.3 Estructura mínima de una entrada
+- evaluar la entrada;
+- cambiar su estado operativo;
+- resolverla;
+- modificar el conocimiento bajo su responsabilidad.
 
-Cada entrada es conceptualmente cercana a un **Architecture Decision Record (ADR)** durante su vida activa: conserva el contexto de una decisión potencial, aunque no todo evento tenga naturaleza estrictamente arquitectónica.
+### 7.3 Estructura conceptual
 
-Formato mínimo provisional:
+Una entrada es similar a un ADR en cuanto conserva el contexto de una decisión potencial mientras está abierta, aunque no todas las entradas sean decisiones arquitectónicas.
+
+Estructura mínima orientativa:
 
 ```yaml
-entry_id:
 origin_thread:
-created:
 type: proposal | review | need | task
 summary:
 context:
@@ -479,172 +199,103 @@ status: proposed | in_review | deferred | ready_to_apply
 working_notes:
 ```
 
-La estructura puede representarse físicamente como dos columnas o dos zonas lógicas:
+Puede representarse como dos zonas lógicas:
 
-| Entrada / propuesta | Estado / trabajo del THREAD receptor |
+| Entrada / propuesta | Estado / trabajo receptor |
 |---|---|
-| Escribible por el THREAD emisor; conserva origen, necesidad, contexto y evidencia. | Escribible por el THREAD propietario; conserva sólo el estado y notas necesarias mientras la entrada siga abierta. |
+| escribible por el emisor | gestionado exclusivamente por el THREAD receptor |
 
-La implementación física definitiva del formato queda abierta; la separación de autoridad entre ambas partes es normativa.
-
-No deben conservarse en el HANDOFF campos terminales como `accepted`, `rejected`, `superseded`, `decided_at`, `rationale` o `resulting_changes` **una vez concluida la decisión**. Esa información se reconstruye desde el commit que retira la entrada y, cuando exista, desde los documentos de conocimiento modificados.
-
-### 13.4 Ciclo de una entrada
+### 7.4 Resolución
 
 ```text
-propuesta registrada
-        ↓
-evaluación por THREAD receptor
-        ├── continúa abierta → actualiza estado/notas en HANDOFF
-        │
-        └── decisión terminal
-                ↓
-       cambio real o rechazo
-                ↓
-   retirar entrada del HANDOFF
-                ↓
-       MISMO COMMIT en Git
+entrada abierta
+    ↓
+evaluación
+    ↓
+decisión terminal
+    ↓
+cambio real o rechazo
+    ↓
+retirar entrada del HANDOFF
+    ↓
+MISMO COMMIT
 ```
 
-Una decisión terminal puede ser aceptación, rechazo, sustitución por otra propuesta o cualquier resolución que haga innecesario mantener la entrada como trabajo pendiente.
+Una entrada `deferred` sigue pendiente y permanece en el HANDOFF.
 
-La regla crítica es: **la retirada del pendiente y la decisión real pertenecen al mismo commit**. Si la entrada se acepta, ese commit debe incluir los cambios documentales/operativos correspondientes. Si se rechaza sin otros cambios, el commit retira la entrada y explica el motivo del rechazo en su mensaje.
+Cuando se resuelve, desaparece del HANDOFF. Git conserva la entrada retirada, la decisión y su motivo.
 
-Las entradas `deferred` siguen abiertas y, por tanto, permanecen en el HANDOFF.
+## 8. Bootstrap de un agente
 
-La existencia de entradas no resueltas es parte del estado operativo del THREAD y debe revisarse antes de cerrar, archivar o redefinir su responsabilidad.
-
-### 13.5 Creación del HANDOFF
-
-El HANDOFF se crea junto con el MANIFEST del THREAD y permanece asociado a él durante toda su vida. Si otro THREAD descubre una responsabilidad nueva, puede preparar un HANDOFF provisional con las entradas que motivaron esa nueva responsabilidad. Al crear el MANIFEST, ese artefacto pasa a ser el HANDOFF persistente del nuevo THREAD. Un HANDOFF provisional sin MANIFEST **no constituye todavía un THREAD** (§5-6).
-
-## 14. Propuestas y decisiones
+Toda incorporación comienza en `knowledge`:
 
 ```text
-propuesta externa
-      ↓
-HANDOFF del receptor
-      ↓
-evaluación soberana del THREAD
-      ↓
-continúa pendiente ─────────→ permanece en HANDOFF
-      │
-      └── decisión terminal
-              ↓
-     aplicar cambio / rechazo
-              ↓
-   retirar entrada del HANDOFF
-              ↓
-        mismo COMMIT
-              ↓
-      historial en Git
+knowledge
+  ↓
+PROJECT_WORKING_RULES.md
+  ↓
+THREAD_ARCHITECTURE.md
+  ↓
+THREAD_INDEX.md + DOCUMENT_INDEX.md
+  ↓
+MANIFEST
+  ↓
+HANDOFF
+  ↓
+corpus relevante
+  ↓
+rama de trabajo, si procede
 ```
 
-El chat no convierte por sí mismo una propuesta en conocimiento autoritativo. El HANDOFF tampoco: registra exclusivamente el trabajo pendiente. El conocimiento vigente se modifica en sus documentos autoritativos cuando el THREAD responsable acepta y consolida el cambio; Git conserva el historial de la decisión y la retirada de la entrada.
+El protocolo operativo reutilizable vive en `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`.
 
-## 15. Registro e índice del proyecto
+## 9. Crear, conectar y proponer
 
-### 15.1 Registro (Activity Log)
+### Crear
 
-Cada THREAD puede mantener un **registro** de su actividad operativa significativa: eventos, decisiones y cambios de estado, con su origen y evidencia. No debe ser una copia íntegra de conversaciones.
+Crear MANIFEST + HANDOFF y consolidarlos en `knowledge`.
 
-El Activity Log no debe confundirse con el HANDOFF: el HANDOFF organiza **inputs deliberables todavía abiertos** dirigidos al THREAD; el Activity Log conserva, cuando exista y se justifique, otra historia operativa que no quede suficientemente expresada por Git y los documentos autoritativos.
+### Conectar
 
-La introducción de `GIT_COMMIT_RULES.md` obliga a evitar que un Activity Log duplique automáticamente el historial que Git ya conserva. Su necesidad y alcance deberán justificarse cuando se utilice.
+Localizar el THREAD, leer el MANIFEST, incorporarse a su responsabilidad y consultar después HANDOFF y corpus relevante.
 
-### 15.2 Índices derivados de descubrimiento
+### Proponer a otro THREAD
 
-El proyecto distingue dos índices materializables de descubrimiento:
+Cuando un THREAD detecta una necesidad fuera de su autoridad:
 
-- **Índice de THREADs**: permite localizar qué THREADs existen y dónde están sus artefactos. Su forma canónica está definida en `docs/core/THREAD_INDEX_TEMPLATE.md`.
-- **Índice documental**: permite localizar documentos del corpus, su ámbito y el THREAD con autoridad de evolución. Su forma canónica está definida en `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
+1. identifica el THREAD responsable mediante `THREAD_INDEX.md` / `DOCUMENT_INDEX.md`;
+2. no modifica el documento externo;
+3. registra una propuesta en el HANDOFF receptor;
+4. conserva evidencia y contexto;
+5. continúa dentro de su responsabilidad salvo bloqueo explícito.
 
-Ambos índices son **derivados y no autoritativos**. El índice de THREADs debe poder reconstruirse a partir de los MANIFEST consolidados en `knowledge`; si una fila contradice al MANIFEST correspondiente, prevalece el MANIFEST. Los índices no crean THREADs ni sustituyen a los documentos de conocimiento o contratos autoritativos que referencian.
+## 10. Dependencias y propuestas
 
-La existencia de las plantillas no obliga todavía a migrar los índices materializados ni a reorganizar físicamente el corpus actual; esa adaptación se realizará como decisión separada.
+Una propuesta no es una dependencia.
 
-## 16. Autoridad documental
+Una dependencia existe cuando el trabajo del THREAD está condicionado por conocimiento o artefactos de otra responsabilidad.
 
-| Información | Fuente principal |
-|---|---|
-| Reglas permanentes | `docs/core/PROJECT_WORKING_RULES.md` en `knowledge` |
-| Registro de decisiones vía commits | `docs/core/GIT_COMMIT_RULES.md` en `knowledge` |
-| Integración agente ↔ repositorio | `docs/core/PROJECT_AGENT_CONTEXT.md` en `knowledge` |
-| Arquitectura de hilos | `docs/core/THREAD_ARCHITECTURE.md` en `knowledge` |
-| Forma canónica del índice de THREADs | `docs/core/THREAD_INDEX_TEMPLATE.md` en `knowledge` |
-| Forma canónica del índice documental | `docs/core/DOCUMENT_INDEX_TEMPLATE.md` en `knowledge` |
-| Estado/metodología validada | documentos de conocimiento vigentes en `knowledge` |
-| Identidad, estado y alta de THREAD | MANIFEST en `knowledge` |
-| Entradas/propuestas todavía pendientes dirigidas al THREAD | HANDOFF del THREAD en `knowledge` |
-| Historial de decisiones resueltas y entradas retiradas | historial Git + mensaje del commit |
-| Historial de actividad no cubierto por Git, cuando exista | Registro (Activity Log) justificado |
-| Descubrimiento de THREAD | Índice materializado de THREADs (derivado, no autoritativo) |
-| Descubrimiento del corpus documental | Índice documental materializado (derivado, no autoritativo), cuando exista |
-| Implementación en curso | rama/commit de trabajo |
-| Software integrado | `develop` / `main` |
-| Datos fuente | fuente + procedencia |
-| Conversación/agente | contexto operativo no autoritativo |
+Cuando la reproducibilidad lo requiera, una dependencia puede fijarse a versión o commit. Esa referencia debe tener significado operativo, no actuar como historial manual.
 
-Si fuentes comparables discrepan, se expone el conflicto y se determina cuál prevalece.
+## 11. Capa documental
 
-## 17. Cierre
+### 11.1 Corpus común
 
-Antes de cerrar un THREAD sustantivo:
+Todos los THREADs pueden leer todo el corpus.
 
-1. revisar las entradas abiertas de su HANDOFF;
-2. resolver las que deban cerrarse, retirándolas en el mismo commit que aplica o registra cada decisión;
-3. clasificar las entradas que sigan legítimamente abiertas (`deferred`, bloqueadas u otro estado no terminal) y decidir si son compatibles con el cierre/archivo del THREAD;
-4. validar/tests cuando proceda;
-5. documentar resultados y decisiones;
-6. actualizar versiones y MANIFEST;
-7. hacer commit en la rama de trabajo cuando exista;
-8. consolidar en `knowledge` los cambios autoritativos de conocimiento/estructura;
-9. indicar incertidumbres restantes.
+La transversalidad de un documento no implica autoridad compartida.
 
-Cerrar un THREAD no elimina su conocimiento. El HANDOFF conserva únicamente los pendientes que deban seguir abiertos; el historial de lo resuelto permanece en Git.
+### 11.2 Autoridad única
 
-## 18. Disposición física de `docs/`
+Cada documento tiene exactamente un THREAD con autoridad de evolución.
 
-`docs/` se organiza actualmente en dos ramas físicas según la naturaleza de la responsabilidad:
+La autoridad significa capacidad de aceptar y aplicar cambios sobre el conocimiento vigente; no significa autoría histórica ni propiedad intelectual.
 
-```text
-docs/
-├── core/              → sistema: hilos meta + documentos de sistema
-│   └── threads/       → MANIFEST/HANDOFF/IMPROVEMENTS de hilos meta
-└── threads/           → hilos de dominio y artefactos asociados
-```
+Git conserva la historia de creación y modificación.
 
-**Criterio meta vs. dominio.** Un THREAD es **meta** si su responsabilidad es el propio sistema —arquitectura, metodología, reglas— y vive en `docs/core/threads/<thread>/`; es de **dominio** si trabaja sobre el producto de ClimaScope —datos, modelo científico, UX— y actualmente vive en `docs/threads/<thread>/`.
+### 11.3 Documento transversal
 
-Dentro de cada carpeta de THREAD, los artefactos operativos específicos del THREAD se nombran por **rol** (`MANIFEST.md`, `HANDOFF.md`, `IMPROVEMENTS.md`, etc.).
-
-Esta disposición física es una convención actual y **no determina la autoridad de evolución del conocimiento**. El corpus es común para lectura y la autoridad de cada documento se resuelve según §19, aunque físicamente el documento se encuentre dentro de una carpeta asociada a otro contexto histórico. La organización física futura del corpus sigue siendo una cuestión abierta independiente de su gobernanza.
-
-## 19. Capa documental del conocimiento
-
-### 19.1 Modelo canónico
-
-La capa documental adopta un **corpus común con autoridad de evolución federada por THREAD**.
-
-Esto significa:
-
-- todos los documentos del corpus son potencialmente transversales para lectura;
-- cualquier THREAD puede consultar cualquier documento necesario para razonar dentro de su responsabilidad;
-- cada documento tiene **un único THREAD con autoridad de evolución**;
-- un THREAD puede modificar directamente un documento sólo cuando su evolución cae dentro de su responsabilidad;
-- si un THREAD necesita cambiar conocimiento bajo otra responsabilidad, registra una propuesta en el HANDOFF del THREAD con autoridad;
-- la autoridad de evolución no equivale a autoría histórica ni a propiedad del documento;
-- Git conserva la historia de creación, edición y transferencia; el corpus documental representa el conocimiento vigente.
-
-Por tanto, la federación afecta a la **escritura**, no al acceso. El corpus no se fragmenta en silos documentales por THREAD.
-
-Ejemplo: un THREAD puede consultar un documento general de miembros del equipo para planificar una tarea. Si el perfil necesario existe, utiliza esa información dentro de su trabajo. Si detecta que falta un perfil cuya gestión pertenece a otro THREAD, no modifica el documento de personal: registra una propuesta justificada en el HANDOFF del THREAD responsable.
-
-### 19.2 Autoridad única y documentos transversales
-
-La autoridad de evolución de un documento **no puede pertenecer simultáneamente a varios THREADs**.
-
-Si un documento recae semánticamente sobre varias responsabilidades y ninguna de ellas debe dominar su evolución, se crea un **THREAD específico de gestión** para ese documento o ámbito documental. Ese THREAD centraliza la edición y recibe mediante su HANDOFF los inputs de los demás THREADs interesados.
+Si varias responsabilidades necesitan gobernar establemente un documento y ninguna debe dominar a las demás:
 
 ```text
 THREAD A ──propuesta──┐
@@ -652,55 +303,120 @@ THREAD B ──propuesta──┼──► HANDOFF del THREAD gestor ──► d
 THREAD C ──propuesta──┘
 ```
 
-La necesidad de un THREAD gestor no implica todavía una taxonomía formal de tipos de THREAD. La arquitectura admite que en el futuro puedan distinguirse, por ejemplo, THREADs de investigación y THREADs de gestión, pero esa clasificación requiere una decisión específica.
+Se crea un THREAD gestor. Esto abre la posibilidad futura de tipos de THREAD, pero la taxonomía todavía no se formaliza.
 
-### 19.3 Descubrimiento del corpus y autoridad
+### 11.4 Transferencia de autoridad
 
-La forma canónica del índice documental se define en `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
+Un documento puede sobrevivir al THREAD que lo creó.
 
-El índice documental es **derivado y no autoritativo**. Su función es permitir descubrir:
+Si cambia la responsabilidad:
 
-- qué documento existe y dónde está;
-- qué tema o ámbito describe;
-- qué THREAD tiene autoridad para evolucionarlo;
-- qué MANIFEST permite verificar esa autoridad.
+1. el nuevo THREAD declara autoridad en su MANIFEST;
+2. se actualiza el documento si procede;
+3. se regenera `DOCUMENT_INDEX.md`;
+4. no se añade `created_by` para preservar historia: Git ya la conserva.
 
-El índice no debe registrar `created_by`, historial de autores, commits históricos ni lista de THREADs lectores. Git conserva la evolución histórica; la lectura del corpus es global.
+## 12. Índices derivados
 
-La autoridad canónica debe poder verificarse en el MANIFEST del THREAD responsable. Si el índice documental y el MANIFEST discrepan, la incoherencia debe resolverse antes de considerar válido el índice materializado.
+### THREAD_INDEX
 
-### 19.4 Ciclo de vida de la autoridad documental
+`docs/core/THREAD_INDEX.md`
 
-Un documento puede sobrevivir al THREAD que lo creó o lo desarrolló inicialmente. Su ubicación física y su historia no obligan a mantener para siempre la misma autoridad.
+Descubre:
 
-Cuando un THREAD se cierre, archive o divida y deje de poder gobernar un documento:
+- THREADs existentes;
+- estado;
+- dominio/responsabilidad;
+- MANIFEST;
+- HANDOFF.
 
-1. debe resolverse explícitamente qué THREAD asume su evolución;
-2. el nuevo THREAD debe declarar esa autoridad en su MANIFEST;
-3. el índice documental debe regenerarse para reflejar el responsable vigente;
-4. no es necesario registrar un campo `created_by` ni mover físicamente el documento sólo para preservar procedencia: Git conserva la historia;
-5. si la responsabilidad es realmente transversal, debe crearse un THREAD gestor en lugar de compartir la autoridad entre varios THREADs.
+Forma canónica: `docs/core/THREAD_INDEX_TEMPLATE.md`.
 
-La transferencia de autoridad cambia **quién puede evolucionar el conocimiento vigente**, no su procedencia histórica.
+La fuente autoritativa son los MANIFESTs.
 
-### 19.5 Cuestiones todavía abiertas
+### DOCUMENT_INDEX
 
-Quedan abiertas únicamente cuestiones de implementación y evolución que no alteran los principios anteriores:
+`docs/core/DOCUMENT_INDEX.md`
 
-- organización física futura del corpus documental dentro del repositorio;
-- si la autoridad se declara individualmente por documento o mediante reglas que agrupen varios documentos bajo una misma responsabilidad, manteniendo siempre un único THREAD efectivo por documento;
-- criterios y ciclo de vida para futuros tipos de THREAD, especialmente la posible distinción entre investigación y gestión;
-- procedimiento operativo de migración de la documentación existente al nuevo esquema sin reescribir ni perder historia válida;
-- reglas para detectar y resolver automáticamente incoherencias entre MANIFEST, índice documental y ubicación física.
+Descubre:
 
-Estas cuestiones deben resolverse de forma incremental. No reabren la decisión normativa de **corpus común para lectura + autoridad única de evolución por documento**.
+- documento;
+- propósito/ámbito;
+- THREAD con autoridad;
+- MANIFEST que permite verificarla.
 
-## 20. Historial de versiones
+Forma canónica: `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
+
+Los índices no son un segundo corpus ni una segunda fuente de verdad.
+
+## 13. Git y decisiones
+
+La estrategia canónica vive en `docs/core/GIT_COMMIT_RULES.md`.
+
+Principio:
+
+> **un commit = una decisión**
+
+La lista de pendientes conserva sólo el presente abierto. Git conserva el pasado resuelto.
+
+No se mantienen registros paralelos de decisiones terminadas salvo que documenten información que Git y el conocimiento vigente no puedan expresar.
+
+## 14. Autoridad de fuentes
+
+| Información | Fuente principal |
+|---|---|
+| arquitectura | `THREAD_ARCHITECTURE.md` |
+| reglas operativas | `PROJECT_WORKING_RULES.md` |
+| integración del agente | `PROJECT_AGENT_CONTEXT.md` |
+| bootstrap | `THREAD_CONTEXT_BOOTSTRAP.md` |
+| estrategia Git | `GIT_COMMIT_RULES.md` |
+| identidad/estado de THREAD | MANIFEST |
+| inputs pendientes | HANDOFF |
+| descubrimiento de THREADs | `THREAD_INDEX.md` (derivado) |
+| descubrimiento del corpus/autoridad | `DOCUMENT_INDEX.md` (derivado) |
+| conocimiento vigente | documentos del corpus |
+| historial de decisiones/evolución | Git |
+| software en integración | `develop` |
+| software estable | `main` |
+
+## 15. Cierre de un THREAD
+
+Antes de cerrar:
+
+1. revisar su HANDOFF;
+2. resolver o clasificar entradas abiertas;
+3. consolidar conocimiento vigente;
+4. transferir explícitamente autoridad documental que no pueda quedar sin responsable;
+5. actualizar MANIFEST e índices;
+6. validar/testear cuando proceda.
+
+El THREAD cerrado mantiene su MANIFEST y su HANDOFF persistente. El HANDOFF puede quedar vacío/cerrado y las nuevas propuestas deben dirigirse a la responsabilidad sucesora cuando exista.
+
+## 16. Disposición física actual
+
+```text
+docs/
+├── core/
+│   └── threads/
+└── threads/
+```
+
+La ubicación física no determina la autoridad documental. La organización futura del corpus puede evolucionar sin cambiar el principio de corpus común + autoridad única.
+
+Los artefactos operativos de un THREAD se nombran por rol (`MANIFEST.md`, `HANDOFF.md`). Los documentos de conocimiento pueden estar físicamente próximos al THREAD responsable, pero no se consideran silos privados.
+
+## 17. Cuestiones abiertas
+
+La arquitectura considera abiertas únicamente cuestiones que no alteran las invariantes anteriores:
+
+- futura taxonomía de THREADs (investigación, gestión u otros);
+- organización física futura del corpus;
+- reglas de agrupación de autoridad para conjuntos de documentos, manteniendo un único THREAD efectivo por documento;
+- automatización de comprobaciones de coherencia entre MANIFESTs, HANDOFFs e índices;
+- evolución futura hacia modelos de grafo si aportan valor real sin complejidad innecesaria.
+
+## 18. Historial
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 0.7.1 | 2026-09-08 | Se incorpora `GIT_COMMIT_RULES.md` como fuente autoritativa para el registro histórico de decisiones mediante commits. |
-| 0.8.0 | 2026-09-08 | HANDOFF pasa a representar exclusivamente inputs pendientes; las entradas resueltas se retiran en el mismo commit que aplica o registra la decisión y su historial queda en Git. |
-| 0.8.1 | 2026-09-08 | Se incorporan referencias canónicas a `THREAD_INDEX_TEMPLATE.md` y `DOCUMENT_INDEX_TEMPLATE.md` como formas de los índices derivados de descubrimiento. |
-| 0.9.0 | 2026-09-08 | Se fija la capa documental: corpus común para lectura, autoridad única de evolución por documento y THREAD gestor cuando varias responsabilidades confluyen sobre un mismo documento. |
-| 1.0.0 | 2026-09-08 | Se retira `READY_FOR_HANDOFF` y se fija la relación obligatoria de exactamente un HANDOFF persistente por THREAD. |
+| 2.0.0 | 2026-09-08 | Consolidación posterior a la migración: MANIFEST como entrada, HANDOFF único y pendiente, índices separados, corpus común y autoridad documental única. |
