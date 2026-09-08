@@ -1,6 +1,6 @@
 # ClimaScope — MANIFEST · thread-app-scope-ux
 
-**Versión:** 1.0.0  
+**Versión:** 1.0.1  
 **Estado del THREAD:** ACTIVE  
 **Idioma:** español (España)
 
@@ -11,7 +11,6 @@ thread_id: thread-app-scope-ux
 domain: UX / aplicación de exploración del Scope
 status: ACTIVE
 owner: línea de producto/UX
-created: 2026-08-16
 current_cycle: 1
 origin:
   type: USER_DECLARED
@@ -61,3 +60,9 @@ Ningún documento de conocimiento materializado todavía. Los futuros documentos
 ## Estado actual
 
 Ciclo activo de diseño conceptual de producto/UX. El primer objetivo es definir qué decisión o comprensión debe poder alcanzar un usuario en una sesión breve y, a partir de ello, el flujo principal antes de diseñar pantallas concretas.
+
+## Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.1 | 2026-09-08 | Se retira `created`: Git ya conserva la fecha de alta del MANIFEST. |

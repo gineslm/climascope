@@ -1,6 +1,6 @@
 # ClimaScope — MANIFEST · thread-architecture-methodology-evolution
 
-**Versión:** 1.1.0  
+**Versión:** 1.1.1  
 **Estado del THREAD:** ACTIVE  
 **Ciclo:** 1  
 **Idioma:** español (España)
@@ -12,7 +12,6 @@ thread_id: thread-architecture-methodology-evolution
 domain: evolución controlada de arquitectura, metodología y reglas operativas
 status: ACTIVE
 owner: línea de metodología/arquitectura del proyecto
-created: 2026-08-16
 current_cycle: 1
 origin:
   type: USER_DECLARED
@@ -80,3 +79,4 @@ Custodiar el estado de los problemas de arquitectura, metodología y reglas oper
 |---|---|---|
 | 1.0.0 | 2026-09-08 | Migración al modelo persistente de HANDOFF y autoridad documental vigente. |
 | 1.1.0 | 2026-09-08 | Se incorpora `README.md` a la autoridad documental del THREAD y se materializan los índices derivados. |
+| 1.1.1 | 2026-09-08 | Se retira `created`: Git ya conserva la fecha de alta del MANIFEST. |

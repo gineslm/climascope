@@ -1,6 +1,6 @@
 # ClimaScope — MANIFEST · thread-station-location-evidence
 
-**Versión:** 1.0.0  
+**Versión:** 1.0.1  
 **Estado del THREAD:** ACTIVE  
 **Ciclo:** 1  
 **Idioma:** español (España)
@@ -12,7 +12,6 @@ thread_id: thread-station-location-evidence
 domain: modelo de dominio Station / Location / Scope / Evidence
 status: ACTIVE
 owner: línea de dominio científico del proyecto
-created: 2026-08-23
 current_cycle: 1
 origin:
   type: USER_DECLARED
@@ -79,3 +78,9 @@ Diseñar y documentar el modelo de dominio que relaciona Station, Location, Scop
 
 - cerrar el modelo documental antes de implementar;
 - decidir cuándo el ciclo pasa de diseño a implementación.
+
+## Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.1 | 2026-09-08 | Se retira `created`: Git ya conserva la fecha de alta del MANIFEST. |

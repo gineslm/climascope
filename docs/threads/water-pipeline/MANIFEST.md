@@ -1,6 +1,6 @@
 # ClimaScope — MANIFEST · thread-water-pipeline
 
-**Versión:** 1.0.0  
+**Versión:** 1.0.1  
 **Estado del THREAD:** ACTIVE  
 **Ciclo:** 1  
 **Idioma:** español (España)
@@ -12,7 +12,6 @@ thread_id: thread-water-pipeline
 domain: adquisición, QC y agregación de datos de agua/precipitación
 status: ACTIVE
 owner: línea de dominio de datos de agua
-created: 2026-08-23
 current_cycle: 1
 origin:
   type: USER_DECLARED
@@ -70,3 +69,9 @@ W2 está implementado y validado localmente. La adquisición e investigación se
 
 - decidir si el ciclo continúa con nuevas fuentes/variables o entra en mantenimiento;
 - proponer cambios a scoring/indicadores cuando exista un THREAD responsable de esa línea.
+
+## Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.1 | 2026-09-08 | Se retira `created`: Git ya conserva la fecha de alta del MANIFEST. |

@@ -1,6 +1,6 @@
 # ClimaScope — MANIFEST · thread-architecture
 
-**Versión:** 1.0.0  
+**Versión:** 1.0.1  
 **Estado del THREAD:** CLOSED  
 **Ciclo:** 1  
 **Idioma:** español (España)
@@ -12,7 +12,6 @@ thread_id: thread-architecture
 domain: arquitectura de hilos de trabajo (ciclo fundacional)
 status: CLOSED
 owner: línea de arquitectura del proyecto
-created: 2026-08-15
 current_cycle: 1
 origin:
   type: USER_DECLARED
@@ -48,3 +47,9 @@ CLOSED. No debe reabrirse para mantenimiento ordinario de la arquitectura. Las n
 
 - Base histórica de alta: `33757848176c6d8e3f53b5e2c35b7048b657b286`.
 - Rama histórica: `agent/thread-architecture`.
+
+## Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.1 | 2026-09-08 | Se retira `created`: Git ya conserva la fecha de alta del MANIFEST. |
