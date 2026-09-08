@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de THREADs y conocimiento
 
-**Versión:** 2.0.2  
+**Versión:** 2.1.0  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -228,16 +228,16 @@ Una entrada `deferred` sigue pendiente y permanece en el HANDOFF.
 
 Cuando se resuelve, desaparece del HANDOFF. Git conserva la entrada retirada, la decisión y su motivo.
 
-## 8. Bootstrap de un agente
+## 8. Bootstrap de un agente y divulgación progresiva
 
-Toda incorporación comienza en `knowledge`:
+Toda incorporación comienza en `knowledge`, pero **no requiere cargar por defecto la arquitectura y las reglas completas**.
+
+La superficie mínima es:
 
 ```text
 knowledge
   ↓
-PROJECT_WORKING_RULES.md
-  ↓
-THREAD_ARCHITECTURE.md
+PROJECT_AGENT_CONTEXT.md
   ↓
 THREAD_INDEX.md + DOCUMENT_INDEX.md
   ↓
@@ -250,17 +250,21 @@ corpus relevante
 rama de trabajo, si procede
 ```
 
-El protocolo operativo reutilizable vive en `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`.
+`PROJECT_AGENT_CONTEXT.md` contiene las reglas duras que aplican siempre y la tabla de **cuándo leer más**. `THREAD_ARCHITECTURE.md`, `PROJECT_WORKING_RULES.md`, `THREAD_CONTEXT_BOOTSTRAP.md` y `GIT_COMMIT_RULES.md` se cargan bajo demanda según la operación.
+
+El principio es **divulgación progresiva**: el caso ordinario trabaja con el contrato mínimo; crear/cerrar THREADs, cambiar autoridad documental, operar sobre HANDOFFs, cambiar reglas o consolidar decisiones exige cargar previamente la fuente canónica correspondiente.
+
+La reducción de contexto no reduce obligaciones. Los cambios estructurales se validan con `scripts/check_knowledge.py`, que comprueba invariantes mecánicas sin sustituir el juicio semántico.
 
 ## 9. Crear, conectar y proponer
 
 ### Crear
 
-Crear MANIFEST + HANDOFF y consolidarlos en `knowledge`.
+Crear MANIFEST + HANDOFF y consolidarlos en `knowledge`. Antes de hacerlo, cargar las secciones de arquitectura/bootstrap indicadas en `PROJECT_AGENT_CONTEXT.md`.
 
 ### Conectar
 
-Localizar el THREAD, leer el MANIFEST, incorporarse a su responsabilidad y consultar después HANDOFF y corpus relevante.
+Localizar el THREAD, leer el MANIFEST, incorporarse a su responsabilidad y consultar después HANDOFF y corpus relevante. Para este caso ordinario basta la superficie mínima salvo que la operación posterior requiera reglas adicionales.
 
 ### Proponer a otro THREAD
 
@@ -271,6 +275,8 @@ Cuando un THREAD detecta una necesidad fuera de su autoridad:
 3. registra una propuesta en el HANDOFF receptor;
 4. conserva evidencia y contexto;
 5. continúa dentro de su responsabilidad salvo bloqueo explícito.
+
+Antes de crear o resolver una entrada HANDOFF se cargan las reglas específicas indicadas en `PROJECT_AGENT_CONTEXT.md`.
 
 ## 10. Dependencias y propuestas
 
@@ -370,13 +376,14 @@ No se mantienen registros paralelos de decisiones terminadas salvo que documente
 |---|---|
 | arquitectura | `THREAD_ARCHITECTURE.md` |
 | reglas operativas | `PROJECT_WORKING_RULES.md` |
-| integración del agente | `PROJECT_AGENT_CONTEXT.md` |
-| bootstrap | `THREAD_CONTEXT_BOOTSTRAP.md` |
+| superficie mínima del agente | `PROJECT_AGENT_CONTEXT.md` |
+| bootstrap detallado | `THREAD_CONTEXT_BOOTSTRAP.md` |
 | estrategia Git | `GIT_COMMIT_RULES.md` |
 | identidad/estado de THREAD | MANIFEST |
 | inputs pendientes | HANDOFF |
 | descubrimiento de THREADs | `THREAD_INDEX.md` (derivado) |
 | descubrimiento del corpus/autoridad | `DOCUMENT_INDEX.md` (derivado) |
+| validación estructural | `scripts/check_knowledge.py` |
 | conocimiento vigente | documentos del corpus |
 | historial de decisiones/evolución | Git |
 | software en integración | `develop` |
@@ -386,12 +393,14 @@ No se mantienen registros paralelos de decisiones terminadas salvo que documente
 
 Antes de cerrar:
 
-1. revisar su HANDOFF;
-2. resolver o clasificar entradas abiertas;
-3. consolidar conocimiento vigente;
-4. transferir explícitamente autoridad documental que no pueda quedar sin responsable;
-5. actualizar MANIFEST e índices;
-6. validar/testear cuando proceda.
+1. cargar las reglas de cierre indicadas en `PROJECT_AGENT_CONTEXT.md`;
+2. revisar su HANDOFF;
+3. resolver o clasificar entradas abiertas;
+4. consolidar conocimiento vigente;
+5. transferir explícitamente autoridad documental que no pueda quedar sin responsable;
+6. actualizar MANIFEST e índices;
+7. ejecutar `scripts/check_knowledge.py`;
+8. validar/testear cuando proceda.
 
 El THREAD cerrado mantiene su MANIFEST y su HANDOFF persistente. El HANDOFF puede quedar vacío/cerrado y las nuevas propuestas deben dirigirse a la responsabilidad sucesora cuando exista.
 
@@ -415,7 +424,7 @@ La arquitectura considera abiertas únicamente cuestiones que no alteran las inv
 - futura taxonomía de THREADs (investigación, gestión u otros);
 - organización física futura del corpus;
 - reglas de agrupación de autoridad para conjuntos de documentos, manteniendo un único THREAD efectivo por documento;
-- automatización de comprobaciones de coherencia entre MANIFESTs, HANDOFFs e índices;
+- posible integración futura de `scripts/check_knowledge.py` en CI o protecciones de `knowledge`;
 - evolución futura hacia modelos de grafo si aportan valor real sin complejidad innecesaria.
 
 ## 18. Historial
@@ -425,3 +434,4 @@ La arquitectura considera abiertas únicamente cuestiones que no alteran las inv
 | 2.0.0 | 2026-09-08 | Consolidación posterior a la migración: MANIFEST como entrada, HANDOFF único y pendiente, índices separados, corpus común y autoridad documental única. |
 | 2.0.1 | 2026-09-08 | Se aclara que el HANDOFF recoge exclusivamente inputs procedentes de otros THREADs; el trabajo propio no se encola. |
 | 2.0.2 | 2026-09-08 | Se alinea el contrato del MANIFEST: identidad estructurada en YAML y responsabilidad obligatoria como sección Markdown no duplicada. |
+| 2.1.0 | 2026-09-08 | Se adopta divulgación progresiva: el agente carga una superficie mínima por defecto y consulta arquitectura/reglas completas sólo según la operación, apoyado por validación estructural automática. |

@@ -1,6 +1,6 @@
-# ClimaScope — Contexto del proyecto para agentes
+# ClimaScope — Contexto mínimo del proyecto para agentes
 
-**Versión:** 2.0.0  
+**Versión:** 2.1.0  
 **Estado:** Activo  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -8,33 +8,33 @@
 
 ## 1. Función
 
-Este documento es el punto de integración mínimo entre cualquier agente de IA y el repositorio. No redefine la arquitectura: remite a las fuentes canónicas y establece cómo comenzar una sesión de trabajo.
+Este documento es la **superficie mínima que un agente debe leer siempre** para incorporarse a ClimaScope. No reproduce la arquitectura ni las reglas completas: expone el contrato operativo imprescindible y dirige a las fuentes extensas sólo cuando la operación lo requiere.
 
-La conversación es una instancia temporal. El repositorio es la memoria duradera.
+La conversación/agente es temporal. El repositorio es la memoria duradera.
 
-## 2. Fuentes canónicas
+## 2. Reglas duras que aplican siempre
 
-- Arquitectura de THREADs: `docs/core/THREAD_ARCHITECTURE.md`.
-- Reglas permanentes: `docs/core/PROJECT_WORKING_RULES.md`.
-- Bootstrap operativo: `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`.
-- Estrategia Git: `docs/core/GIT_COMMIT_RULES.md`.
-- Índice de THREADs: `docs/core/THREAD_INDEX.md`.
-- Índice documental: `docs/core/DOCUMENT_INDEX.md`.
-- Plantilla del índice de THREADs: `docs/core/THREAD_INDEX_TEMPLATE.md`.
-- Plantilla del índice documental: `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
+1. Un THREAD existe si y sólo si existe su MANIFEST en `knowledge`.
+2. El agente se incorpora a un THREAD mediante su MANIFEST.
+3. El corpus es global para lectura; un THREAD sólo modifica documentos bajo su autoridad.
+4. Para cambiar conocimiento bajo autoridad ajena se registra un input en el HANDOFF del THREAD responsable.
+5. El HANDOFF contiene exclusivamente inputs pendientes procedentes de **otros THREADs**; el trabajo propio no se encola.
+6. Una entrada resuelta sale del HANDOFF en el mismo commit que aplica o registra la decisión; Git conserva el historial.
+7. Un commit representa una decisión; antes de guardar cambios se aplica `docs/core/GIT_COMMIT_RULES.md`.
+8. Ninguna llave, token, contraseña o secreto se guarda en archivos versionados.
 
-## 3. Regla de entrada
+## 3. Entrada por defecto
 
 Toda sesión comienza conceptualmente en `knowledge`.
 
-Orden mínimo:
+Secuencia ordinaria:
 
 ```text
 knowledge
   ↓
-reglas + arquitectura
+PROJECT_AGENT_CONTEXT.md
   ↓
-THREAD_INDEX / DOCUMENT_INDEX
+THREAD_INDEX.md / DOCUMENT_INDEX.md
   ↓
 MANIFEST del THREAD
   ↓
@@ -45,57 +45,89 @@ corpus relevante
 rama de trabajo, si procede
 ```
 
-El agente se incorpora a un THREAD **mediante su MANIFEST**. El HANDOFF no es memoria de sesión ni mecanismo de reincorporación: es la cola persistente de inputs todavía no resueltos.
+Para trabajo ordinario dentro de un THREAD ya existente, esta superficie es suficiente: no es necesario cargar por defecto `THREAD_ARCHITECTURE.md` ni `PROJECT_WORKING_RULES.md` completos.
 
-## 4. Comandos de entrada
+## 4. Cuándo leer más
+
+| Si vas a… | Lee antes |
+|---|---|
+| crear un THREAD o formalizar una responsabilidad nueva | `THREAD_ARCHITECTURE.md` §5–§6 y `THREAD_CONTEXT_BOOTSTRAP.md` §3 |
+| proponer algo a otro THREAD o resolver una entrada HANDOFF | `THREAD_ARCHITECTURE.md` §7 y §9; `THREAD_CONTEXT_BOOTSTRAP.md` §7–§8 |
+| cambiar autoridad documental o gobernar un documento transversal | `THREAD_ARCHITECTURE.md` §11 |
+| cerrar, archivar o reabrir un THREAD | `THREAD_ARCHITECTURE.md` §15 y `THREAD_CONTEXT_BOOTSTRAP.md` §10 |
+| cambiar arquitectura, reglas, bootstrap o convenciones del sistema | `THREAD_ARCHITECTURE.md` + `PROJECT_WORKING_RULES.md` completos |
+| guardar cambios | `GIT_COMMIT_RULES.md` |
+| modificar MANIFESTs, HANDOFFs, índices o autoridad documental | además ejecutar `python scripts/check_knowledge.py` antes de consolidar |
+| trabajar dentro de tu THREAD en documentos bajo su autoridad | nada más: MANIFEST + HANDOFF + corpus relevante bastan |
+
+La divulgación progresiva reduce contexto, pero no reduce autoridad ni obligaciones. Si existe duda sobre una operación, se consulta la fuente canónica extensa antes de actuar.
+
+## 5. Fuentes canónicas bajo demanda
+
+- Arquitectura: `docs/core/THREAD_ARCHITECTURE.md`.
+- Reglas permanentes: `docs/core/PROJECT_WORKING_RULES.md`.
+- Bootstrap detallado: `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`.
+- Estrategia Git: `docs/core/GIT_COMMIT_RULES.md`.
+- Índice de THREADs: `docs/core/THREAD_INDEX.md`.
+- Índice documental: `docs/core/DOCUMENT_INDEX.md`.
+- Plantilla de índice de THREADs: `docs/core/THREAD_INDEX_TEMPLATE.md`.
+- Plantilla de índice documental: `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
+- Comprobador estructural: `scripts/check_knowledge.py`.
+
+## 6. Comandos de entrada
 
 ### «Conecta con el hilo `<thread_id>`»
 
 1. localizar el THREAD en `THREAD_INDEX.md`;
 2. leer su MANIFEST;
 3. comprobar responsabilidad, estado y autoridad documental;
-4. leer su único HANDOFF persistente;
+4. leer su HANDOFF;
 5. consultar el corpus relevante mediante `DOCUMENT_INDEX.md` y referencias del MANIFEST;
-6. operar sólo dentro de la responsabilidad resuelta.
+6. operar dentro de esa responsabilidad.
 
 ### «Parte del handoff `<id>`»
 
-El HANDOFF se utiliza como referencia de descubrimiento. Debe localizarse el THREAD receptor y después incorporarse mediante su MANIFEST. Si existe un HANDOFF provisional para una responsabilidad aún sin MANIFEST, el THREAD todavía no existe y debe darse de alta antes de operar como tal.
+El HANDOFF es una referencia de descubrimiento. Se localiza el THREAD receptor y la incorporación se realiza mediante su MANIFEST. Si el HANDOFF es provisional y no existe MANIFEST, el THREAD todavía no existe: antes de crearlo se cargan las reglas indicadas en §4.
 
 ### «Declaro una responsabilidad nueva»
 
-Comprobar primero `THREAD_INDEX.md`. Si no existe THREAD compatible, crear simultáneamente el MANIFEST y su único HANDOFF persistente conforme a `THREAD_ARCHITECTURE.md`.
+Comprobar primero `THREAD_INDEX.md`. Si no existe THREAD compatible, cargar la arquitectura/bootstrap indicados en §4 antes de crear MANIFEST + HANDOFF.
 
 ### «Reincorpórate al contexto del proyecto»
 
-Reconstruir el estado desde `knowledge`, comparar el trabajo de la conversación con el repositorio y hacer explícitas las discrepancias antes de modificar conocimiento autoritativo.
+Reconstruir el estado desde `knowledge`, resolver el THREAD compatible y comparar el trabajo previo con el repositorio antes de modificar conocimiento autoritativo.
 
-## 5. Autoridad documental
+## 7. Validación estructural
 
-El corpus es común para lectura. `DOCUMENT_INDEX.md` permite descubrir qué THREAD tiene autoridad de evolución sobre cada documento.
+`scripts/check_knowledge.py` es una red de seguridad determinista para invariantes estructurales. No sustituye criterio humano ni análisis semántico.
 
-Un THREAD nunca modifica directamente un documento bajo autoridad de otro THREAD. Registra una propuesta en el HANDOFF del THREAD responsable.
+Ejecutar:
 
-La autoridad de un documento es única. Si varias responsabilidades confluyen de forma estable, debe existir un THREAD gestor que centralice su evolución.
+```text
+python scripts/check_knowledge.py
+```
 
-## 6. Regla de cierre de una sesión
+antes de consolidar cambios que afecten a MANIFESTs, HANDOFFs, índices, rutas o autoridad documental.
 
-Una sesión no genera un HANDOFF nuevo. Antes de terminar:
+## 8. Cierre de una sesión ordinaria
 
-- consolidar conocimiento vigente dentro de la autoridad del THREAD;
-- registrar propuestas fuera de alcance en los HANDOFFs receptores;
-- mantener en el HANDOFF propio sólo lo que siga pendiente;
-- retirar una entrada resuelta en el mismo commit que aplica o registra su decisión;
-- usar Git como historial de lo resuelto.
+Finalizar una conversación no crea un nuevo HANDOFF.
 
-## 7. Bloque compacto
+Antes de terminar:
 
-> Repositorio: `gineslm/climascope`. Fuente de verdad: `knowledge`.
->
-> Lee `PROJECT_WORKING_RULES.md`, `THREAD_ARCHITECTURE.md`, `THREAD_INDEX.md` y `DOCUMENT_INDEX.md`. Localiza el THREAD objetivo y conéctate mediante su MANIFEST. Después consulta su HANDOFF únicamente como cola de pendientes y el corpus relevante. El corpus es global para lectura; sólo modifica documentos bajo autoridad de tu THREAD. Para cambios fuera de alcance, registra una propuesta en el HANDOFF del THREAD responsable. Git conserva el historial de decisiones resueltas.
+- consolidar el conocimiento vigente dentro de la autoridad del THREAD;
+- registrar en HANDOFFs receptores sólo inputs inter-THREAD que sigan pendientes;
+- no usar el HANDOFF propio como lista de trabajo interna;
+- retirar entradas resueltas en el mismo commit que materializa la decisión;
+- aplicar `GIT_COMMIT_RULES.md` al guardar.
 
-## 8. Historial
+## 9. Bloque compacto
+
+> Repositorio: `gineslm/climascope`. Fuente de verdad: `knowledge`. Lee primero `docs/core/PROJECT_AGENT_CONTEXT.md`; después usa `THREAD_INDEX.md` / `DOCUMENT_INDEX.md`, conéctate mediante el MANIFEST y consulta el HANDOFF sólo como cola de inputs pendientes procedentes de otros THREADs. Lee el corpus necesario; sólo modifica documentos bajo autoridad de tu THREAD. Para operaciones estructurales o excepcionales, carga las fuentes indicadas en la tabla «Cuándo leer más». Un commit = una decisión y los secretos nunca se versionan.
+
+## 10. Historial
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 2.0.0 | 2026-09-08 | Consolidación del contexto de agente conforme a Arquitectura 1.0.0, HANDOFF persistente, índices separados y autoridad documental única. |
+| 2.0.0 | 2026-09-08 | Consolidación del contexto de agente conforme al modelo de HANDOFF persistente, índices separados y autoridad documental única. |
+| 2.1.0 | 2026-09-08 | Se adopta divulgación progresiva: el agente carga por defecto sólo el contexto mínimo y consulta arquitectura/reglas completas según la operación. |
