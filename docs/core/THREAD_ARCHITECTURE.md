@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.8.1  
+**Versión:** 0.9.0  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -620,43 +620,82 @@ docs/
 
 Dentro de cada carpeta de THREAD, los artefactos operativos específicos del THREAD se nombran por **rol** (`MANIFEST.md`, `HANDOFF.md`, `IMPROVEMENTS.md`, etc.).
 
-Esta disposición física **no resuelve todavía la arquitectura final del corpus de conocimiento**. En particular, no debe inferirse de la ubicación actual que todo documento de conocimiento sea propiedad exclusiva del THREAD cuya carpeta lo contiene. La cuestión queda explicitada en §19.
+Esta disposición física es una convención actual y **no determina la autoridad de evolución del conocimiento**. El corpus es común para lectura y la autoridad de cada documento se resuelve según §19, aunque físicamente el documento se encuentre dentro de una carpeta asociada a otro contexto histórico. La organización física futura del corpus sigue siendo una cuestión abierta independiente de su gobernanza.
 
-## 19. Cuestión abierta — capa documental del conocimiento
+## 19. Capa documental del conocimiento
 
-### 19.1 Hechos ya fijados
+### 19.1 Modelo canónico
 
-La arquitectura distingue entre **acceso al corpus** y **autoridad de edición**:
+La capa documental adopta un **corpus común con autoridad de evolución federada por THREAD**.
 
-- todos los documentos son potencialmente transversales para lectura;
+Esto significa:
+
+- todos los documentos del corpus son potencialmente transversales para lectura;
 - cualquier THREAD puede consultar cualquier documento necesario para razonar dentro de su responsabilidad;
-- un THREAD sólo modifica directamente conocimiento cuya evolución corresponde a su responsabilidad;
-- si detecta una necesidad fuera de ese ámbito, registra una propuesta en el HANDOFF del THREAD responsable;
-- el THREAD custodia el estado de un problema/línea de trabajo y es responsable de la evolución del conocimiento en ese alcance.
+- cada documento tiene **un único THREAD con autoridad de evolución**;
+- un THREAD puede modificar directamente un documento sólo cuando su evolución cae dentro de su responsabilidad;
+- si un THREAD necesita cambiar conocimiento bajo otra responsabilidad, registra una propuesta en el HANDOFF del THREAD con autoridad;
+- la autoridad de evolución no equivale a autoría histórica ni a propiedad del documento;
+- Git conserva la historia de creación, edición y transferencia; el corpus documental representa el conocimiento vigente.
+
+Por tanto, la federación afecta a la **escritura**, no al acceso. El corpus no se fragmenta en silos documentales por THREAD.
 
 Ejemplo: un THREAD puede consultar un documento general de miembros del equipo para planificar una tarea. Si el perfil necesario existe, utiliza esa información dentro de su trabajo. Si detecta que falta un perfil cuya gestión pertenece a otro THREAD, no modifica el documento de personal: registra una propuesta justificada en el HANDOFF del THREAD responsable.
 
-### 19.2 Decisión todavía abierta
+### 19.2 Autoridad única y documentos transversales
 
-No se ha fijado aún la relación física y de gobernanza entre los documentos del corpus y los THREADs. Se mantienen dos modelos de investigación:
+La autoridad de evolución de un documento **no puede pertenecer simultáneamente a varios THREADs**.
 
-**Modelo A — corpus común con autoridad de edición federada por THREAD**
+Si un documento recae semánticamente sobre varias responsabilidades y ninguna de ellas debe dominar su evolución, se crea un **THREAD específico de gestión** para ese documento o ámbito documental. Ese THREAD centraliza la edición y recibe mediante su HANDOFF los inputs de los demás THREADs interesados.
 
-Los documentos forman un corpus global legible por todos los THREADs, pero cada documento o ámbito documental tiene una responsabilidad de evolución claramente asignada. La federación afecta a la **escritura**, no al acceso.
+```text
+THREAD A ──propuesta──┐
+THREAD B ──propuesta──┼──► HANDOFF del THREAD gestor ──► documento
+THREAD C ──propuesta──┘
+```
 
-**Modelo B — corpus documental independiente con gobernanza desacoplada de los THREADs**
+La necesidad de un THREAD gestor no implica todavía una taxonomía formal de tipos de THREAD. La arquitectura admite que en el futuro puedan distinguirse, por ejemplo, THREADs de investigación y THREADs de gestión, pero esa clasificación requiere una decisión específica.
 
-Los documentos pertenecen a un dominio de conocimiento común y los THREADs reciben permisos/roles de intervención sobre ellos. Este modelo podría facilitar documentos con gobernanza compartida, pero introduce una capa adicional de autoridad que todavía no ha demostrado ser necesaria.
+### 19.3 Descubrimiento del corpus y autoridad
 
-### 19.3 Preguntas pendientes
+La forma canónica del índice documental se define en `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
 
-- ¿Debe cada documento tener un THREAD responsable único de su evolución o pueden existir responsabilidades compartidas?
-- ¿Qué ocurre cuando una responsabilidad se divide y un THREAD se archiva: cómo se redistribuye la autoridad sobre documentos ya existentes?
-- ¿Debe existir un `DOCUMENT_INDEX` separado o basta con ampliar `PROJECT_INDEX` para describir el corpus y su autoridad de edición?
-- ¿La autoridad debe declararse por documento completo, por sección/entidad conceptual o por otro límite?
-- ¿Puede un documento ser producto histórico de un THREAD cerrado pero quedar bajo responsabilidad de un THREAD posterior sin moverlo físicamente?
+El índice documental es **derivado y no autoritativo**. Su función es permitir descubrir:
 
-Estas preguntas deben contrastarse con el estado del arte antes de introducir nuevas entidades o capas de gobernanza.
+- qué documento existe y dónde está;
+- qué tema o ámbito describe;
+- qué THREAD tiene autoridad para evolucionarlo;
+- qué MANIFEST permite verificar esa autoridad.
+
+El índice no debe registrar `created_by`, historial de autores, commits históricos ni lista de THREADs lectores. Git conserva la evolución histórica; la lectura del corpus es global.
+
+La autoridad canónica debe poder verificarse en el MANIFEST del THREAD responsable. Si el índice documental y el MANIFEST discrepan, la incoherencia debe resolverse antes de considerar válido el índice materializado.
+
+### 19.4 Ciclo de vida de la autoridad documental
+
+Un documento puede sobrevivir al THREAD que lo creó o lo desarrolló inicialmente. Su ubicación física y su historia no obligan a mantener para siempre la misma autoridad.
+
+Cuando un THREAD se cierre, archive o divida y deje de poder gobernar un documento:
+
+1. debe resolverse explícitamente qué THREAD asume su evolución;
+2. el nuevo THREAD debe declarar esa autoridad en su MANIFEST;
+3. el índice documental debe regenerarse para reflejar el responsable vigente;
+4. no es necesario registrar un campo `created_by` ni mover físicamente el documento sólo para preservar procedencia: Git conserva la historia;
+5. si la responsabilidad es realmente transversal, debe crearse un THREAD gestor en lugar de compartir la autoridad entre varios THREADs.
+
+La transferencia de autoridad cambia **quién puede evolucionar el conocimiento vigente**, no su procedencia histórica.
+
+### 19.5 Cuestiones todavía abiertas
+
+Quedan abiertas únicamente cuestiones de implementación y evolución que no alteran los principios anteriores:
+
+- organización física futura del corpus documental dentro del repositorio;
+- si la autoridad se declara individualmente por documento o mediante reglas que agrupen varios documentos bajo una misma responsabilidad, manteniendo siempre un único THREAD efectivo por documento;
+- criterios y ciclo de vida para futuros tipos de THREAD, especialmente la posible distinción entre investigación y gestión;
+- procedimiento operativo de migración de la documentación existente al nuevo esquema sin reescribir ni perder historia válida;
+- reglas para detectar y resolver automáticamente incoherencias entre MANIFEST, índice documental y ubicación física.
+
+Estas cuestiones deben resolverse de forma incremental. No reabren la decisión normativa de **corpus común para lectura + autoridad única de evolución por documento**.
 
 ## 20. Historial de versiones
 
@@ -665,3 +704,4 @@ Estas preguntas deben contrastarse con el estado del arte antes de introducir nu
 | 0.7.1 | 2026-09-08 | Se incorpora `GIT_COMMIT_RULES.md` como fuente autoritativa para el registro histórico de decisiones mediante commits. |
 | 0.8.0 | 2026-09-08 | HANDOFF pasa a representar exclusivamente inputs pendientes; las entradas resueltas se retiran en el mismo commit que aplica o registra la decisión y su historial queda en Git. |
 | 0.8.1 | 2026-09-08 | Se incorporan referencias canónicas a `THREAD_INDEX_TEMPLATE.md` y `DOCUMENT_INDEX_TEMPLATE.md` como formas de los índices derivados de descubrimiento. |
+| 0.9.0 | 2026-09-08 | Se fija la capa documental: corpus común para lectura, autoridad única de evolución por documento y THREAD gestor cuando varias responsabilidades confluyen sobre un mismo documento. |
