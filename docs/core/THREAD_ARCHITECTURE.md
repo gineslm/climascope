@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de THREADs y conocimiento
 
-**Versión:** 2.0.1  
+**Versión:** 2.0.2  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -61,7 +61,7 @@ No es propietario de todo el conocimiento que consulta. Puede leer el corpus com
 
 ### 4.1 Identidad mínima
 
-El MANIFEST debe poder expresar al menos:
+El bloque estructurado de identidad del MANIFEST debe expresar al menos:
 
 ```yaml
 thread_id:
@@ -69,11 +69,12 @@ domain:
 status:
 owner:
 current_cycle:
-responsibility:
 origin:
 repository:
 handoff:
 ```
+
+Además, todo MANIFEST debe contener una sección `## Responsabilidad` no vacía que describa la responsabilidad vigente del THREAD. No se duplica ese texto en el bloque YAML.
 
 `thread_id` permanece estable durante la vida del THREAD.
 
@@ -423,3 +424,4 @@ La arquitectura considera abiertas únicamente cuestiones que no alteran las inv
 |---|---|---|
 | 2.0.0 | 2026-09-08 | Consolidación posterior a la migración: MANIFEST como entrada, HANDOFF único y pendiente, índices separados, corpus común y autoridad documental única. |
 | 2.0.1 | 2026-09-08 | Se aclara que el HANDOFF recoge exclusivamente inputs procedentes de otros THREADs; el trabajo propio no se encola. |
+| 2.0.2 | 2026-09-08 | Se alinea el contrato del MANIFEST: identidad estructurada en YAML y responsabilidad obligatoria como sección Markdown no duplicada. |
