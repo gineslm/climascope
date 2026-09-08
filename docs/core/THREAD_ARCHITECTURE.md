@@ -1,6 +1,6 @@
 # ClimaScope — Arquitectura de hilos de trabajo
 
-**Versión:** 0.9.0  
+**Versión:** 1.0.0  
 **Estado:** Especificación operativa  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -41,6 +41,7 @@ SOFTWARE  → desarrollo, integración y publicación del software
 18. No existe un artefacto de «declaración» de THREAD independiente del MANIFEST: «declarar» es la operación de crear el MANIFEST.
 19. El corpus de conocimiento del proyecto es común para lectura: un THREAD puede consultar cualquier documento necesario para razonar dentro de su responsabilidad. La autoridad de **edición** se restringe por responsabilidad, no por visibilidad.
 20. Un THREAD custodia el **estado de un problema o línea de investigación/trabajo** y es responsable de la evolución del conocimiento dentro de ese alcance; no debe interpretarse como propietario exclusivo de todo conocimiento al que accede.
+21. Todo THREAD existente tiene **exactamente un HANDOFF persistente** asociado. Un HANDOFF provisional puede existir antes del MANIFEST para proponer una nueva responsabilidad, pero todavía no pertenece a un THREAD existente.
 
 ## 3. Modelo de ramas y raíz del proyecto
 
@@ -205,7 +206,7 @@ Dar de alta un THREAD es **crear y consolidar su MANIFEST**. No existe un artefa
 
 Regla de existencia (anti-limbo): un THREAD existe **si y solo si** existe su MANIFEST en `knowledge`. Si existe un HANDOFF provisional para una responsabilidad sin MANIFEST, debe tratarse como propuesta de alta, no como THREAD existente.
 
-En el proceso normal, el HANDOFF persistente del THREAD se crea a la vez que el MANIFEST. Si el THREAD nace de una propuesta previa, el HANDOFF puede inicializarse con esa entrada.
+El HANDOFF persistente del THREAD se crea a la vez que el MANIFEST. Si la responsabilidad nace de una propuesta previa, el HANDOFF provisional se convierte en el HANDOFF persistente del nuevo THREAD y puede conservar las entradas aún pendientes que motivaron su creación.
 
 El MANIFEST inicializa identidad, alcance, dependencias, origen, estado y autoridad documental (§7) antes de considerar completado cualquier trabajo técnico. El origen de la responsabilidad se registra en `origin.type` (§5.1).
 
@@ -259,7 +260,7 @@ Los campos se utilizan según el tipo de THREAD. Un THREAD exclusivamente docume
 
 ### 7.2 HANDOFF asociado
 
-Cada THREAD dispone, como regla general, de **un único HANDOFF persistente**, asociado de forma estable a su identidad:
+Cada THREAD dispone de **exactamente un HANDOFF persistente**, asociado de forma estable a su identidad:
 
 ```yaml
 handoff:
@@ -278,14 +279,11 @@ Para conectar con un THREAD se consulta primero el MANIFEST. Después se lee su 
 PROPOSED
 ACTIVE
 BLOCKED
-READY_FOR_HANDOFF
 CLOSED
 ARCHIVED
 ```
 
-El estado debe reflejar el repositorio, no una impresión temporal de la conversación.
-
-> `READY_FOR_HANDOFF` es nomenclatura heredada de versiones anteriores y debe revisarse en una evolución posterior, porque el HANDOFF ya no representa una transferencia de sesión. Se conserva provisionalmente para no mezclar en esta revisión una migración adicional del ciclo de estados.
+El estado debe reflejar el repositorio, no una impresión temporal de la conversación. La preparación para revisión, consolidación o cierre pertenece al ciclo de trabajo y a los pendientes del THREAD; no se expresa mediante un estado `READY_FOR_HANDOFF` porque el HANDOFF no representa una transferencia.
 
 ## 9. THREAD BOOTSTRAP
 
@@ -365,10 +363,10 @@ Si una conversación nueva declara una responsabilidad y no existe un THREAD com
 2. comprobar si existe THREAD compatible;
 3. si existe, conectar con él mediante su MANIFEST;
 4. si no existe, crear su MANIFEST (alta del THREAD) con `origin.type: USER_DECLARED`;
-5. crear su HANDOFF persistente, normalmente vacío salvo que ya existan propuestas de entrada;
+5. crear simultáneamente su HANDOFF persistente, normalmente vacío salvo que ya existan propuestas de entrada;
 6. establecer en el MANIFEST identidad, alcance, autoridad documental, dependencias y estado;
 7. registrar `created_from_knowledge_commit` (§7.1);
-8. consolidar MANIFEST y HANDOFF en `knowledge` cuando constituyan estado persistente;
+8. consolidar MANIFEST y HANDOFF juntos en `knowledge` como estado persistente del nuevo THREAD;
 9. comenzar el trabajo.
 
 El usuario no necesita conocer la estructura interna del MANIFEST.
@@ -385,7 +383,7 @@ se debe entrar en `knowledge`, reconstruir la responsabilidad y comparar la conv
 
 ### Crear THREAD
 
-Da de alta una entidad nueva **creando y consolidando su MANIFEST** (§6). El MANIFEST fija identidad, alcance, dependencias, estado, `origin.type` (§5.1), autoridad documental y `created_from_knowledge_commit` (§7.1). En el proceso normal se crea también su HANDOFF persistente.
+Da de alta una entidad nueva **creando y consolidando su MANIFEST** (§6). El MANIFEST fija identidad, alcance, dependencias, estado, `origin.type` (§5.1), autoridad documental y `created_from_knowledge_commit` (§7.1). Se crea y consolida simultáneamente su único HANDOFF persistente.
 
 ### Conectar con THREAD
 
@@ -449,7 +447,7 @@ El **HANDOFF no es un documento de transición de sesiones**, no resume una conv
 
 El HANDOFF es la **cola persistente de eventos de entrada todavía no resueltos** de una responsabilidad: propuestas, revisiones, necesidades y tareas que otros THREADs —o el propio ecosistema— remiten al THREAD receptor para que éste las evalúe.
 
-Como regla general existe **un único HANDOFF por THREAD**. Pertenece a la responsabilidad del THREAD y persiste aunque cambien los agentes o no exista ninguna conversación activa.
+Existe **exactamente un HANDOFF persistente por THREAD**. Pertenece a la responsabilidad del THREAD y persiste aunque cambien los agentes, no exista ninguna conversación activa o el THREAD se encuentre cerrado/archivado. Un HANDOFF provisional dirigido a una responsabilidad aún sin MANIFEST no constituye un segundo HANDOFF de un THREAD: es una propuesta previa al alta.
 
 El HANDOFF describe **el presente pendiente**, no el pasado resuelto. El historial de las entradas que abandonan el HANDOFF pertenece a Git conforme a `docs/core/GIT_COMMIT_RULES.md`.
 
@@ -518,7 +516,7 @@ La existencia de entradas no resueltas es parte del estado operativo del THREAD 
 
 ### 13.5 Creación del HANDOFF
 
-En el flujo normal, el HANDOFF se crea junto con el MANIFEST del THREAD. Si otro THREAD descubre una responsabilidad nueva, puede preparar una propuesta de alta y un HANDOFF inicial con las entradas que motivaron esa nueva responsabilidad. Un HANDOFF provisional sin MANIFEST **no constituye todavía un THREAD** (§5-6).
+El HANDOFF se crea junto con el MANIFEST del THREAD y permanece asociado a él durante toda su vida. Si otro THREAD descubre una responsabilidad nueva, puede preparar un HANDOFF provisional con las entradas que motivaron esa nueva responsabilidad. Al crear el MANIFEST, ese artefacto pasa a ser el HANDOFF persistente del nuevo THREAD. Un HANDOFF provisional sin MANIFEST **no constituye todavía un THREAD** (§5-6).
 
 ## 14. Propuestas y decisiones
 
@@ -705,3 +703,4 @@ Estas cuestiones deben resolverse de forma incremental. No reabren la decisión 
 | 0.8.0 | 2026-09-08 | HANDOFF pasa a representar exclusivamente inputs pendientes; las entradas resueltas se retiran en el mismo commit que aplica o registra la decisión y su historial queda en Git. |
 | 0.8.1 | 2026-09-08 | Se incorporan referencias canónicas a `THREAD_INDEX_TEMPLATE.md` y `DOCUMENT_INDEX_TEMPLATE.md` como formas de los índices derivados de descubrimiento. |
 | 0.9.0 | 2026-09-08 | Se fija la capa documental: corpus común para lectura, autoridad única de evolución por documento y THREAD gestor cuando varias responsabilidades confluyen sobre un mismo documento. |
+| 1.0.0 | 2026-09-08 | Se retira `READY_FOR_HANDOFF` y se fija la relación obligatoria de exactamente un HANDOFF persistente por THREAD. |
