@@ -1,66 +1,101 @@
-# ClimaScope — Contexto del proyecto para el agente asistente
+# ClimaScope — Contexto del proyecto para agentes
 
-**Versión:** 1.5.1  
+**Versión:** 2.0.0  
 **Estado:** Activo  
+**Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
-**Rama de consolidación documental:** `knowledge`
+**Rama raíz de conocimiento:** `knowledge`
 
-> **Idioma oficial del proyecto: español (España).** Las conversaciones y la documentación deben desarrollarse en castellano, salvo términos técnicos que convenga conservar en su forma original.
+## 1. Función
 
-## Propósito y rol de este documento
+Este documento es el punto de integración mínimo entre cualquier agente de IA y el repositorio. No redefine la arquitectura: remite a las fuentes canónicas y establece cómo comenzar una sesión de trabajo.
 
-Este documento es el **punto de integración entre el agente asistente y el repositorio**. Es agnóstico respecto a qué agente se utilice. No redefine el método del proyecto: lo referencia. Su contenido propio son los *comandos de entrada* con los que el usuario abre una conversación y el *bloque compacto* que se pega en el contexto permanente del agente.
+La conversación es una instancia temporal. El repositorio es la memoria duradera.
 
-Fuentes canónicas (no se reproducen aquí):
+## 2. Fuentes canónicas
 
-- **Modelo de bootstrap** (entrada, alta vía MANIFEST, reincorporación): `docs/core/THREAD_ARCHITECTURE.md` §9.
-- **Secuencia operativa de arranque**: `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`.
-- **Reglas permanentes** (ramas, consolidación, trazabilidad, alcance, cierre): `docs/core/PROJECT_WORKING_RULES.md`.
-- **Forma canónica del índice materializado de THREADs**: `docs/core/THREAD_INDEX_TEMPLATE.md`.
-- **Forma canónica del índice materializado del corpus documental**: `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
+- Arquitectura de THREADs: `docs/core/THREAD_ARCHITECTURE.md`.
+- Reglas permanentes: `docs/core/PROJECT_WORKING_RULES.md`.
+- Bootstrap operativo: `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`.
+- Estrategia Git: `docs/core/GIT_COMMIT_RULES.md`.
+- Índice de THREADs: `docs/core/THREAD_INDEX.md`.
+- Índice documental: `docs/core/DOCUMENT_INDEX.md`.
+- Plantilla del índice de THREADs: `docs/core/THREAD_INDEX_TEMPLATE.md`.
+- Plantilla del índice documental: `docs/core/DOCUMENT_INDEX_TEMPLATE.md`.
 
-El repositorio es la memoria duradera; una conversación es una sesión de trabajo acotada, no la fuente de verdad. `knowledge` es el punto de entrada para descubrir el estado consolidado; `develop` y `main` son el ciclo del software.
+## 3. Regla de entrada
 
-## Comandos de entrada del proyecto
+Toda sesión comienza conceptualmente en `knowledge`.
 
-Disparadores con los que el usuario abre una conversación. En todos, el estado vigente se resuelve desde `knowledge` según `docs/core/THREAD_ARCHITECTURE.md` §9.
+Orden mínimo:
 
-- **«Parte del handoff `<id>`»** — localizar el HANDOFF en `knowledge`. Si declara un THREAD receptor inexistente, darlo de alta creando su MANIFEST como primera tarea (con `origin.type: THREAD_DERIVED`; el HANDOFF es el vehículo de transferencia, no el origen). El MANIFEST determina después el estado vigente.
-- **«Conecta con el hilo `<thread_id>`»** — localizar su MANIFEST en `knowledge` y usar su estado vigente, HANDOFF actual y referencia Git.
-- **«Declaro una responsabilidad nueva»** — comprobar en `knowledge` si existe un THREAD compatible; si no, darlo de alta creando su MANIFEST con `origin.type: USER_DECLARED`.
-- **«Reincorpórate al contexto del proyecto»** — para una conversación iniciada antes de instalar este contexto: leer las reglas, la arquitectura y la documentación vigente desde `knowledge`; comparar el trabajo ya hecho con el repositorio; clasificar las discrepancias (`NUEVO`, `OBSOLETO`, `CONFLICTO`, `DUPLICADO`, `FUERA DE ALCANCE`) y proponer sincronización sin sobrescribir el repositorio en caso de conflicto.
+```text
+knowledge
+  ↓
+reglas + arquitectura
+  ↓
+THREAD_INDEX / DOCUMENT_INDEX
+  ↓
+MANIFEST del THREAD
+  ↓
+HANDOFF del THREAD
+  ↓
+corpus relevante
+  ↓
+rama de trabajo, si procede
+```
 
-El detalle del contrato de responsabilidad, la disciplina de alcance, la sincronización, la distinción propuesta/decisión, la jerarquía documental y el protocolo de cierre están en `docs/core/PROJECT_WORKING_RULES.md` y `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`; no se repiten aquí.
+El agente se incorpora a un THREAD **mediante su MANIFEST**. El HANDOFF no es memoria de sesión ni mecanismo de reincorporación: es la cola persistente de inputs todavía no resueltos.
 
-Cuando exista un índice materializado de THREADs o documentos, debe interpretarse y regenerarse según `docs/core/THREAD_INDEX_TEMPLATE.md` y `docs/core/DOCUMENT_INDEX_TEMPLATE.md`, respectivamente. Los índices son mecanismos de descubrimiento y no sustituyen a las fuentes autoritativas que referencian.
+## 4. Comandos de entrada
 
-## Bloque compacto para el agente asistente
+### «Conecta con el hilo `<thread_id>`»
 
-> **Espejo de `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` §12.** Esta es la única duplicación tolerada del proyecto: se conserva por comodidad de pegado en el contexto permanente del agente. **No editar aquí**; editar en el canónico y regenerar esta copia.
+1. localizar el THREAD en `THREAD_INDEX.md`;
+2. leer su MANIFEST;
+3. comprobar responsabilidad, estado y autoridad documental;
+4. leer su único HANDOFF persistente;
+5. consultar el corpus relevante mediante `DOCUMENT_INDEX.md` y referencias del MANIFEST;
+6. operar sólo dentro de la responsabilidad resuelta.
 
-> **ClimaScope — bootstrap de conversación**
+### «Parte del handoff `<id>`»
+
+El HANDOFF se utiliza como referencia de descubrimiento. Debe localizarse el THREAD receptor y después incorporarse mediante su MANIFEST. Si existe un HANDOFF provisional para una responsabilidad aún sin MANIFEST, el THREAD todavía no existe y debe darse de alta antes de operar como tal.
+
+### «Declaro una responsabilidad nueva»
+
+Comprobar primero `THREAD_INDEX.md`. Si no existe THREAD compatible, crear simultáneamente el MANIFEST y su único HANDOFF persistente conforme a `THREAD_ARCHITECTURE.md`.
+
+### «Reincorpórate al contexto del proyecto»
+
+Reconstruir el estado desde `knowledge`, comparar el trabajo de la conversación con el repositorio y hacer explícitas las discrepancias antes de modificar conocimiento autoritativo.
+
+## 5. Autoridad documental
+
+El corpus es común para lectura. `DOCUMENT_INDEX.md` permite descubrir qué THREAD tiene autoridad de evolución sobre cada documento.
+
+Un THREAD nunca modifica directamente un documento bajo autoridad de otro THREAD. Registra una propuesta en el HANDOFF del THREAD responsable.
+
+La autoridad de un documento es única. Si varias responsabilidades confluyen de forma estable, debe existir un THREAD gestor que centralice su evolución.
+
+## 6. Regla de cierre de una sesión
+
+Una sesión no genera un HANDOFF nuevo. Antes de terminar:
+
+- consolidar conocimiento vigente dentro de la autoridad del THREAD;
+- registrar propuestas fuera de alcance en los HANDOFFs receptores;
+- mantener en el HANDOFF propio sólo lo que siga pendiente;
+- retirar una entrada resuelta en el mismo commit que aplica o registra su decisión;
+- usar Git como historial de lo resuelto.
+
+## 7. Bloque compacto
+
+> Repositorio: `gineslm/climascope`. Fuente de verdad: `knowledge`.
 >
-> Repositorio: `gineslm/climascope`  
-> Fuente de verdad: GitHub  
-> Raíz de conocimiento: `knowledge`
->
-> Antes de trabajar, entra conceptualmente en `knowledge`, lee `docs/core/PROJECT_WORKING_RULES.md` y `docs/core/THREAD_ARCHITECTURE.md`, y después el informe, MANIFEST o HANDOFF aplicable. No inventes documentos ausentes.
->
-> Si se identifica una responsabilidad nueva y no existe THREAD compatible, da de alta el THREAD creando su MANIFEST con `origin.type: USER_DECLARED` (no hay un artefacto de declaración aparte). El MANIFEST debe registrar `created_from_knowledge_commit` con el commit de `knowledge` desde el que se da de alta el THREAD; es histórico e inmutable y el estado vigente se resuelve siempre desde `knowledge`.
->
-> Mantén esta conversación acotada. Si aparece una dependencia adyacente, regístrala como fuera de alcance. Al terminar, informa de archivos, tests, versiones documentales, rama, SHA de trabajo y SHA de consolidación en `knowledge` cuando corresponda.
+> Lee `PROJECT_WORKING_RULES.md`, `THREAD_ARCHITECTURE.md`, `THREAD_INDEX.md` y `DOCUMENT_INDEX.md`. Localiza el THREAD objetivo y conéctate mediante su MANIFEST. Después consulta su HANDOFF únicamente como cola de pendientes y el corpus relevante. El corpus es global para lectura; sólo modifica documentos bajo autoridad de tu THREAD. Para cambios fuera de alcance, registra una propuesta en el HANDOFF del THREAD responsable. Git conserva el historial de decisiones resueltas.
 
-## Mantenimiento
-
-Este documento es el punto de integración con el agente y un **espejo** del bloque operativo canónico. Cuando cambie el método de arranque, editar los canónicos (`docs/core/THREAD_ARCHITECTURE.md` §9 y `docs/core/THREAD_CONTEXT_BOOTSTRAP.md`) y regenerar desde ellos el bloque compacto de arriba. La copia colocada en el contexto permanente del agente debe actualizarse entonces a partir de este documento.
-
-Las plantillas `docs/core/THREAD_INDEX_TEMPLATE.md` y `docs/core/DOCUMENT_INDEX_TEMPLATE.md` son las referencias canónicas para interpretar o regenerar los índices materializados y deben mantenerse enlazadas desde este contexto de agente.
-
-## Historial de versiones
+## 8. Historial
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 1.3.0 | 2026-08-17 | Alineación con Arquitectura 0.5.0 (Alt 1): alta = crear el MANIFEST; retirada de la «declaración» de THREAD; `origin.type` sin `HANDOFF`. |
-| 1.4.0 | 2026-08-23 | Consolidación del bootstrap (M1) y renombrado a `PROJECT_AGENT_CONTEXT.md`, agnóstico respecto al agente: el documento se reduce a comandos de entrada y bloque compacto (espejo de `THREAD_CONTEXT_BOOTSTRAP.md` §12); el protocolo detallado se remite a los canónicos. |
-| 1.5.0 | 2026-08-23 | Reorganización 2C: todas las rutas actualizadas a `docs/core/…`; bloque espejo regenerado desde `THREAD_CONTEXT_BOOTSTRAP.md` §12. |
-| 1.5.1 | 2026-09-08 | Se referencian las plantillas canónicas de índice de THREADs y de corpus documental como fuentes de descubrimiento. |
+| 2.0.0 | 2026-09-08 | Consolidación del contexto de agente conforme a Arquitectura 1.0.0, HANDOFF persistente, índices separados y autoridad documental única. |

@@ -1,40 +1,18 @@
 # ClimaScope — Reglas de trabajo del proyecto
 
-**Versión del documento:** 1.7.1  
-**Creado:** 2026-08-15  
+**Versión:** 2.0.0  
+**Estado:** Activo  
+**Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
-**Rama de consolidación documental:** `knowledge`
-
-> **Idioma oficial del proyecto: español (España).** La documentación, decisiones, handoffs e informes deben redactarse en castellano salvo que exista una razón técnica para conservar un término original.
+**Rama raíz de conocimiento:** `knowledge`
 
 ## 1. Propósito
 
-Este documento es el contrato operativo permanente para el trabajo de ClimaScope entre conversaciones independientes. Existe para que el método del proyecto, la trazabilidad, la práctica documental y las reglas de coordinación entre THREADs no dependan de la memoria de una conversación concreta.
+Estas reglas son el contrato operativo permanente de ClimaScope. Existen para que el método, la trazabilidad, la coordinación entre THREADs y la producción de conocimiento no dependan de la memoria de una conversación.
 
-El repositorio Git es la fuente central de verdad. El estado consolidado de conocimiento y estructura se mantiene en `knowledge`; el ciclo de software utiliza `develop` y `main`. Un hilo nuevo debe recuperar el estado del proyecto desde `knowledge` antes de tomar decisiones o realizar cambios.
+La arquitectura detallada vive en `docs/core/THREAD_ARCHITECTURE.md`.
 
-La arquitectura operativa de los hilos está especificada en `docs/core/THREAD_ARCHITECTURE.md`. Este documento establece las reglas permanentes; la especificación de hilos define el modelo de identidad, estados, ciclos, dependencias, propuestas y HANDOFFs.
-
-## 2. Primer paso obligatorio en cada hilo nuevo
-
-El arranque de un hilo nuevo sigue la secuencia operativa canónica de `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` (§2 y §5) sobre el modelo de `docs/core/THREAD_ARCHITECTURE.md` §9. Regla de fondo no delegable: el contexto de una conversación previa no es el registro autoritativo; el estado se recupera desde `knowledge` antes de decidir o cambiar.
-
-## 3. Repositorio y acceso
-
-Todo trabajo debe estar asociado al repositorio `gineslm/climascope`.
-
-Capacidades requeridas para un hilo de implementación:
-
-- leer archivos, ramas y documentación del repositorio;
-- crear/actualizar archivos y hacer commits en la rama de trabajo acordada, o crear una rama específica cuando proceda;
-- disponer de un checkout local cuando sea necesario ejecutar código o inspeccionar datos generados;
-- utilizar el entorno Python del repositorio y ejecutar `python -m pytest` para validar los tests de Python.
-
-No se debe asumir acceso a documentos que existan únicamente en otra conversación. Si no están en el repositorio, deben solicitarse o indicarse como no disponibles.
-
-## 4. Modelo de ramas y consolidación
-
-El proyecto separa el ciclo de conocimiento del ciclo de software:
+## 2. Fuente de verdad y ramas
 
 ```text
 knowledge → conocimiento y estructura consolidados
@@ -42,291 +20,156 @@ develop   → integración del software
 main      → software estable/desplegable
 ```
 
-### `knowledge`
+Toda conversación nueva entra conceptualmente por `knowledge` antes de usar una rama de trabajo.
 
-`knowledge` es la línea estable de consolidación del conocimiento y del estado estructural del proyecto. Incluye, cuando corresponda:
+Las ramas `agent/*`, `feature/*` u otras ramas temporales son espacios de trabajo, no fuentes alternativas de verdad global.
 
-- reglas y contexto del proyecto;
-- arquitectura;
-- THREADs y MANIFESTs;
-- HANDOFFs;
-- conocimiento metodológico y decisiones consolidadas;
-- Registro (Activity Log) u otros registros persistentes;
-- índice de THREAD (derivado de los MANIFEST) y vistas necesarias para descubrir el estado.
+## 3. Unidad persistente de trabajo
 
-Una nueva conversación debe poder reconstruir desde `knowledge` la identidad y el estado de los THREADs sin recorrer arbitrariamente ramas de trabajo.
+La unidad persistente es el THREAD, no el chat.
 
-### `develop`
+- Un THREAD existe si y sólo si existe su MANIFEST en `knowledge`.
+- Todo THREAD existente tiene exactamente un HANDOFF persistente.
+- Un agente se incorpora mediante el MANIFEST.
+- El HANDOFF contiene sólo inputs todavía no resueltos.
+- Una conversación puede terminar sin cerrar el THREAD.
 
-`develop` es la línea de integración del software. Una implementación debe registrar qué estado de `knowledge` constituye su base de conocimiento, preferentemente mediante una referencia de rama y commit en el MANIFEST o documento equivalente.
+## 4. Descubrimiento
 
-No se establece que el contenido completo de `knowledge` deba fusionarse físicamente en `develop`. Cuando el software necesite documentación técnica concreta, puede incorporarse selectivamente.
+- `docs/core/THREAD_INDEX.md` descubre THREADs y sus MANIFEST/HANDOFF.
+- `docs/core/DOCUMENT_INDEX.md` descubre el corpus documental y su autoridad de evolución.
+- Ambos índices son derivados y no autoritativos.
+- Las formas canónicas de ambos índices viven en sus plantillas de `docs/core/`.
 
-### `main`
+Si un índice contradice a su fuente autoritativa, prevalece la fuente autoritativa y el índice debe regenerarse.
 
-`main` representa el software estable/desplegable. No es la fuente global del conocimiento del proyecto. Un cambio consolidado en `knowledge` no tiene que llegar a `main` si todavía no existe una implementación, si queda fuera del producto o si el ciclo de software es independiente.
+## 5. Responsabilidad y autoridad documental
 
-La documentación técnica necesaria para desarrollar, mantener, operar o utilizar el software puede permanecer en `develop` y/o `main`. No se adopta la regla `main = develop - docs`.
+Cada THREAD custodia el estado de un problema o línea de trabajo y gobierna la evolución del conocimiento dentro de su responsabilidad.
 
-### Ramas de trabajo
+El corpus es común para lectura: cualquier THREAD puede consultar cualquier documento necesario.
 
-Las ramas `agent/*`, `feature/*` u otras ramas temporales representan trabajo en evolución. No son autoritativas por el mero hecho de existir.
+La autoridad de evolución de cada documento es **única**. Un THREAD sólo modifica directamente documentos bajo su autoridad. Si necesita cambiar conocimiento gobernado por otro THREAD, registra una propuesta en el HANDOFF del THREAD responsable.
 
-Una rama de trabajo puede producir:
+Si un documento es semánticamente transversal y varias responsabilidades necesitan influir de forma estable, no se comparte la edición: se crea un THREAD gestor que centraliza su evolución y recibe inputs de los demás.
 
-```text
-resultado de conocimiento → consolidación en `knowledge`
-resultado de software     → integración en `develop` / `main`
-```
+Git conserva la procedencia histórica. No es necesario añadir `created_by` u otros historiales manuales para reconstruir quién creó o modificó un documento.
 
-## 5. Evento de consolidación
+## 6. HANDOFF
 
-Un **evento de consolidación** ocurre cuando un cambio deja de ser exclusivamente trabajo de una conversación o rama temporal y pasa a formar parte del estado autoritativo del proyecto.
+El HANDOFF no es transición de sesión, resumen de conversación ni transferencia de agente.
 
-Ejemplos de cambios que deben consolidarse en `knowledge` cuando afecten al estado autoritativo:
+Es la cola persistente de propuestas, revisiones, necesidades o tareas inter-THREAD todavía no resueltas.
 
-- creación o modificación de un documento autoritativo;
-- adopción de una decisión persistente;
-- creación o actualización de un MANIFEST;
-- creación o actualización de un HANDOFF;
-- cierre de un THREAD con estado persistente;
-- registro de una actividad operativa significativa;
-- incorporación de conocimiento validado;
-- modificación relevante de la arquitectura.
+Reglas:
 
-El flujo esperado es:
+1. cualquier THREAD puede registrar una entrada dirigida al receptor con contexto y evidencia;
+2. sólo el THREAD receptor puede gestionar su estado y resolverla;
+3. estados terminales no permanecen en el HANDOFF;
+4. al resolverse, la entrada se retira en el mismo commit que aplica la decisión o registra su rechazo;
+5. Git conserva el historial y el mensaje del commit conserva el porqué.
+
+## 7. Git como historial de decisiones
+
+La estrategia completa vive en `docs/core/GIT_COMMIT_RULES.md`.
+
+Principio: **un commit = una decisión**.
+
+No duplicar en documentos lo que Git ya conserva: fecha, autor, SHA, archivos afectados y diff. Las referencias a SHAs sólo se mantienen cuando tienen significado semántico o de reproducibilidad.
+
+## 8. Consolidación de conocimiento
+
+Un cambio se consolida cuando pasa a formar parte del estado autoritativo del proyecto.
 
 ```text
 trabajo / análisis
       ↓
 resultado persistente
       ↓
-documentar
-      ↓
-actualizar MANIFEST / HANDOFF / ACTIVITY cuando proceda
+actualizar conocimiento / MANIFEST / HANDOFF cuando proceda
       ↓
 COMMIT
       ↓
-consolidar en `knowledge`
+knowledge
 ```
 
-No todo pensamiento, borrador o experimento requiere consolidación. El criterio es si modifica una fuente autoritativa o el estado persistente del proyecto.
+No todo borrador requiere consolidación. Sí la requieren las decisiones, cambios documentales autoritativos, cambios de MANIFEST/HANDOFF y conocimiento validado.
 
-Cómo se redacta y organiza cada commit de consolidación (un commit = una decisión; qué incluir y qué no) está en `docs/core/GIT_COMMIT_RULES.md`. No se duplica aquí.
+## 9. Cierre de trabajo
 
-## 6. La documentación es estado versionado del proyecto
+Antes de cerrar una tarea o sesión sustantiva:
 
-Todo documento sustantivo del proyecto debe contener un identificador de versión.
+1. ejecutar validaciones/tests relevantes;
+2. actualizar el conocimiento vigente dentro de la autoridad del THREAD;
+3. registrar propuestas fuera de alcance en los HANDOFFs responsables;
+4. revisar el HANDOFF propio;
+5. retirar cualquier entrada resuelta en el mismo commit que aplica o registra la decisión;
+6. consolidar en `knowledge` los cambios de conocimiento/estructura;
+7. indicar incertidumbre o evidencia todavía faltante.
 
-Convención recomendada:
+Cerrar una sesión no crea un HANDOFF. Cerrar un THREAD tampoco elimina su HANDOFF persistente.
 
-- major: cambio estructural/metodológico;
-- minor: nueva capacidad documentada, decisión o sección sustancial;
-- patch: aclaración, corrección o actualización editorial.
+## 10. Reglas de datos y evidencia
 
-Los artefactos documentales deben estar comprometidos en GitHub. Cuando sean fuentes autoritativas de conocimiento/estructura, su commit de consolidación corresponde a `knowledge`.
+ClimaScope distingue hechos de fuente, datos derivados, valores modelados y evidencia documental.
 
-El informe correspondiente debe referenciar los documentos importantes y registrar sus versiones actuales. Esto permite que hilos independientes recuperen el estado más reciente.
+Reglas no negociables:
 
-## 7. Informes, arquitectura y handoffs
-
-El proyecto utiliza tipos documentales complementarios:
-
-### Reglas maestras
-
-`docs/core/PROJECT_WORKING_RULES.md`
-
-Reglas operativas permanentes para todos los hilos.
-
-### Arquitectura de hilos
-
-`docs/core/THREAD_ARCHITECTURE.md`
-
-Especificación del modelo operativo de los hilos: identidad, responsabilidad, estados, ciclos, dependencias, HANDOFF, autoridad documental y reincorporación de conversaciones.
-
-### Informes de proyecto
-
-Por ejemplo:
-
-`docs/threads/water-pipeline/AUDIT_REPORT.md`
-
-Los informes registran lo que realmente se ha implementado, probado, medido, decidido y cambiado a lo largo del tiempo.
-
-### HANDOFF de hilo
-
-Por ejemplo:
-
-`docs/threads/<thread>/HANDOFF.md`
-
-Cada THREAD dispone, como regla general, de un único HANDOFF persistente. El HANDOFF **no transfiere una sesión ni una responsabilidad entre agentes**: contiene únicamente propuestas, revisiones, necesidades y tareas inter-THREAD que todavía están pendientes de resolución.
-
-Cualquier THREAD puede registrar una entrada dirigida al receptor, con contexto y evidencia suficientes. Sólo el THREAD propietario del HANDOFF puede gestionar y resolver esa entrada.
-
-Cuando una entrada se resuelve, **sale del HANDOFF en el mismo commit que aplica la decisión o registra su rechazo**. El HANDOFF representa lo pendiente; Git conserva el historial de lo resuelto y el mensaje del commit conserva el porqué. No se mantiene en el HANDOFF un segundo historial de decisiones terminadas.
-
-## 8. Protocolo de responsabilidad y alcance
-
-Toda conversación sustantiva debe poder identificar:
-
-- responsabilidad;
-- propietario o línea de trabajo;
-- dentro de alcance;
-- fuera de alcance;
-- documentos principales;
-- código/datos principales;
-- entregables;
-- validación;
-- dependencias;
-- HANDOFF asociado y entradas pendientes relevantes.
-
-Un hilo no debe absorber silenciosamente trabajo perteneciente a otra línea. Una dependencia entre dominios no transfiere responsabilidad.
-
-Cuando un THREAD detecte una necesidad fuera de su autoridad de edición, debe registrar una propuesta en el HANDOFF del THREAD responsable en lugar de modificar directamente su conocimiento.
-
-Las propuestas, hipótesis y alternativas deben distinguirse de las decisiones validadas. El historial del chat no convierte por sí mismo una propuesta en conocimiento autoritativo.
-
-## 9. Protocolo de cierre de cada hilo sustantivo
-
-Antes de declarar completada una tarea:
-
-1. ejecutar los tests relevantes;
-2. inspeccionar los resultados generados cuando proceda;
-3. actualizar el informe correspondiente;
-4. incrementar la versión documental cuando haya cambios sustantivos de documentación;
-5. revisar las entradas abiertas del HANDOFF propio y registrar en otros HANDOFFs cualquier propuesta fuera de alcance descubierta;
-6. si una entrada se resuelve, retirarla en el mismo commit que aplica la decisión o registra su rechazo;
-7. hacer commit con un mensaje intencionado conforme a `docs/core/GIT_COMMIT_RULES.md`;
-8. hacer push de la rama de trabajo acordada;
-9. consolidar en `knowledge` los cambios que modifiquen conocimiento o estructura autoritativos;
-10. registrar referencias Git sólo cuando tengan significado semántico o sean necesarias para reproducibilidad;
-11. indicar cualquier incertidumbre o evidencia que falte.
-
-El cierre termina un ciclo de trabajo; no elimina el conocimiento persistente. El HANDOFF no conserva un archivo de entradas terminadas: Git conserva ese historial.
-
-## 10. Reglas de trazabilidad y evidencia
-
-ClimaScope debe conservar la distinción entre hechos de las fuentes, datos derivados del proyecto, valores modelados y evidencia cualitativa.
-
-Todo dataset o indicador derivado debe poder rastrearse hasta:
-
-- fuente/proveedor;
-- dataset o documento de origen;
-- periodo de adquisición/observación;
-- transformación o cálculo;
-- código/versión relevante;
-- estado del control de calidad.
-
-Nunca convertir silenciosamente datos missing en cero.
-
-Nunca presentar un valor interpolado o modelado como una observación directa de una estación.
-
-Nunca tratar la ausencia de investigación como evidencia de ausencia de riesgo.
+- nunca convertir silenciosamente missing en cero;
+- preservar material raw y procedencia;
+- distinguir observado, derivado y modelado/interpolado;
+- conservar método, transformación y QC;
+- `not_assessed` nunca significa ausencia de riesgo;
+- una observación de estación no equivale automáticamente al valor de una ubicación cercana.
 
 ## 11. Datos raw / processed / derived
 
-El proyecto debería converger progresivamente hacia una separación clara como:
+La dirección objetivo es:
 
 ```text
 data/
-├── raw/          # material fuente; preservado y trazable
-├── processed/    # representaciones limpiadas/normalizadas
-├── derived/      # indicadores, scores, capas de mapa, modelos
-└── reports/      # resultados generados o destinados a publicación
+├── raw/
+├── processed/
+├── derived/
+└── reports/
 ```
 
-Las rutas existentes no deben moverse únicamente por razones de estilo. Una migración requiere una decisión deliberada y documentación.
+No mover datos existentes sólo por estilo. Una migración de datos requiere decisión explícita y trazabilidad.
 
-El trabajo AEMET actual está en `data/raw/aemet/`, incluyendo JSON originales, evidencia de adquisición `.NO_DATA`, resultados de QC y CSV mensuales/anuales W2. Tratarlo como estado existente del proyecto salvo que se apruebe una migración documentada.
+## 12. Adquisición e investigación progresivas
 
-## 12. Principios Station, Location y Evidence
+No descargar ni investigar exhaustivamente todas las ubicaciones antes de priorizar.
 
-El modelo de dominio debe distinguir al menos:
-
-```text
-Station -> observaciones
-Location -> lugar/sitio evaluado por el usuario
-Scope/Representativeness -> relevancia espacial entre estaciones y ubicaciones
-Evidence -> soporte cuantitativo, derivado o documental
-```
-
-Una observación de estación no es automáticamente el valor de cualquier ubicación cercana.
-
-Si posteriormente se introduce interpolación, debe etiquetarse explícitamente como modelada/interpolada y conservar método, trazabilidad e incertidumbre.
-
-Los datos cuantitativos de estaciones y la evidencia cualitativa/documental son tipos de evidencia diferentes, pero ambos pueden asociarse a una ubicación.
-
-## 13. Adquisición e investigación progresivas
-
-No intentar descargar o investigar todas las ubicaciones posibles antes de disponer de un mecanismo de priorización.
-
-El flujo preferido es:
+Flujo preferido:
 
 ```text
 candidata
-  -> cribada
-  -> datos cuantitativos adquiridos
-  -> QC superado
-  -> investigación documental priorizada
-  -> evaluada
-  -> promovida / despriorizada / rechazada
+  → cribada
+  → datos adquiridos
+  → QC
+  → investigación documental priorizada
+  → evaluada
 ```
 
-El proyecto debe priorizar primero las ubicaciones/estaciones prometedoras y ampliar progresivamente.
+## 13. Modelo Station / Location / Evidence
 
-La investigación documental también debe ser proporcional al interés y relevancia de una candidata. Una ubicación que todavía no haya sido investigada debe permanecer explícitamente como `not_assessed` o equivalente, nunca como `low risk` o `no risk`.
+Debe distinguirse al menos:
 
-## 14. Principios del mapa
+```text
+Station → observaciones
+Location → lugar evaluado
+Scope/Representativeness → relevancia espacial
+Evidence → soporte cuantitativo, derivado o documental
+```
 
-El futuro mapa debe poder distinguir:
+La interpolación se aplaza hasta disponer de modelo, método, trazabilidad e incertidumbre explícitos.
 
-- estaciones físicas;
-- ubicaciones evaluadas;
-- cobertura/alcance de estaciones;
-- observaciones directas;
-- indicadores derivados;
-- valores modelados/interpolados;
-- calidad de los datos;
-- evidencia documental;
-- trazabilidad.
+## 14. Punto de entrada operativo
 
-El alcance espacial es una representación de relevancia, no una prueba de que una estación mida condiciones idénticas en toda el área.
+La secuencia reutilizable de incorporación vive en `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` y el contexto mínimo para agentes en `docs/core/PROJECT_AGENT_CONTEXT.md`.
 
-La interpolación se pospone hasta diseñar el modelo Station/Location/Scope y sus requisitos de incertidumbre.
-
-## 15. Estado documentado actual del proyecto
-
-En la versión 1.0.0 de estas reglas:
-
-- el pipeline de agua se ha auditado alrededor de las estaciones AEMET `8416`, `3195` y `7012D`;
-- se ha implementado y probado la agregación mensual y anual W2 de precipitación;
-- la agregación actual conserva los totales observados de precipitación y expone días missing, cobertura y completitud;
-- la suite de tests alcanzó 13 tests después de los últimos cambios de agregación;
-- la siguiente tarea especializada prevista es el modelo de dominio Station / Location / Scope / Evidence.
-
-Para el estado detallado actual, leer el último `docs/threads/water-pipeline/AUDIT_REPORT.md` y el MANIFEST/HANDOFF específico de la tarea.
-
-## 16. Descubrimiento de THREAD y documentos
-
-El descubrimiento de los THREAD del proyecto se realiza a partir de sus **MANIFEST consolidados en `knowledge`**, que constituyen el índice del proyecto: **derivado y no autoritativo** (ver `docs/core/THREAD_ARCHITECTURE.md` §15.2). Si un índice materializado y un MANIFEST discrepan, prevalece el MANIFEST.
-
-La forma canónica de cualquier índice materializado de THREADs está definida en `docs/core/THREAD_INDEX_TEMPLATE.md`. La forma canónica del índice materializado del corpus documental está definida en `docs/core/DOCUMENT_INDEX_TEMPLATE.md`. Ambos índices son mecanismos de descubrimiento derivados y no sustituyen a los MANIFEST ni a los documentos autoritativos que referencian.
-
-No se mantiene un inventario manual como fuente de verdad: un inventario copiado a mano se desincroniza. Los documentos de referencia (reglas, arquitectura, contexto, informes) y los artefactos de cada THREAD (MANIFEST, HANDOFF, registro) se descubren leyendo la rama `knowledge` vigente.
-
-## 17. Cómo iniciar un hilo nuevo
-
-La instrucción de arranque y su versión compacta son canónicas en `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` (§2 y §12). No se mantiene aquí una copia.
-
-## 18. Cómo cerrar un hilo
-
-El cierre sigue el protocolo de §9 de este documento y el formato de finalización de `docs/core/THREAD_CONTEXT_BOOTSTRAP.md` §11. No se duplica aquí el checklist.
-
-## 19. Historial de versiones
+## 15. Historial
 
 | Versión | Fecha | Cambio |
 |---|---|---|
-| 1.4.0 | 2026-08-23 | Consolidación del bootstrap (M1): §2/§17/§18 remiten a los canónicos; retirada de la redundancia interna de cierre. |
-| 1.5.0 | 2026-08-23 | Reorganización 2C: todas las rutas de remisión actualizadas a `docs/core/…`. |
-| 1.6.0 | 2026-09-08 | Se delega en `GIT_COMMIT_RULES.md` la estrategia de commits como registro histórico de decisiones. |
-| 1.7.0 | 2026-09-08 | HANDOFF alineado como cola de entradas pendientes; las resoluciones terminales salen del HANDOFF y su historial queda en Git. |
-| 1.7.1 | 2026-09-08 | Se incorporan referencias canónicas a las plantillas de índice de THREADs y de corpus documental. |
+| 2.0.0 | 2026-09-08 | Consolidación de reglas conforme a Arquitectura 1.0.0: HANDOFF persistente, índices separados, autoridad documental única y Git como historial. |
