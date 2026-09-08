@@ -1,6 +1,6 @@
 # ClimaScope — Plantilla de índice de THREADs
 
-**Versión:** 1.0.0  
+**Versión:** 1.1.0  
 **Estado:** Plantilla  
 **Idioma:** español (España)  
 **Repositorio:** `gineslm/climascope`  
@@ -19,12 +19,13 @@ El índice no crea THREADs, no cambia su estado y no sustituye al MANIFEST.
 ## 2. Principios
 
 1. Una fila representa un THREAD existente; por definición debe existir su MANIFEST.
-2. El índice contiene únicamente información útil para descubrimiento y navegación.
-3. No duplica historial que Git ya conserva.
-4. No incluye `created_from_knowledge_commit` ni otros SHAs históricos salvo que en el futuro exista una necesidad explícita de descubrimiento que lo justifique.
-5. El HANDOFF se referencia como artefacto persistente del THREAD; no existe el concepto de «handoff vigente» frente a handoffs históricos de sesión.
-6. El estado, la responsabilidad y las rutas deben coincidir con el MANIFEST.
-7. Los campos todavía no definidos por la arquitectura —por ejemplo futuros tipos de THREAD— no se incorporan a la plantilla hasta que exista una decisión canónica.
+2. Todo THREAD existente tiene exactamente un HANDOFF persistente y el índice debe referenciarlo.
+3. El índice contiene únicamente información útil para descubrimiento y navegación.
+4. No duplica historial que Git ya conserva.
+5. No incluye `created_from_knowledge_commit` ni otros SHAs históricos salvo que exista una necesidad explícita de descubrimiento que lo justifique.
+6. No existe el concepto de «handoff vigente» frente a handoffs históricos de sesión.
+7. El estado, la responsabilidad y las rutas deben coincidir con el MANIFEST.
+8. Los campos todavía no definidos por la arquitectura —por ejemplo futuros tipos de THREAD— no se incorporan a la plantilla hasta que exista una decisión canónica.
 
 ## 3. Plantilla
 
@@ -59,7 +60,7 @@ Regenerar cuando se cree, archive/cierre, reactive o cambie de responsabilidad u
 | `domain` | Dominio o área general en la que opera. | MANIFEST |
 | `responsibility` | Resumen corto de la responsabilidad vigente. | MANIFEST |
 | `MANIFEST` | Ruta al contrato autoritativo del THREAD. | estructura del repositorio / MANIFEST |
-| `HANDOFF` | Ruta a la cola persistente de inputs pendientes del THREAD. | MANIFEST |
+| `HANDOFF` | Ruta al único HANDOFF persistente del THREAD. | MANIFEST |
 
 ## 5. Qué no debe contener
 
@@ -81,6 +82,14 @@ Antes de considerar válido un índice materializado:
 
 - cada `thread_id` debe resolver a un MANIFEST existente en `knowledge`;
 - `status`, `domain` y `responsibility` deben coincidir con el MANIFEST;
-- las rutas `MANIFEST` y `HANDOFF` deben existir cuando correspondan;
+- cada ruta `MANIFEST` debe existir;
+- cada ruta `HANDOFF` debe existir y corresponder al único HANDOFF persistente declarado por el MANIFEST;
 - no debe existir una fila para una responsabilidad que todavía no tenga MANIFEST;
 - no debe mantenerse información histórica sólo por conveniencia: Git conserva la evolución.
+
+## 7. Historial
+
+| Versión | Fecha | Cambio |
+|---|---|---|
+| 1.0.0 | 2026-09-08 | Primera definición de la plantilla canónica de índice de THREADs. |
+| 1.1.0 | 2026-09-08 | Se hace obligatoria la referencia al único HANDOFF persistente de cada THREAD. |
